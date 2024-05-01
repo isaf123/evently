@@ -1,5 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Prisma schema
 
 generator client {
   provider = "prisma-client-js"
@@ -18,4 +17,132 @@ model Sample {
   updatedAt DateTime @updatedAt
 
   @@map("samples") // if you want to use snake_case format
+}
+
+model Users {
+  id            Int            @id @default(autoincrement())
+  avatar_users  String?
+  name          String
+  email         String
+  password      String
+  referral_code String?
+  role          Role
+  transactions  Transaction[]
+  reviews       ReviewsEvent[]
+  vouchers      Voucher[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  Referrals     Referral[]     @relation("ReferralToUser") // User dapat memiliki banyak Referral
+  ReferredBy    Referral?      @relation("ParentUserReferral") // User dapat direferensikan oleh satu Referral
+
+  @@map("users")
+}
+
+enum Role {
+  eo
+  customers
+}
+
+model Referral {
+  id             Int       @id @default(autoincrement())
+  referral_code  String
+  user           Users     @relation("ReferralToUser", fields: [user_id], references: [id])
+  user_id        Int       @unique
+  parent_user    Users     @relation("ParentUserReferral", fields: [parent_user_id], references: [id])
+  parent_user_id Int       @unique
+  createdAt      DateTime  @default(now())
+  expiredAt      DateTime?
+
+  @@map("referral")
+}
+
+model MasterEvent {
+  id             Int            @id @default(autoincrement())
+  flyer_event    String
+  title          String
+  start_date     DateTime
+  end_date       DateTime
+  location       MasterLocation @relation(fields: [location_id], references: [id])
+  location_id    Int
+  description    String?
+  available_seat Int
+  event_type     EventType
+  category       CategoryEvent  @relation(fields: [category_id], references: [id])
+  category_id    Int
+  price          Int // Tambahkan field price langsung di MasterEvent
+  transactions   Transaction[]
+  reviews        ReviewsEvent[]
+  Vouchers       Voucher[]
+
+  @@map("master_event")
+}
+
+enum EventType {
+  free
+  paid
+}
+
+model CategoryEvent {
+  id    Int           @id @default(autoincrement())
+  title String
+  event MasterEvent[]
+
+  @@map("category_event")
+}
+
+model Transaction {
+  id                 Int               @id @default(autoincrement())
+  date_transaction   DateTime
+  invoice_code       String
+  user               Users             @relation(fields: [user_id], references: [id])
+  user_id            Int
+  event              MasterEvent       @relation(fields: [event_id], references: [id])
+  event_id           Int
+  total_price        Int
+  status_transaction TransactionStatus
+  voucher            Voucher?          @relation(fields: [voucherId], references: [id])
+  voucherId          Int?
+
+  @@map("transaction")
+}
+
+enum TransactionStatus {
+  submitted
+  pending
+  paid
+}
+
+model ReviewsEvent {
+  id       Int         @id @default(autoincrement())
+  review   String
+  rating   Float
+  event    MasterEvent @relation(fields: [event_id], references: [id])
+  event_id Int
+  user     Users       @relation(fields: [user_id], references: [id])
+  user_id  Int
+
+  @@map("Reviews_Event")
+}
+
+model Voucher {
+  id           Int           @id @default(autoincrement())
+  name_voucher String
+  discount     Float
+  start_date   DateTime
+  end_date     DateTime
+  event        MasterEvent?  @relation(fields: [event_id], references: [id])
+  event_id     Int?
+  user         Users         @relation(fields: [user_id], references: [id])
+  user_id      Int
+  Transaction  Transaction[]
+
+  @@map("voucher")
+}
+
+model MasterLocation {
+  id          Int           @id @default(autoincrement())
+  location    String
+  MasterEvent MasterEvent[]
+
+  @@map("master_location")
 }
