@@ -12,7 +12,7 @@ import { PORT } from './config';
 import { SampleRouter } from './routers/sample.router';
 
 export default class App {
-  private app: Express;
+  readonly app: Express;
 
   constructor() {
     this.app = express();
@@ -57,12 +57,12 @@ export default class App {
       res.send(`Hello, Purwadhika Student !`);
     });
 
-    this.app.use('/samples', sampleRouter.getRouter());
+    this.app.use('/api', sampleRouter.getRouter());
   }
 
   public start(): void {
     this.app.listen(PORT, () => {
-      console.log(`  ➜  [API] Local:   http://localhost:${PORT}/`);
+      console.log(`  ➜  [API] Local: http://localhost:${PORT}/`);
     });
   }
 }

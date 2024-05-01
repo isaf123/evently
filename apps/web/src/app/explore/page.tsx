@@ -7,8 +7,9 @@ import { times } from '@/lib/text';
 import { price } from '@/lib/text';
 import { useAppSelector } from '@/lib/hooks';
 import CartEvent from '@/components/Cart';
+import { Header } from '@/components/Header';
 
-interface IExplorePageProps {}
+interface IExplorePageProps { }
 
 const ExplorePage: React.FunctionComponent<IExplorePageProps> = (props) => {
   const event = useAppSelector((state) => {
@@ -27,6 +28,7 @@ const ExplorePage: React.FunctionComponent<IExplorePageProps> = (props) => {
   };
   return (
     <div className="flex h-fit w-full">
+      {/* <Header /> */}
       <div className="h-fit min-h-[865px] w-[340px] border-r-[0.2px] border-color1 pt-10">
         <p className="w-full text-center font-bold text-lg text-color1">
           FILTER
