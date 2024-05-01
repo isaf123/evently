@@ -1,10 +1,10 @@
-import App from './app';
-import dotenv from 'dotenv'
-dotenv.config()
+import dotenv from "dotenv";
+dotenv.config();
+import App from "./app";
 
 const main = () => {
-
   const server = new App();
+
   server.start();
 };
 

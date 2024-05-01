@@ -23,12 +23,12 @@ model Users {
   name          String
   email         String
   password      String
-  referral_code String?
+  referral_code String
   role          Role
-  otp           String
-  token         String
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+  otp           String?
+  token         String?         @unique
   ReferredBy    Referral?       @relation("ParentUserReferral")
   Referrals     Referral?       @relation("ReferralToUser")
   reviews_event reviews_event[]
