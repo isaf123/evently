@@ -20,7 +20,15 @@ const DropDownSelected: React.FunctionComponent<IDropDownSelectedProps> = (
   const dispatch = useAppDispatch();
 
   // console.log(selectProp);
+  const event = useAppSelector((state) => {
+    return state.eventReducer;
+  });
+  console.log(deleteUp);
 
+  const getDelete = () => {
+    const newData = { ...event };
+    setSelectData(newData);
+  };
   return (
     <div className="h-fit min-h-[64px] pt-6">
       {active ? (

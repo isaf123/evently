@@ -23,7 +23,7 @@ const ExplorePage: React.FunctionComponent<IExplorePageProps> = (props) => {
       return `${val}=${event[val]}`;
     });
 
-    console.log(`http://localhost:3500/event?${filter.join('&')}`);
+    // console.log(`http://localhost:3500/event?${filter.join('&')}`);
   };
   return (
     <div className="flex h-fit w-full">
