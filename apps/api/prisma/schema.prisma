@@ -1,5 +1,3 @@
-// Prisma schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -16,70 +14,64 @@ model Sample {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("samples") // if you want to use snake_case format
+  @@map("samples")
 }
 
 model Users {
-  id            Int            @id @default(autoincrement())
+  id            Int             @id @default(autoincrement())
   avatar_users  String?
   name          String
   email         String
   password      String
   referral_code String?
   role          Role
+  otp           String
+  token         String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  ReferredBy    Referral?       @relation("ParentUserReferral")
+  Referrals     Referral?       @relation("ReferralToUser")
+  reviews_event reviews_event[]
   transactions  Transaction[]
-  reviews       ReviewsEvent[]
   vouchers      Voucher[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  Referrals     Referral[]     @relation("ReferralToUser") // User dapat memiliki banyak Referral
-  ReferredBy    Referral?      @relation("ParentUserReferral") // User dapat direferensikan oleh satu Referral
 
   @@map("users")
-}
-
-enum Role {
-  eo
-  customers
 }
 
 model Referral {
   id             Int       @id @default(autoincrement())
   referral_code  String
-  user           Users     @relation("ReferralToUser", fields: [user_id], references: [id])
   user_id        Int       @unique
-  parent_user    Users     @relation("ParentUserReferral", fields: [parent_user_id], references: [id])
   parent_user_id Int       @unique
   createdAt      DateTime  @default(now())
   expiredAt      DateTime?
+  parent_user    Users     @relation("ParentUserReferral", fields: [parent_user_id], references: [id])
+  user           Users     @relation("ReferralToUser", fields: [user_id], references: [id])
 
   @@map("referral")
 }
 
 model MasterEvent {
-  id             Int            @id @default(autoincrement())
+  id             Int             @id @default(autoincrement())
   flyer_event    String
   title          String
   start_date     DateTime
   end_date       DateTime
-  location       MasterLocation @relation(fields: [location_id], references: [id])
   location_id    Int
   description    String?
   available_seat Int
   event_type     EventType
-  category       CategoryEvent  @relation(fields: [category_id], references: [id])
   category_id    Int
-  price          Int // Tambahkan field price langsung di MasterEvent
+  price          Int
+  category       CategoryEvent   @relation(fields: [category_id], references: [id])
+  location       MasterLocation  @relation(fields: [location_id], references: [id])
+  reviews_event  reviews_event[]
   transactions   Transaction[]
-  reviews        ReviewsEvent[]
   Vouchers       Voucher[]
 
+  @@index([category_id], map: "master_event_category_id_fkey")
+  @@index([location_id], map: "master_event_location_id_fkey")
   @@map("master_event")
-}
-
-enum EventType {
-  free
-  paid
 }
 
 model CategoryEvent {
@@ -94,34 +86,19 @@ model Transaction {
   id                 Int               @id @default(autoincrement())
   date_transaction   DateTime
   invoice_code       String
-  user               Users             @relation(fields: [user_id], references: [id])
   user_id            Int
-  event              MasterEvent       @relation(fields: [event_id], references: [id])
   event_id           Int
   total_price        Int
   status_transaction TransactionStatus
-  voucher            Voucher?          @relation(fields: [voucherId], references: [id])
   voucherId          Int?
+  event              MasterEvent       @relation(fields: [event_id], references: [id])
+  user               Users             @relation(fields: [user_id], references: [id])
+  voucher            Voucher?          @relation(fields: [voucherId], references: [id])
 
+  @@index([event_id], map: "transaction_event_id_fkey")
+  @@index([user_id], map: "transaction_user_id_fkey")
+  @@index([voucherId], map: "transaction_voucherId_fkey")
   @@map("transaction")
-}
-
-enum TransactionStatus {
-  submitted
-  pending
-  paid
-}
-
-model ReviewsEvent {
-  id       Int         @id @default(autoincrement())
-  review   String
-  rating   Float
-  event    MasterEvent @relation(fields: [event_id], references: [id])
-  event_id Int
-  user     Users       @relation(fields: [user_id], references: [id])
-  user_id  Int
-
-  @@map("Reviews_Event")
 }
 
 model Voucher {
@@ -130,12 +107,14 @@ model Voucher {
   discount     Float
   start_date   DateTime
   end_date     DateTime
-  event        MasterEvent?  @relation(fields: [event_id], references: [id])
   event_id     Int?
-  user         Users         @relation(fields: [user_id], references: [id])
   user_id      Int
   Transaction  Transaction[]
+  event        MasterEvent?  @relation(fields: [event_id], references: [id])
+  user         Users         @relation(fields: [user_id], references: [id])
 
+  @@index([event_id], map: "voucher_event_id_fkey")
+  @@index([user_id], map: "voucher_user_id_fkey")
   @@map("voucher")
 }
 
@@ -145,4 +124,33 @@ model MasterLocation {
   MasterEvent MasterEvent[]
 
   @@map("master_location")
+}
+
+model reviews_event {
+  id           Int         @id @default(autoincrement())
+  review       String
+  rating       Float
+  event_id     Int
+  user_id      Int
+  master_event MasterEvent @relation(fields: [event_id], references: [id], map: "Reviews_Event_event_id_fkey")
+  users        Users       @relation(fields: [user_id], references: [id], map: "Reviews_Event_user_id_fkey")
+
+  @@index([event_id], map: "Reviews_Event_event_id_fkey")
+  @@index([user_id], map: "Reviews_Event_user_id_fkey")
+}
+
+enum Role {
+  eo
+  customers
+}
+
+enum EventType {
+  free
+  paid
+}
+
+enum TransactionStatus {
+  submitted
+  pending
+  paid
 }
