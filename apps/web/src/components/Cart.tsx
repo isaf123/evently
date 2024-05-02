@@ -15,9 +15,9 @@ const CartEvent: React.FunctionComponent<ICartEventProps> = (props) => {
   const router = useRouter();
   return (
     <div
-      className="w-[280px] h-[310px] shadow-md rounded-xl"
+      className="w-[280px] h-[310px] shadow-md rounded-xl cursor-pointer"
       onClick={() => {
-        router.push(`/event/${props.children?.split(' ').join('')}`);
+        router.push(`/event/${props.children?.split(' ').join('-')}`);
       }}
     >
       <div className="w-full h-[160px] bg-gray-200 rounded-t-xl overflow-hidden">

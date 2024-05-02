@@ -7,6 +7,15 @@ import { GrLocation } from 'react-icons/gr';
 import { MdOutlineCalendarToday } from 'react-icons/md';
 import { LuClock4 } from 'react-icons/lu';
 
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+
 interface IPaymentPageProps {}
 
 const PaymentPage: React.FunctionComponent<IPaymentPageProps> = (props) => {
