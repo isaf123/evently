@@ -34,3 +34,15 @@ export const rupiah = (money: number) => {
     currency: 'IDR',
   });
 };
+
+export const trimText = (text: string | number = 0, mount: number) => {
+  if (text === 0) {
+    return '..';
+  } else if (typeof text === 'string') {
+    if (text.length < mount + 2) {
+      return text;
+    } else {
+      return `${text.slice(0, mount)}...`;
+    }
+  }
+};

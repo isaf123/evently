@@ -77,7 +77,7 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
               <Label htmlFor="password">Confirm Password</Label>
               <Input id="password" type="password" />
             </div>
-            <Button type="submit" className="w-full bg-color1 text-white">
+            <Button type="button" className="w-full bg-color1 text-white">
               Create an account
             </Button>
           </div>

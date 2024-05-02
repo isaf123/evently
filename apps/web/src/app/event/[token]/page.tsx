@@ -6,6 +6,7 @@ import { MdLocationOn } from 'react-icons/md';
 import { MdOutlineCalendarToday } from 'react-icons/md';
 import { LuClock4 } from 'react-icons/lu';
 import { rupiah } from '@/lib/text';
+import { trimText } from '@/lib/text';
 
 interface IEventPageProps {}
 
@@ -58,21 +59,23 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
       {active ? (
         <div>
           <div className="flex flex-col md:flex-row  md:w-[800px] m-auto gap-[1px] ">
-            <div className=" ml-4 md:ml-0 min-w-[360px]  md:min-w-[400px] border border-dashed border-color1 w-[320px]  md:h-[180px]  shadow-md rounded-2xl mt-4 px-5 md:px-10 py-6 flex flex-col gap-4 text-sm justify-center overflow-hidden">
+            <div className=" ml-4 md:ml-0 min-w-[360px]  md:min-w-[360px] border border-dashed border-color1 w-[320px] md:w-fit  md:h-[180px]  shadow-md rounded-2xl mt-4 px-5 md:px-10 py-6 flex flex-col gap-4 text-sm justify-center overflow-hidden">
               <div className="flex items-center  w-fit  gap-3">
                 <MdLocationOn className="w-6 h-6 text-color1" />
-                <p className="h-fit">Tennis Indor lapangan jakarta</p>
+                <p className="">
+                  {trimText(' Tennis Indor lapangan jakarta', 46)}
+                </p>
               </div>
 
               <div className="flex items-center w-fit gap-3">
                 <MdOutlineCalendarToday className="w-6 h-6 text-color1" />
 
-                <p className="h-fit">Tennis Indor lapangan jakarta</p>
+                <p className="h-fit">18 May 2024</p>
               </div>
               <div className="flex items-center   w-fit gap-3">
                 <LuClock4 className="w-6 h-6 text-color1" />
 
-                <p className="h-fit">Tennis Indor lapangan jakarta</p>
+                <p className="h-fit">19:00 - 22:00 WIB </p>
               </div>
             </div>
             <div className="md:h-[180px] w-[360px] ml-[15px] md:ml-0 md:w-fit border border-dashed border-color1  shadow-md rounded-2xl mt-4 px-12 py-6 flex flex-col gap-4 justify-center">

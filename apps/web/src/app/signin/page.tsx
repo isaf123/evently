@@ -31,6 +31,8 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
     data: '',
     password: '',
   });
+  const [set, setset] = useState<any>('');
+
   console.log(dataUser);
   return (
     <div>
@@ -77,7 +79,13 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
                 }}
               />
             </div>
-            <Button type="submit" className="w-full bg-color1 text-white">
+            <Button
+              type="button"
+              className="w-full bg-color1 text-white"
+              onClick={() => {
+                console.log('oke');
+              }}
+            >
               Login
             </Button>
           </div>
@@ -96,12 +104,16 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectLabel>Fruits</SelectLabel>
-            <SelectItem value="apple">Apple</SelectItem>
-            <SelectItem value="banana">Banana</SelectItem>
-            <SelectItem value="blueberry">Blueberry</SelectItem>
-            <SelectItem value="grapes">Grapes</SelectItem>
-            <SelectItem value="pineapple">Pineapple</SelectItem>
+            <SelectLabel
+              onClick={() => {
+                console.log('oke');
+              }}
+            >
+              Fruits
+            </SelectLabel>
+            <SelectItem value="grape">Apple</SelectItem>
+            <SelectItem value="grape">Banana</SelectItem>
+            <SelectItem value="banana">grape</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>
