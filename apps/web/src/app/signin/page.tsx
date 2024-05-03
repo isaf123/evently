@@ -21,7 +21,7 @@ import axios from 'axios';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from 'next/navigation';
-        
+
 interface ILoginPageProps { }
 
 const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
@@ -42,10 +42,14 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
       const { role, token } = response.data;
       if (role === 'eo') {
         console.log('ini halaman EO');
+        console.log('ini tokennya', token);
+        localStorage.setItem('token EO', token)
         router.push('/event-organizer/dashboard')
       } else if (role === 'customers') {
         console.log('ini halaman Customers');
-        router.push('/')
+        console.log('token customers', token);
+        localStorage.setItem('token Cust', token)
+        router.push('/event-organizer/dashboard')
       }
 
     } catch (error: any) {

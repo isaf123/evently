@@ -124,7 +124,10 @@ export class AuthController {
                 role: user.role,
                 token
             })
-
+        } catch (error) {
+            next(error)
+        }
+    }
     // Task 4: Doing Forgot Password
     async forgotPassword(req: Request, res: Response, next: NextFunction) {
         try {
@@ -134,6 +137,7 @@ export class AuthController {
             const token = sign({ userId: users.id }, process.env.TOKEN_KEY || 'secretpassforgot')
             await saveResetToken(users.id, token)
             const URL = `http://localhost:3000/reset-password/${token}`
+            
             // Kirim email reset password
             const subject = "Reset Password";
             const data = {

@@ -15,7 +15,10 @@ export class AuthRouter {
     private initializeRoutes(): void {
         this.router.post('/register', this.authController.registerUsers)
         this.router.post('/login', this.authController.loginUsers)
-      
+
+        // Untuk Keep Login
+        this.router.get('/keeplogin', verifyToken, this.authController.keepLogin)
+
         // Untuk Keep Login
         this.router.get('/keeplogin', verifyToken, this.authController.keepLogin)
       
