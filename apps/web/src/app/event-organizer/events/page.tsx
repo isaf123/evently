@@ -10,7 +10,7 @@ const EventEOPage = () => {
             <div className='flex-1'>
                 <Header />
                 <HeaderMobile />
-                EventEOPage
+                <div className='flex flex-col container px-[180px] my-[10px] mx-auto'>Event EO</div>
             </div>
         </div >
     )
