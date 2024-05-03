@@ -1,6 +1,7 @@
 import { AuthController } from '@/controllers/auth.controller';
 import { verifyToken } from '@/middleware/verifiedToken';
 import { Router } from 'express';
+
 export class AuthRouter {
     private router: Router;
     private authController: AuthController
@@ -18,6 +19,9 @@ export class AuthRouter {
         // Untuk Keep Login
         this.router.get('/keeplogin', verifyToken, this.authController.keepLogin)
 
+        // Untuk Keep Login
+        this.router.get('/keeplogin', verifyToken, this.authController.keepLogin)
+      
         // Untuk Forgot Password
         this.router.post('/forgotPassword', this.authController.forgotPassword)
     }

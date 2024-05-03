@@ -49,7 +49,7 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
         console.log('ini halaman Customers');
         console.log('token customers', token);
         localStorage.setItem('token Cust', token)
-        router.push('/')
+        router.push('/event-organizer/dashboard')
       }
 
     } catch (error: any) {
@@ -119,8 +119,6 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
           </div>
         </CardContent>
       </Card>
-
-
     </div>
   );
 };
