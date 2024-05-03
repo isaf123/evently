@@ -8,8 +8,17 @@ import { price } from '@/lib/text';
 import { useAppSelector } from '@/lib/hooks';
 import CartEvent from '@/components/Cart';
 import { Header } from '@/components/Header';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
-interface IExplorePageProps { }
+interface IExplorePageProps {}
 
 const ExplorePage: React.FunctionComponent<IExplorePageProps> = (props) => {
   const event = useAppSelector((state) => {
@@ -41,15 +50,30 @@ const ExplorePage: React.FunctionComponent<IExplorePageProps> = (props) => {
       <div className="h-[865px] m-auto w-[1300px] pt-10">
         <p className="text-color1 font-extrabold text-2xl mb-10">Find Event</p>
         <div className="w-full h-fit flex justify-between flex-wrap gap-y-8">
-          <CartEvent></CartEvent>
-          <CartEvent></CartEvent>
-          <CartEvent></CartEvent>
-          <CartEvent></CartEvent>
-          <CartEvent></CartEvent>
-          <CartEvent></CartEvent>
-          <CartEvent></CartEvent>
-          <CartEvent></CartEvent>
+          <CartEvent>none</CartEvent>
+          <CartEvent>none</CartEvent>
+          <CartEvent>none</CartEvent>
+          <CartEvent>none</CartEvent>
+          <CartEvent>none</CartEvent>
+          <CartEvent>none</CartEvent>
+          <CartEvent>none</CartEvent>
+          <CartEvent>none</CartEvent>
         </div>
+
+        <Select>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder=" select fruits" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>fruits</SelectLabel>
+
+              <SelectItem value="oke" onClick={() => console.log('oke')}>
+                oke
+              </SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );
