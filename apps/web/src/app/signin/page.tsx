@@ -21,7 +21,7 @@ import axios from 'axios';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from 'next/navigation';
-
+        
 interface ILoginPageProps { }
 
 const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
@@ -115,8 +115,6 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
           </div>
         </CardContent>
       </Card>
-
-
     </div>
   );
 };

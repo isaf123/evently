@@ -51,8 +51,6 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
         referral_code: generateReferralCode(6)
       })
       console.log(dataUser);
-
-
       router.push("/signin")
     } catch (error: any) {
       showMessage(error.response.data, "error")
