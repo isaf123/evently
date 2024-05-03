@@ -16,7 +16,7 @@ export const category = [
   'Other',
 ];
 
-export const times = ['This Week', 'Next Week', 'This Month', 'Next Month'];
+export const times = ['This\nWeek', 'Next Week', 'This Month', 'Next Month'];
 export const price = ['Paid', 'Free'];
 
 export const event = {
@@ -35,8 +35,8 @@ export const rupiah = (money: number) => {
   });
 };
 
-export const trimText = (text: string | Boolean = false, mount: number) => {
-  if (!text) {
+export const trimText = (text: string | number = 0, mount: number) => {
+  if (text === 0) {
     return '..';
   } else if (typeof text === 'string') {
     if (text.length < mount + 2) {
