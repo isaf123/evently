@@ -1,31 +1,151 @@
 import prisma from "@/prisma";
+import { findUsers } from "@/services/auth/login/findFirstUser";
+import { checkExistingUsers } from "@/services/auth/register/checkUsers";
+import { createUsers } from "@/services/auth/register/createUsers";
+import { Role } from "@/services/auth/register/typeUsers";
+import { validateEmail } from "@/utils/emailValidator";
+import { hashPassword } from "@/utils/hashPassword";
 import { NextFunction, Request, Response } from "express";
+import { sign } from 'jsonwebtoken'
+import { compareSync } from 'bcrypt'
+import { disableAccount } from "@/services/auth/login/disableAccount";
+import { updateLoginAttempt } from "@/services/auth/login/updateLoginAttempt";
+import { activateAccount } from "@/services/auth/login/activateAccount";
+import { findUniqueUsers } from "@/services/auth/forgotPassword/findUniqueUser";
+import { saveResetToken } from "@/services/auth/forgotPassword/saveResetToken";
+import { sendEmailForgotPass } from "@/utils/emailSendForgotPassword";
+
 
 export class AuthController {
     // Task 1: Doing Register
     async registerUsers(req: Request, res: Response, next: NextFunction) {
         try {
-            const { username, email, password, role, referralCode } = req.body
-            console.log('ini data register', req.body);
+            const { name, email, password, role, referral_code } = req.body
+            if (!validateEmail(email)) return res.status(400).json('Email not valid!');
+            const existingUser = await checkExistingUsers(email)
+            if (existingUser) return res.status(409).json("Email Already Registered.");
+            if (!Object.values(Role).includes(role)) return res.status(400).json(`${role} not valid`);
+            const hashedPassword = await hashPassword(password)
+            const newUsers = await createUsers({
+                name, email, password: hashedPassword, role, referral_code
+            })
+            return res.status(201).send(newUsers)
+        } catch (error) {
+            next(error)
+        }
+    }
 
-            // Validasi dari masing-masing field kosong
-            if (!req.body) {
-                return res.status(404)
+    // Task 2: Doing Login
+    async loginUsers(req: Request, res: Response, next: NextFunction) {
+        const { email, password } = req.body
+        try {
+            const findUser = await findUsers(email, email)
+            if (!findUser) return res.status(404).send('Account not exists')
+
+            const differentDay = Date.now() > new Date(findUser?.updatedAt).getTime();
+            if (differentDay) {
+                await updateLoginAttempt(findUser.id, 0)
             }
 
+            if (!findUser.isActive) {
+                // Memberikan penundaan 1 menit jika akun dinonaktifkan
+                setTimeout(async () => {
+                    await activateAccount(findUser.id); // Mengaktifkan kembali akun setelah 1 menit
+                }, 60000); // 1 menit dalam milidetik
 
-            const newUsers = await prisma.users.create({
-                data: {
-                    name: username,
-                    email: email,
-                    password: password,
-                    avatar_users: null,
-                    role: role,
-                    referral_code: referralCode || null,
+                return res.status(400).send('Your account is Suspended!')
+            }
+
+            const comparePassword = compareSync(password, findUser?.password);
+            if (!comparePassword) {
+                if (findUser.tryLogin < 3) {
+                    let limitcount = findUser.tryLogin + 1;
+                    await prisma.users.update({
+                        where: {
+                            id: findUser?.id,
+                        },
+                        data: { tryLogin: findUser?.tryLogin + 1 },
+                    });
+                    return res.status(400).send(`Password Incorect, ${4 - limitcount} chance remaining`)
+                } else {
+                    await prisma.users.update({
+                        where: { id: findUser.id },
+                        data: { isActive: false },
+                    });
+                    setTimeout(async () => {
+                        await activateAccount(findUser.id); // Mengaktifkan kembali akun setelah 1 menit
+                    }, 60000);
+                    return res.status(400).send(`Your Account is Suspend!`)
                 }
-            })
+            }
+            //Reset limit count
+            if (findUser.tryLogin > 0 || findUser.tryLogin < 3) {
+                await prisma.users.update({
+                    where: { id: findUser.id },
+                    data: {
+                        tryLogin: 0,
+                    },
+                });
+            }
+            const token = sign(
+                { id: findUser.id, role: findUser.role },
+                process.env.TOKEN_KEY || "secret"
+            );
+            return res.status(200).send({
+                username: findUser.name,
+                email: findUser.email,
+                token: token,
+            });
 
-            return res.status(201).send(newUsers)
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
+
+
+
+    // Task 3: Doing Keep Login
+    async keepLogin(req: Request, res: Response, next: NextFunction) {
+        try {
+            // Lanjutkan coding ini
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    // Task 4: Doing Forgot Password
+    async forgotPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { email } = req.body
+            const users = await findUniqueUsers(email)
+            if (!users) return res.status(404).send('Account not found!')
+            const token = sign({ userId: users.id }, process.env.TOKEN_KEY || 'secretpassforgot')
+            await saveResetToken(users.id, token)
+
+            const URL = `${req.protocol}://${req.get('host')}/reset-password/${token}`
+
+            // Kirim email reset password
+            const subject = "Reset Password";
+            const data = {
+                username: users.name,
+                link: URL
+            };
+
+            console.log('username yang akan dikirim', data.username);
+
+            await sendEmailForgotPass(email, subject, data)
+            return res.status(200).send('Reset password email sent successfully!');
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    // Task 5: Doing Reset Password
+    async resetPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+
         } catch (error) {
             next(error)
         }

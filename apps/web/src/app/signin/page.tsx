@@ -10,30 +10,20 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectGroup,
-  SelectLabel,
-} from '@/components/ui/select';
+
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
-import { data } from 'cypress/types/jquery';
-interface ILoginPageProps {}
+
+interface ILoginPageProps { }
 
 const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
-  const [dataUser, setDataUser] = useState<Object>({
-    data: '',
+  const [dataUser, setDataUser] = useState({
+    email: '',
     password: '',
   });
-  const [set, setset] = useState<any>('');
 
-  console.log(dataUser);
   return (
     <div>
       <div className="w-full bg-white h-[85px] relative -top-[80px]"></div>
@@ -47,14 +37,14 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
         <CardContent>
           <div className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email / Username</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="text"
-                placeholder="m@example.com / John"
+                placeholder="me@example.com"
                 required
                 onChange={(e) => {
-                  const newData = { ...dataUser, data: e.target.value };
+                  const newData = { ...dataUser, email: e.target.value };
                   setDataUser(newData);
                 }}
               />
@@ -98,25 +88,7 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
         </CardContent>
       </Card>
 
-      <Select>
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Select a fruit" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel
-              onClick={() => {
-                console.log('oke');
-              }}
-            >
-              Fruits
-            </SelectLabel>
-            <SelectItem value="grape">Apple</SelectItem>
-            <SelectItem value="grape">Banana</SelectItem>
-            <SelectItem value="banana">grape</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+
     </div>
   );
 };

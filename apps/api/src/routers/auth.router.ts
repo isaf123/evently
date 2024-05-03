@@ -12,6 +12,10 @@ export class AuthRouter {
 
     private initializeRoutes(): void {
         this.router.post('/register', this.authController.registerUsers)
+        this.router.post('/login', this.authController.loginUsers)
+
+        // Untuk Forgot Password
+        this.router.post('/forgotPassword', this.authController.forgotPassword)
     }
 
     getRouter(): Router {
