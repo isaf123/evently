@@ -12,7 +12,7 @@ const DashboardEOPage = () => {
             <div className='flex-1'>
                 <Header />
                 <HeaderMobile />
-                DashboardEOPage
+                <div className='flex flex-col container px-[180px] my-[10px] mx-auto '>Dashboard EO</div>
             </div>
         </div >
     )

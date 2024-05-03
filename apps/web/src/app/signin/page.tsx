@@ -16,6 +16,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 
+import { showMessage } from '@/components/Alert/Toast';
+import axios from 'axios';
+import { ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from 'next/navigation';
+
 interface ILoginPageProps { }
 
 const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
@@ -24,14 +30,38 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
     password: '',
   });
 
+  const router = useRouter()
+
+  const handleLogin = async () => {
+    try {
+      console.log('ini ENV', process.env.NEXT_PUBLIC_BASE_API_URL);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}auth/login`, {
+        email: dataUser.email,
+        password: dataUser.password
+      })
+      const { role, token } = response.data;
+      if (role === 'eo') {
+        console.log('ini halaman EO');
+        router.push('/event-organizer/dashboard')
+      } else if (role === 'customers') {
+        console.log('ini halaman Customers');
+        router.push('/')
+      }
+
+    } catch (error: any) {
+      showMessage(error.response.data, "error")
+    }
+  }
+
   return (
     <div>
+      <ToastContainer />
       <div className="w-full bg-white h-[85px] relative -top-[80px]"></div>
       <Card className="mx-3 md:mx-auto max-w-sm -mt-[70px] md:-mt-0">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
-            Enter your email/username to login to your account
+            Enter your email to login to your account
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -72,9 +102,7 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
             <Button
               type="button"
               className="w-full bg-color1 text-white"
-              onClick={() => {
-                console.log('oke');
-              }}
+              onClick={handleLogin}
             >
               Login
             </Button>

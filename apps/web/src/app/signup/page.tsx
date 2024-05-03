@@ -18,27 +18,54 @@ import { showMessage } from '@/components/Alert/Toast';
 
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-
-
+import { RadioGroup } from '@radix-ui/react-radio-group';
+import { RadioGroupItem } from '@/components/ui/radio-group';
 
 interface ISignUpPageProps { }
 
 const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
-  const [dataUser, setDataUser] = useState<Object>({
+  const [dataUser, setDataUser] = useState({
     name: '',
     email: '',
     password: '',
+    role: '',
+    referral_code: ''
   });
 
+  const [role, setRole] = useState<string>("")
+
+  const [showReferralCode, setShowReferralCode] = useState(false);
+  const clickRefCode = () => {
+    setShowReferralCode(!showReferralCode)
+  }
   const router = useRouter()
-  console.log(dataUser);
   const handleRegister = async () => {
     try {
-      const response = await axios.post("http://localhost:3010/auth/register", { name: "ab", email: "maillee@mail.com", password: "12345a" })
-      router.push("/")
+      console.log('ini ENV', process.env.NEXT_PUBLIC_BASE_API_URL);
+
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}auth/register`, {
+        name: dataUser.name,
+        email: dataUser.email,
+        password: dataUser.password,
+        role: dataUser.role,
+        referral_code: generateReferralCode(6)
+      })
+      console.log(dataUser);
+
+
+      router.push("/signin")
     } catch (error: any) {
       showMessage(error.response.data, "error")
     }
+  }
+
+  const generateReferralCode = (length: number = 6): string => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let referralCode = '';
+    for (let i = 0; i < length; i++) {
+      referralCode += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return referralCode;
   }
 
   return (
@@ -57,9 +84,10 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
           <div className="grid gap-4">
             <div className="grid  gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="first-name">name</Label>
+                <Label htmlFor="first-name">Name</Label>
                 <Input
-                  id="first-name"
+                  id="name"
+                  type='text'
                   placeholder="Max"
                   required
                   onChange={(e) => {
@@ -95,8 +123,44 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Confirm Password</Label>
-              <Input id="password" type="password" />
+              <Input id="confirm_pwd" type="password" />
             </div>
+            <div className="grid gap-2">
+              <Label htmlFor="role" className='text-sm'>Role</Label>
+              <RadioGroup
+                className='flex justify-center gap-4'
+                onValueChange={(e) => {
+                  setRole(e);
+                  const newData = { ...dataUser, role: e };
+                  setDataUser(newData);
+                }}
+                onClick={clickRefCode}
+              >
+                <div className="flex items-center space-x-1">
+                  <RadioGroupItem value="eo" id="r1" />
+                  <Label htmlFor="r1">EO</Label>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <RadioGroupItem value="customers" id="r2" />
+                  <Label htmlFor="r2">Customer</Label>
+                </div>
+              </RadioGroup>
+
+            </div>
+            {role == "customers" ?
+              <div className="grid gap-2">
+                <Input
+                  type='text'
+                  className='block'
+                  placeholder='Register with Referral Code'
+                  onChange={(e) => {
+                    const newData = { ...dataUser, referral_code: e.target.value };
+                    setDataUser(newData);
+                  }}
+                />
+              </div> : <></>
+            }
+
             <Button type="button" className="w-full bg-color1 text-white" onClick={() => { handleRegister() }}>
               Create an account
             </Button>
@@ -114,9 +178,3 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
 };
 
 export default SignUpPage;
-
-// export function LoginForm() {
-//   return (
-
-//   );
-// }
