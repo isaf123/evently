@@ -42,9 +42,13 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
       const { role, token } = response.data;
       if (role === 'eo') {
         console.log('ini halaman EO');
+        console.log('ini tokennya', token);
+        localStorage.setItem('token EO', token)
         router.push('/event-organizer/dashboard')
       } else if (role === 'customers') {
         console.log('ini halaman Customers');
+        console.log('token customers', token);
+        localStorage.setItem('token Cust', token)
         router.push('/')
       }
 
