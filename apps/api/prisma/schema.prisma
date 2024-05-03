@@ -10,21 +10,24 @@ datasource db {
 model Sample {
   id        Int      @id @default(autoincrement())
   name      String
-  code      String   @unique
+  code      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("samples")
+  @@ignore
 }
 
 model Users {
   id            Int             @id @default(autoincrement())
   avatar_users  String?
-  name          String
-  email         String
+  name          String          @unique
+  email         String          @unique
   password      String
   referral_code String
   role          Role
+  tryLogin      Int             @default(0)
+  isActive      Boolean         @default(true)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   otp           String?

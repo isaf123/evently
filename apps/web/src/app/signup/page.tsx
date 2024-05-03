@@ -12,18 +12,38 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
+import axios, { AxiosError } from 'axios';
+import { useRouter } from 'next/navigation';
+import { showMessage } from '@/components/Alert/Toast';
 
-interface ISignUpPageProps {}
+import { ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
+
+
+interface ISignUpPageProps { }
 
 const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
   const [dataUser, setDataUser] = useState<Object>({
-    username: '',
+    name: '',
     email: '',
     password: '',
   });
+
+  const router = useRouter()
   console.log(dataUser);
+  const handleRegister = async () => {
+    try {
+      const response = await axios.post("http://localhost:3010/auth/register", { name: "ab", email: "maillee@mail.com", password: "12345a" })
+      router.push("/")
+    } catch (error: any) {
+      showMessage(error.response.data, "error")
+    }
+  }
+
   return (
     <div>
+      <ToastContainer />
       <div className="w-full bg-white h-[85px] relative -top-[80px]"></div>
 
       <Card className="mx-3 md:mx-auto max-w-sm -mt-[70px] md:-mt-0">
@@ -37,13 +57,13 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
           <div className="grid gap-4">
             <div className="grid  gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="first-name">Username</Label>
+                <Label htmlFor="first-name">name</Label>
                 <Input
                   id="first-name"
                   placeholder="Max"
                   required
                   onChange={(e) => {
-                    const newData = { ...dataUser, username: e.target.value };
+                    const newData = { ...dataUser, name: e.target.value };
                     setDataUser(newData);
                   }}
                 />
@@ -77,7 +97,7 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
               <Label htmlFor="password">Confirm Password</Label>
               <Input id="password" type="password" />
             </div>
-            <Button type="button" className="w-full bg-color1 text-white">
+            <Button type="button" className="w-full bg-color1 text-white" onClick={() => { handleRegister() }}>
               Create an account
             </Button>
           </div>

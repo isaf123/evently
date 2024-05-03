@@ -14,8 +14,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
         icon: <Icon icon="lucide:settings" width="24" height="24" />,
         submenu: true,
         subMenuItems: [
-            { title: 'Category', path: '/event-organizer/settings/category' },
-            { title: 'Location', path: '/event-organizer/settings/location' },
+
             { title: 'Voucher', path: '/event-organizer/settings/voucher' },
             { title: 'Customers', path: '/event-organizer/settings/customer' },
         ]

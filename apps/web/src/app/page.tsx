@@ -23,7 +23,7 @@ export default function Home() {
             Find Your Event Here
           </h1>
           <p className="text-white">
-            "Join our event for unforgettable moments and connections!"
+            &ldquo;Join our event for unforgettable moments and connections!&rdquo;
           </p>
         </div>
       </div>
@@ -96,7 +96,7 @@ export default function Home() {
       </div>
 
       <div className="mb-5 w-[1120px] m-auto">
-        <p className=" font-medium text-[21px]">This Month's Event</p>
+        <p className=" font-medium text-[21px]">This Month&apos;s Event</p>
         <Carousel>
           <CarouselContent className="py-4 px-2">
             <CarouselItem className="basis-1/4 mr-8">
