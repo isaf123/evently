@@ -42,6 +42,9 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
   const handleRegister = async () => {
     try {
       console.log('ini ENV', process.env.NEXT_PUBLIC_BASE_API_URL);
+      if (!dataUser.name || !dataUser.email || !dataUser.password || !dataUser.role) {
+        showMessage('Please Input All Fields!', "error")
+      }
 
       const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}auth/register`, {
         name: dataUser.name,
