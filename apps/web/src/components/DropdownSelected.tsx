@@ -58,8 +58,8 @@ const DropDownSelected: React.FunctionComponent<IDropDownSelectedProps> = (
               <p>{props.children}</p>
             </div>
           </div>
-          {/* Arrow */}
-          {/* content */}
+          {/*//////// Arrow ////////*/}
+          {/*/////// content ///////*/}
           {props.list.map((val: any, idx: number) => {
             return (
               <div
