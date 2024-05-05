@@ -10,6 +10,9 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
+// Import JS Cookie
+import Cookies from 'js-cookie'
+
 
 
 import { Input } from '@/components/ui/input';
@@ -43,13 +46,13 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
       if (role === 'eo') {
         console.log('ini halaman EO');
         console.log('ini tokennya', token);
-        localStorage.setItem('token EO', token)
+        Cookies.set('Token EO', token)
         router.push('/event-organizer/dashboard')
       } else if (role === 'customers') {
         console.log('ini halaman Customers');
         console.log('token customers', token);
-        localStorage.setItem('token Cust', token)
-        router.push('/event-organizer/dashboard')
+        Cookies.set('token Cust', token)
+        router.push('/')
       }
 
     } catch (error: any) {
@@ -119,6 +122,8 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
           </div>
         </CardContent>
       </Card>
+
+
     </div>
   );
 };

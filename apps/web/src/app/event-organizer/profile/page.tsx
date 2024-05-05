@@ -5,17 +5,17 @@ import HeaderMobile from '@/components/EO/SidebarEO/header-mobile'
 import SideNav from '@/components/EO/SidebarEO/side-nav'
 import React from 'react'
 
-const CustomerEOPage = () => {
+const DashboardEOPage = () => {
     return (
         <div className='flex'>
             <SideNav />
             <div className='flex-1'>
                 <Header />
                 <HeaderMobile />
-                <div className='flex flex-col container px-[20px] md:px-[180px] my-[10px] mx-auto '>Customer EO</div>
+                <div className='flex flex-col container px-[20px] md:px-[180px] my-[10px] mx-auto '>Profile EO</div>
             </div>
         </div >
     )
 }
 
-export default CustomerEOPage
+export default DashboardEOPage

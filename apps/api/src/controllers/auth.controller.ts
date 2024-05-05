@@ -136,8 +136,9 @@ export class AuthController {
             if (!users) return res.status(404).send('Account not found!')
             const token = sign({ userId: users.id }, process.env.TOKEN_KEY || 'secretpassforgot')
             await saveResetToken(users.id, token)
+
             const URL = `http://localhost:3000/reset-password/${token}`
-            
+
             // Kirim email reset password
             const subject = "Reset Password";
             const data = {
