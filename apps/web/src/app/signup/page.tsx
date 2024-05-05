@@ -16,7 +16,7 @@ import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { showMessage } from '@/components/Alert/Toast';
 
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { RadioGroup } from '@radix-ui/react-radio-group';
 import { RadioGroupItem } from '@/components/ui/radio-group';
@@ -28,6 +28,7 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
     name: '',
     email: '',
     password: '',
+    confirm_pwd: '',
     role: '',
     referral_code: ''
   });
@@ -42,8 +43,9 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
   const handleRegister = async () => {
     try {
       console.log('ini ENV', process.env.NEXT_PUBLIC_BASE_API_URL);
-      if (!dataUser.name || !dataUser.email || !dataUser.password || !dataUser.role) {
-        showMessage('Please Input All Fields!', "error")
+      if (!dataUser.name || !dataUser.email || !dataUser.password || !dataUser.role || !dataUser.confirm_pwd) {
+        console.log("debug master")
+        showMessage("Please input all fields", "error")
       }
 
       const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}auth/register`, {
@@ -58,7 +60,8 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
 
       router.push("/signin")
     } catch (error: any) {
-      showMessage(error.response.data, "error")
+      showMessage(error.response, "error")
+
     }
   }
 
@@ -126,7 +129,10 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Confirm Password</Label>
-              <Input id="confirm_pwd" type="password" />
+              <Input id="confirm_pwd" type="password" onChange={(e) => {
+                const newData = { ...dataUser, confirm_pwd: e.target.value };
+                setDataUser(newData);
+              }} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="role" className='text-sm'>Role</Label>
