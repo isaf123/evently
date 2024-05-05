@@ -1,7 +1,7 @@
 'use client';
 import DropDownSelected from '@/components/DropdownSelected';
 import * as React from 'react';
-import { location } from '@/lib/text';
+import { lokasi } from '@/lib/text';
 import { category } from '@/lib/text';
 import { times } from '@/lib/text';
 import { price } from '@/lib/text';
@@ -42,7 +42,7 @@ const ExplorePage: React.FunctionComponent<IExplorePageProps> = (props) => {
         <p className="w-full text-center font-bold text-lg text-color1">
           FILTER
         </p>
-        <DropDownSelected list={location}>Locations</DropDownSelected>
+        <DropDownSelected list={lokasi}>Locations</DropDownSelected>
         <DropDownSelected list={category}>Category</DropDownSelected>
         <DropDownSelected list={times}>Times</DropDownSelected>
         <DropDownSelected list={price}>Price</DropDownSelected>

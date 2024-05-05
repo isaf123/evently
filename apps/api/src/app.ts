@@ -10,6 +10,7 @@ import express, {
 import cors from 'cors';
 import { PORT } from './config';
 import { AuthRouter } from './routers/auth.router';
+import { EventRouter } from './routers/event.router';
 export default class App {
   readonly app: Express;
 
@@ -50,14 +51,15 @@ export default class App {
   }
 
   private routes(): void {
-
-    const authRouter = new AuthRouter()
+    const authRouter = new AuthRouter();
+    const eventRouter = new EventRouter();
 
     this.app.get('/', (req: Request, res: Response) => {
       res.send(`Hello, Purwadhika Student !`);
     });
 
-    this.app.use('/auth', authRouter.getRouter())
+    this.app.use('/auth', authRouter.getRouter());
+    this.app.use('/event', eventRouter.getRouter());
   }
 
   public start(): void {

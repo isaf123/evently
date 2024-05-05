@@ -10,8 +10,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-
-
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
@@ -19,10 +17,10 @@ import { useState } from 'react';
 import { showMessage } from '@/components/Alert/Toast';
 import axios from 'axios';
 import { ToastContainer } from 'react-toastify';
-import "react-toastify/dist/ReactToastify.css";
+import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
 
-interface ILoginPageProps { }
+interface ILoginPageProps {}
 
 const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
   const [dataUser, setDataUser] = useState({
@@ -30,32 +28,34 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
     password: '',
   });
 
-  const router = useRouter()
+  const router = useRouter();
 
   const handleLogin = async () => {
     try {
       console.log('ini ENV', process.env.NEXT_PUBLIC_BASE_API_URL);
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}auth/login`, {
-        email: dataUser.email,
-        password: dataUser.password
-      })
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}auth/login`,
+        {
+          email: dataUser.email,
+          password: dataUser.password,
+        },
+      );
       const { role, token } = response.data;
       if (role === 'eo') {
         console.log('ini halaman EO');
         console.log('ini tokennya', token);
-        localStorage.setItem('token EO', token)
-        router.push('/event-organizer/dashboard')
+        localStorage.setItem('token EO', token);
+        router.push('/event-organizer/dashboard');
       } else if (role === 'customers') {
         console.log('ini halaman Customers');
         console.log('token customers', token);
-        localStorage.setItem('token Cust', token)
-        router.push('/event-organizer/dashboard')
+        localStorage.setItem('token Cust', token);
+        router.push('/event-organizer/dashboard');
       }
-
     } catch (error: any) {
-      showMessage(error.response.data, "error")
+      showMessage(error.response.data, 'error');
     }
-  }
+  };
 
   return (
     <div>

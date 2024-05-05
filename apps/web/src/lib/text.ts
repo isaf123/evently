@@ -1,4 +1,4 @@
-export const location = [
+export const lokasi = [
   'Jakarta',
   'Surabaya',
   'Malang',
@@ -45,4 +45,9 @@ export const trimText = (text: string | number = 0, mount: number) => {
       return `${text.slice(0, mount)}...`;
     }
   }
+};
+
+export const typeFiles = (text: string) => {
+  const tx = text.split('.');
+  return tx[tx.length - 1];
 };

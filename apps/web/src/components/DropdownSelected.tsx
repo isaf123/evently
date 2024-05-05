@@ -4,7 +4,6 @@ import { MdKeyboardArrowDown } from 'react-icons/md';
 import { FaPlus } from 'react-icons/fa6';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { setFilterDataAction } from '@/lib/features/eventQuerySLice';
-import { setEventDeleteAction } from '@/lib/features/eventQuerySLice';
 
 interface IDropDownSelectedProps {
   children: string;
@@ -59,6 +58,7 @@ const DropDownSelected: React.FunctionComponent<IDropDownSelectedProps> = (
             </div>
           </div>
           {/*//////// Arrow ////////*/}
+
           {/*/////// content ///////*/}
           {props.list.map((val: any, idx: number) => {
             return (
