@@ -27,16 +27,17 @@ model Users {
   referral_code String
   role          Role
   tryLogin      Int             @default(0)
-  isActive      Boolean         @default(true)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   otp           String?
   token         String?         @unique
+  isActive      Boolean         @default(true)
   ReferredBy    Referral?       @relation("ParentUserReferral")
   Referrals     Referral?       @relation("ReferralToUser")
   reviews_event reviews_event[]
   transactions  Transaction[]
   vouchers      Voucher[]
+  MasterEvent   MasterEvent[]
 
   @@map("users")
 }
@@ -56,24 +57,26 @@ model Referral {
 
 model MasterEvent {
   id             Int             @id @default(autoincrement())
-  flyer_event    String
+  flyer_event    String?
   title          String
   start_date     DateTime
   end_date       DateTime
-  location_id    Int
   description    String?
   available_seat Int
+  user_id        Users           @relation(fields: [usersId], references: [id])
   event_type     EventType
   category_id    Int
   price          Int
+  address        String
+  location       String
+  code_event     String
   category       CategoryEvent   @relation(fields: [category_id], references: [id])
-  location       MasterLocation  @relation(fields: [location_id], references: [id])
   reviews_event  reviews_event[]
   transactions   Transaction[]
   Vouchers       Voucher[]
+  usersId        Int
 
   @@index([category_id], map: "master_event_category_id_fkey")
-  @@index([location_id], map: "master_event_location_id_fkey")
   @@map("master_event")
 }
 
@@ -119,14 +122,6 @@ model Voucher {
   @@index([event_id], map: "voucher_event_id_fkey")
   @@index([user_id], map: "voucher_user_id_fkey")
   @@map("voucher")
-}
-
-model MasterLocation {
-  id          Int           @id @default(autoincrement())
-  location    String
-  MasterEvent MasterEvent[]
-
-  @@map("master_location")
 }
 
 model reviews_event {

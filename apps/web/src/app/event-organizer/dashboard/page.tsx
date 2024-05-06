@@ -1,8 +1,8 @@
 
 
-import Header from '@/components/SidebarEO/header'
-import HeaderMobile from '@/components/SidebarEO/header-mobile'
-import SideNav from '@/components/SidebarEO/side-nav'
+import Header from '@/components/EO/SidebarEO/header'
+import HeaderMobile from '@/components/EO/SidebarEO/header-mobile'
+import SideNav from '@/components/EO/SidebarEO/side-nav'
 import React from 'react'
 
 const DashboardEOPage = () => {
@@ -12,7 +12,9 @@ const DashboardEOPage = () => {
             <div className='flex-1'>
                 <Header />
                 <HeaderMobile />
-                DashboardEOPage
+                <div className='flex flex-col container px-[20px] md:px-[180px] my-[30px] mx-auto text-3xl text-center'>
+                    Dashboard
+                </div>
             </div>
         </div >
     )

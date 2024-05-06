@@ -8,7 +8,6 @@ import { hashPassword } from "@/utils/hashPassword";
 import { NextFunction, Request, Response } from "express";
 import { sign } from 'jsonwebtoken'
 import { compareSync } from 'bcrypt'
-import { disableAccount } from "@/services/auth/login/disableAccount";
 import { updateLoginAttempt } from "@/services/auth/login/updateLoginAttempt";
 import { activateAccount } from "@/services/auth/login/activateAccount";
 import { findUniqueUsers } from "@/services/auth/forgotPassword/findUniqueUser";
@@ -39,6 +38,9 @@ export class AuthController {
     async loginUsers(req: Request, res: Response, next: NextFunction) {
         const { email, password } = req.body
         try {
+            if (!email || !password) {
+                return res.status(400).send('Account not found!')
+            }
             const findUser = await findUsers(email, email)
             if (!findUser) return res.status(404).send('Account not exists')
 
@@ -51,9 +53,9 @@ export class AuthController {
                 // Memberikan penundaan 1 menit jika akun dinonaktifkan
                 setTimeout(async () => {
                     await activateAccount(findUser.id); // Mengaktifkan kembali akun setelah 1 menit
-                }, 60000); // 1 menit dalam milidetik
+                }, 45000); // 1 menit dalam milidetik
 
-                return res.status(400).send('Your account is Suspended!')
+                return res.status(429).send('Your account is Suspended!')
             }
 
             const comparePassword = compareSync(password, findUser?.password);
@@ -94,6 +96,7 @@ export class AuthController {
             return res.status(200).send({
                 username: findUser.name,
                 email: findUser.email,
+                role: findUser.role,
                 token: token,
             });
 
@@ -103,13 +106,25 @@ export class AuthController {
         }
     }
 
-
-
-
     // Task 3: Doing Keep Login
     async keepLogin(req: Request, res: Response, next: NextFunction) {
         try {
-            // Lanjutkan coding ini
+            const userId = res.locals.decript.id
+            console.log('ini user dengan response locals', userId);
+
+            const user = await prisma.users.findUnique({
+                where: { id: userId }
+            })
+            if (!user) {
+                return res.status(404).send('User not found')
+            }
+            const token = sign({ id: userId, role: user.role }, process.env.TOKEN_KEY || 'secret', { expiresIn: "5m" })
+            return res.status(200).send({
+                username: user.name,
+                email: user.email,
+                role: user.role,
+                token
+            })
         } catch (error) {
             next(error)
         }
@@ -124,7 +139,7 @@ export class AuthController {
             const token = sign({ userId: users.id }, process.env.TOKEN_KEY || 'secretpassforgot')
             await saveResetToken(users.id, token)
 
-            const URL = `${req.protocol}://${req.get('host')}/reset-password/${token}`
+            const URL = `http://localhost:3000/reset-password/${token}`
 
             // Kirim email reset password
             const subject = "Reset Password";
