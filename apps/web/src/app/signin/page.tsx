@@ -24,6 +24,8 @@ import axios from 'axios';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from 'next/navigation';
+import { useAppDispatch } from '@/lib/hooks';
+import { setSuccessLoginAction } from '@/lib/features/userSlice';
 
 interface ILoginPageProps { }
 
@@ -32,7 +34,7 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
     email: '',
     password: '',
   });
-
+  const dispatch = useAppDispatch()
   const router = useRouter()
 
   const handleLogin = async () => {
@@ -46,13 +48,13 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
       if (role === 'eo') {
         console.log('ini halaman EO');
         console.log('ini tokennya', token);
-        Cookies.set('Token EO', token)
-        router.push('/event-organizer/dashboard')
+        dispatch(setSuccessLoginAction(response.data))
+        router.replace('/event-organizer/dashboard')
       } else if (role === 'customers') {
         console.log('ini halaman Customers');
         console.log('token customers', token);
-        Cookies.set('token Cust', token)
-        router.push('/')
+        dispatch(setSuccessLoginAction(response.data))
+        router.replace('/')
       }
 
     } catch (error: any) {
