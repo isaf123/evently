@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { RootState } from "@/lib/store"; // Pastikan Anda memiliki file store.ts atau sesuaikan dengan nama file store Anda
 
 interface IData {
-    role: "eo" | "customers";
+    role: "customers" | "eo";
     username: string;
     token: string;
 }
@@ -11,7 +11,7 @@ interface IData {
 const data: IData = {
     token: "",
     username: "",
-    role: "eo" || "customers",
+    role: "customers" || "eo",
 };
 
 const userSlice = createSlice({
