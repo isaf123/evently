@@ -32,12 +32,12 @@ model Users {
   otp           String?
   token         String?         @unique
   isActive      Boolean         @default(true)
+  MasterEvent   MasterEvent[]
   ReferredBy    Referral?       @relation("ParentUserReferral")
   Referrals     Referral?       @relation("ReferralToUser")
   reviews_event reviews_event[]
   transactions  Transaction[]
   vouchers      Voucher[]
-  MasterEvent   MasterEvent[]
 
   @@map("users")
 }
@@ -61,31 +61,33 @@ model MasterEvent {
   title          String
   start_date     DateTime
   end_date       DateTime
-  description    String?
+  description    String?         @db.Text
+  category       Category
   available_seat Int
-  user_id        Users           @relation(fields: [usersId], references: [id])
   event_type     EventType
   category_id    Int
   price          Int
-  address        String
   location       String
   code_event     String
-  category       CategoryEvent   @relation(fields: [category_id], references: [id])
+  usersId        Int
+  address        String
+  user_id        Users           @relation(fields: [usersId], references: [id])
   reviews_event  reviews_event[]
   transactions   Transaction[]
   Vouchers       Voucher[]
-  usersId        Int
 
   @@index([category_id], map: "master_event_category_id_fkey")
+  @@index([usersId], map: "master_event_usersId_fkey")
   @@map("master_event")
 }
 
-model CategoryEvent {
-  id    Int           @id @default(autoincrement())
-  title String
-  event MasterEvent[]
-
-  @@map("category_event")
+enum Category {
+  Music
+  Nightlife
+  Holidays
+  Hobby
+  Culinary
+  Other
 }
 
 model Transaction {
