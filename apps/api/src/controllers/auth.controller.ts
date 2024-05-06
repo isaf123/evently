@@ -55,7 +55,7 @@ export class AuthController {
                     await activateAccount(findUser.id); // Mengaktifkan kembali akun setelah 1 menit
                 }, 45000); // 1 menit dalam milidetik
 
-                return res.status(400).send('Your account is Suspended!')
+                return res.status(429).send('Your account is Suspended!')
             }
 
             const comparePassword = compareSync(password, findUser?.password);

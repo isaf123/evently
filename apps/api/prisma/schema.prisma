@@ -37,6 +37,7 @@ model Users {
   reviews_event reviews_event[]
   transactions  Transaction[]
   vouchers      Voucher[]
+  MasterEvent   MasterEvent[]
 
   @@map("users")
 }
@@ -56,21 +57,24 @@ model Referral {
 
 model MasterEvent {
   id             Int             @id @default(autoincrement())
-  code_event     String
   flyer_event    String?
   title          String
   start_date     DateTime
   end_date       DateTime
   description    String?
-  location       String
   available_seat Int
+  user_id        Users           @relation(fields: [usersId], references: [id])
   event_type     EventType
   category_id    Int
   price          Int
+  address        String
+  location       String
+  code_event     String
   category       CategoryEvent   @relation(fields: [category_id], references: [id])
   reviews_event  reviews_event[]
   transactions   Transaction[]
   Vouchers       Voucher[]
+  usersId        Int
 
   @@index([category_id], map: "master_event_category_id_fkey")
   @@map("master_event")
