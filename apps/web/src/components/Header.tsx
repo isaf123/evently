@@ -15,6 +15,9 @@ export const Header = () => {
 
   const role = useAppSelector(selectUserRole); // Mengambil role pengguna dari Redux store
 
+  console.log(role);
+
+
   const handleLogout = () => {
     // Dispatch action logout
     dispatch(setLogoutAction());
