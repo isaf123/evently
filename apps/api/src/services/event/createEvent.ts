@@ -12,10 +12,8 @@ export const createEvent = async (eventData: {
   category: CategoryEvent;
   available_seat: number;
   event_type: EventType;
-  category_id: number;
   price: number;
   location: string;
-  code_event: string;
   usersId: number;
   address: string;
 }) => {

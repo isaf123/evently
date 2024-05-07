@@ -5,10 +5,11 @@ import { trimText } from '@/lib/text';
 import { useRouter } from 'next/navigation';
 interface ICartEventProps {
   children?: string;
-  date?: string;
+  startdate?: string;
+  enddate?: string;
   price?: string;
   organizer?: string;
-  image?: string;
+  image?: null | string;
 }
 
 const CartEvent: React.FunctionComponent<ICartEventProps> = (props) => {
@@ -21,11 +22,15 @@ const CartEvent: React.FunctionComponent<ICartEventProps> = (props) => {
       }}
     >
       <div className="w-full h-[160px] bg-gray-200 rounded-t-xl overflow-hidden">
-        <img src={props.image} alt="" />
+        {props.image !== null ? <img src={props.image} alt="" /> : <></>}
       </div>
       <div className="mx-4 my-2">
         <p className="text-lg font-medium">{trimText(props.children, 24)}</p>
-        <p className="text-xs text-gray-600">{props.date}</p>
+        <div className=" flex items-center gap-2">
+          <p className="text-xs text-gray-600">{props.startdate}</p>
+          <p>-</p>
+          <p className="text-xs text-gray-600">{props.enddate}</p>
+        </div>
         <p className="mt-3">{props.price}</p>
         <div className="w-full text-right mt-5 text-sm">{props.organizer}</div>
       </div>
