@@ -65,10 +65,8 @@ model MasterEvent {
   category       Category
   available_seat Int
   event_type     EventType
-  category_id    Int
   price          Int
   location       String
-  code_event     String
   usersId        Int
   address        String
   user_id        Users           @relation(fields: [usersId], references: [id])
@@ -76,7 +74,6 @@ model MasterEvent {
   transactions   Transaction[]
   Vouchers       Voucher[]
 
-  @@index([category_id], map: "master_event_category_id_fkey")
   @@index([usersId], map: "master_event_usersId_fkey")
   @@map("master_event")
 }
