@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import LocationCombo from './LocationCombo';
 interface IEventDetailProps {}
 
 const EventDetail: React.FunctionComponent<IEventDetailProps> = (props) => {
@@ -24,17 +25,7 @@ const EventDetail: React.FunctionComponent<IEventDetailProps> = (props) => {
     <div className="grid gap-6 sm:grid-cols-2 mb-6">
       <div className="grid gap-3">
         <Label htmlFor="location">Location</Label>
-        <Select
-          onValueChange={(e) => {
-            dispatch(setCreateEventAction({ location: e }));
-            console.log(e);
-          }}
-        >
-          <SelectTrigger id="category" aria-label="Select location">
-            <SelectValue placeholder="Select location" />
-          </SelectTrigger>
-          <SelectContent className="bg-white"></SelectContent>
-        </Select>
+        <LocationCombo></LocationCombo>
       </div>
       <div className="grid gap-3">
         <Label htmlFor="payment">Payment</Label>

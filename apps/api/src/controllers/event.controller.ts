@@ -57,6 +57,61 @@ export class EventController {
       next(error);
     }
   }
+
+  async tryEvent(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userRole = res.locals.decript.role;
+      const usersId = res.locals.decript.id;
+      console.log(userRole);
+      console.log(usersId);
+      console.log('dapat :', res.locals.decript);
+      if (userRole !== 'eo') {
+        throw {
+          rc: 400,
+          success: false,
+          message: 'no valid user',
+        };
+      }
+      const {
+        flyer_event,
+        title,
+        start_date,
+        end_date,
+        description,
+        category,
+        available_seat,
+        event_type,
+        category_id,
+        price,
+        location,
+        code_event,
+        address,
+      } = req.body;
+
+      const newevent = await createEvent({
+        flyer_event,
+        title,
+        start_date,
+        end_date,
+        description,
+        category,
+        available_seat,
+        event_type,
+        category_id,
+        price,
+        location,
+        code_event,
+        address,
+        usersId,
+      });
+      return res.status(200).send({
+        message: 'Add New Event Success',
+      });
+      // console.log('oke');
+    } catch (error) {
+      console.log(error);
+    }
+  }
   async getAllEvent(req: Request, res: Response, next: NextFunction) {
     try {
       const allEvent = await prisma.masterEvent.findMany();
@@ -75,15 +130,4 @@ export class EventController {
       next(error);
     }
   }
-
-  // async getLocation(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     const event = await prisma.masterLocation.findMany();
-  //     return res.status(200).send({
-  //       message: event,
-  //     });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
 }

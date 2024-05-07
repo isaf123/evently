@@ -13,6 +13,7 @@ import { activateAccount } from '@/services/auth/login/activateAccount';
 import { findUniqueUsers } from '@/services/auth/forgotPassword/findUniqueUser';
 import { saveResetToken } from '@/services/auth/forgotPassword/saveResetToken';
 import { sendEmailForgotPass } from '@/utils/emailSendForgotPassword';
+import { createEvent } from '@/services/event/createEvent';
 
 export class AuthController {
   // Task 1: Doing Register
