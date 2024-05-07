@@ -8,9 +8,11 @@ import { showMessage } from './Alert/Toast';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 export const Header = () => {
   const dispatch = useAppDispatch();
+  const router = useRouter()
 
   const username = useAppSelector((state) => state.userSlice.username); // Mengambil username dari Redux store
 
@@ -19,6 +21,7 @@ export const Header = () => {
   const handleLogout = () => {
     // Dispatch action logout
     dispatch(setLogoutAction());
+    router.push('/signin')
   };
   React.useEffect(() => {
     keepLogin()
@@ -33,8 +36,8 @@ export const Header = () => {
     try {
       const tokenCust = Cookies.get('Token Cust')
       console.log('Token Cust', tokenCust);
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}auth/keeplogin`, {
-        headers: { Authorization: `Bearer ${tokenCust}` }
+      const response = await axios.get(${process.env.NEXT_PUBLIC_BASE_API_URL}auth/keeplogin, {
+        headers: { Authorization: Bearer ${tokenCust} }
       })
       dispatch(setSuccessLoginAction(response.data));
     } catch (error: any) {
