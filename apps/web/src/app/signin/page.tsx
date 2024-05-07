@@ -10,8 +10,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-// Import JS Cookie
-import Cookies from 'js-cookie'
 
 
 

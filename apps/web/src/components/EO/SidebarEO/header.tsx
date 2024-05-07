@@ -2,12 +2,12 @@
 import React from 'react'
 
 import Link from 'next/link'
-import { useSelectedLayoutSegment } from 'next/navigation'
+import { useSelectedLayoutSegment, useRouter } from 'next/navigation';
 
 import useScroll from '@/hooks/use-scroll';
 import { cn } from '@/lib/utils';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { setSuccessLoginAction } from '@/lib/features/userSlice';
+import { setLogoutAction, setSuccessLoginAction } from '@/lib/features/userSlice';
 import { showMessage } from '@/components/Alert/Toast';
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -18,6 +18,7 @@ const Header = () => {
     const scrolled = useScroll(5);
     const selectedLayout = useSelectedLayoutSegment();
     const dispatch = useAppDispatch();
+    const router = useRouter()
 
     const username = useAppSelector((state) => state.userSlice.username);
 
@@ -42,6 +43,11 @@ const Header = () => {
         } catch (error: any) {
             showMessage(error.response.data, "error")
         }
+    }
+
+    const handleLogout = () => {
+        dispatch(setLogoutAction())
+        router.replace('/signin')
     }
 
     return (
@@ -70,13 +76,10 @@ const Header = () => {
                         <span className="font-semibold text-sm">
                             <DropdownMenu>
                                 <DropdownMenuTrigger>{initials}</DropdownMenuTrigger>
-                                <DropdownMenuContent className='bg-gray-300 p-4'>
+                                <DropdownMenuContent className='bg-gray-300 p-4 mt-[10px]'>
                                     <DropdownMenuLabel>{profileName}</DropdownMenuLabel>
                                     <DropdownMenuSeparator className='bg-gray-100' />
-                                    <DropdownMenuItem>Profile</DropdownMenuItem>
-                                    <DropdownMenuItem>Billing</DropdownMenuItem>
-                                    <DropdownMenuItem>Team</DropdownMenuItem>
-                                    <DropdownMenuItem>Subscription</DropdownMenuItem>
+                                    <DropdownMenuItem className='cursor-pointer' onClick={handleLogout}>Sign Out</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </span>

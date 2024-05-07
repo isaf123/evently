@@ -12,32 +12,28 @@ import { useRouter } from 'next/navigation';
 
 export const Header = () => {
   const dispatch = useAppDispatch();
-  const router = useRouter()
 
   const username = useAppSelector((state) => state.userSlice.username); // Mengambil username dari Redux store
 
-  const role = useAppSelector(selectUserRole); // Mengambil role pengguna dari Redux store
+  const router = useRouter()
 
   const handleLogout = () => {
     // Dispatch action logout
     dispatch(setLogoutAction());
-    router.push('/signin')
+
   };
   React.useEffect(() => {
     keepLogin()
   }, []);
 
-  if (role === 'eo') {
-    return null; // Jika role pengguna adalah "eo", kembalikan null untuk menyembunyikan header
-  }
 
   // Keep Login for customer
   const keepLogin = async () => {
     try {
       const tokenCust = Cookies.get('Token Cust')
       console.log('Token Cust', tokenCust);
-      const response = await axios.get(${process.env.NEXT_PUBLIC_BASE_API_URL}auth/keeplogin, {
-        headers: { Authorization: Bearer ${tokenCust} }
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}auth/keeplogin`, {
+        headers: { Authorization: `Bearer ${tokenCust}` }
       })
       dispatch(setSuccessLoginAction(response.data));
     } catch (error: any) {
