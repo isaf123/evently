@@ -20,7 +20,6 @@ export const Header = () => {
   const handleLogout = () => {
     // Dispatch action logout
     dispatch(setLogoutAction());
-    
 
   };
   React.useEffect(() => {
