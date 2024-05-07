@@ -8,25 +8,25 @@ import { showMessage } from './Alert/Toast';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 export const Header = () => {
   const dispatch = useAppDispatch();
 
   const username = useAppSelector((state) => state.userSlice.username); // Mengambil username dari Redux store
 
-  const role = useAppSelector(selectUserRole); // Mengambil role pengguna dari Redux store
+  const router = useRouter()
 
   const handleLogout = () => {
     // Dispatch action logout
     dispatch(setLogoutAction());
+    
+
   };
   React.useEffect(() => {
     keepLogin()
   }, []);
 
-  if (role === 'eo') {
-    return null; // Jika role pengguna adalah "eo", kembalikan null untuk menyembunyikan header
-  }
 
   // Keep Login for customer
   const keepLogin = async () => {
