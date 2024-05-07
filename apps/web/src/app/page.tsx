@@ -1,3 +1,4 @@
+'use client';
 import CartEvent from '@/components/Cart';
 import CategoryCart from '@/components/categoryCart';
 import {
@@ -7,8 +8,42 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { rupiah } from '@/lib/text';
+import { convertDate } from '@/lib/text';
+import DebounceSearch from '@/components/debounceSearch';
 
 export default function Home() {
+  const [newEvent, setNewEvent] = useState<any[]>();
+  useEffect(() => {
+    newsEvent();
+  }, []);
+  const newsEvent = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}event`,
+      );
+      setNewEvent(response.data.result.reverse());
+      // console.log(response.data.result);
+    } catch (error) {}
+  };
+
+  const mapNewEvent = () => {
+    return newEvent?.map((val: any, idx: number) => {
+      return (
+        <CarouselItem className="md:basis-1/4 mr-3 md:mr-8" key={idx}>
+          <CartEvent
+            price={rupiah(val.price)}
+            startdate={convertDate(val.start_date)}
+            enddate={convertDate(val.end_date)}
+          >
+            {val.title}
+          </CartEvent>
+        </CarouselItem>
+      );
+    });
+  };
   return (
     <main className=" m-auto  md:py-20  md:px-0">
       <div className="w-full md:w-[1120px] h-[260px] md:h-[300px] m-auto mt-10 rounded-b-xl md:rounded-xl bg-red-100 overflow-hidden relative md:mb-5 ">
@@ -23,46 +58,23 @@ export default function Home() {
             Find Your Event Here
           </h1>
           <p className="text-white">
-            &ldquo;Join our event for unforgettable moments and connections!&rdquo;
+            &ldquo;Join our event for unforgettable moments and
+            connections!&rdquo;
           </p>
         </div>
       </div>
-      <p className="md:mb-6 font-medium text-[26px] w-full md:w-[1120px] m-auto text-right  text-black pr-4">
-        Welcome <span className="font-bold text-[#333A73]">ISA</span>
-      </p>
+      <div className="flex w-full md:w-[1120px] m-auto justify-between">
+        <DebounceSearch></DebounceSearch>
+        <p className="md:mb-6 font-medium text-[26px]  text-right  text-black pr-4">
+          Welcome <span className="font-bold text-[#333A73]">ISA</span>
+        </p>
+      </div>
       {/* ////////////////////////////////////////////////////////////////////////////////////////// */}
       <div className="mb-10 md:w-[1120px] m-auto">
         <p className=" font-medium text-[21px] ml-10 md:ml-0">Newest Event</p>
         <Carousel className="w-[280px] md:w-full m-auto">
           <CarouselContent className="py-4 md:px-2">
-            <CarouselItem className="md:basis-1/4 mr-3 md:mr-8">
-              <CartEvent
-                price="Rp 70.000"
-                date="05 Mei 2024"
-                organizer="PT BEST Indonesia"
-                image="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              >
-                Festival Event Lebaran di Hari Raya
-              </CartEvent>
-            </CarouselItem>
-            <CarouselItem className=" md:basis-1/4 mr-8">
-              <CartEvent></CartEvent>
-            </CarouselItem>
-            <CarouselItem className=" md:basis-1/4 mr-8">
-              <CartEvent></CartEvent>
-            </CarouselItem>
-            <CarouselItem className="md:basis-1/4 mr-8">
-              <CartEvent></CartEvent>
-            </CarouselItem>
-            <CarouselItem className="md:basis-1/4 mr-8">
-              <CartEvent></CartEvent>
-            </CarouselItem>
-            <CarouselItem className="md:basis-1/4 mr-8">
-              <CartEvent></CartEvent>
-            </CarouselItem>
-            <CarouselItem className="md:basis-1/4 mr-8">
-              <CartEvent></CartEvent>
-            </CarouselItem>
+            {mapNewEvent()}
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />
@@ -99,15 +111,6 @@ export default function Home() {
         <p className=" font-medium text-[21px]">This Month&apos;s Event</p>
         <Carousel>
           <CarouselContent className="py-4 px-2">
-            <CarouselItem className="basis-1/4 mr-8">
-              <CartEvent
-                price="Rp 70.000"
-                date="05 Mei 2024"
-                organizer="PT BEST Indonesia"
-              >
-                Festival Event Lebaran di Hari Raya
-              </CartEvent>
-            </CarouselItem>
             <CarouselItem className="basis-1/4 mr-8">
               <CartEvent></CartEvent>
             </CarouselItem>
