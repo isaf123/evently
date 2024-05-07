@@ -54,15 +54,20 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
     return state.eventReducer;
   });
 
-  // const getData = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.NEXT_PUBLIC_BASE_API_URL}event/location`,
-  //     );
-  //     console.log(response);
-  //   } catch (error) {}
-  // };
+  useEffect(() => {
+    getDataLocation();
+  }, []);
   console.log(process.env.NEXT_PUBLIC_BASE_API_URL);
+
+  const getDataLocation = async () => {
+    try {
+      const response = await axios.get(
+        'https://alamat.thecloudalert.com/api/kabkota/get',
+      );
+      console.log(response.data);
+    } catch (error) {}
+  };
+
   return (
     <div className="w-full m-auto  min-h-screen py-20">
       <div className="flex justify-center items-start flex-col md:flex-row w-fit m-auto gap-8">
