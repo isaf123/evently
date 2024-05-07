@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 interface IData {
   category?: string;
-  locations?: string;
+  locations: string;
   time?: string;
   price?: string;
 }

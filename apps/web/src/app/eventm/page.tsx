@@ -11,7 +11,8 @@ import EventDetail from './view/EventLocationPayment';
 import EventDate from './view/EventDate';
 import EventPromo from './view/EventPromo';
 import { useAppSelector } from '@/lib/hooks';
-import Location from './view/combobox';
+import LocationCombo from './view/LocationCombo';
+
 import {
   Card,
   CardContent,
@@ -43,26 +44,21 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   const [active, setActive] = useState<Boolean>(false);
   const [startDate, setStartDate] = React.useState<Date>();
   const [endDate, setEndDate] = React.useState<Date>();
+  const [endDatePromo, setEndDatePromo] = React.useState<Date>();
   const [file, setFile] = React.useState<File | null>(null);
   const [picName, setPicName] = useState<string>('');
-  // useEffect(() => {
-  //   getData();
-  // }, []);
-  // console.log(startDate);
 
   const createEvent = useAppSelector((state) => {
     return state.eventReducer;
   });
+  console.log(createEvent);
 
-  // const getData = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.NEXT_PUBLIC_BASE_API_URL}event/location`,
-  //     );
-  //     console.log(response);
-  //   } catch (error) {}
-  // };
-  console.log(process.env.NEXT_PUBLIC_BASE_API_URL);
+  const handleData = async () => {
+    try {
+    } catch (error) {}
+  };
+  console.log(startDate);
+  console.log(endDate);
   return (
     <div className="w-full m-auto  min-h-screen py-20">
       <div className="flex justify-center items-start flex-col md:flex-row w-fit m-auto gap-8">
@@ -74,8 +70,75 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
             </CardHeader>
             <CardContent>
               <EventDetail></EventDetail>
-              <EventDate></EventDate>
-              <Location></Location>
+
+              <div className="grid gap-6 sm:grid-cols-2 mb-6">
+                <div className="grid gap-3">
+                  {/* <Label htmlFor="date1">Start Date</Label> */}
+                  <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    Start Date
+                  </p>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={'outline'}
+                        className={cn(
+                          'w-full justify-start text-left font-normal',
+                          !startDate && 'text-muted-foreground',
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {startDate ? (
+                          format(startDate, 'PPP')
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0 bg-white">
+                      <Calendar
+                        mode="single"
+                        selected={startDate}
+                        onSelect={setStartDate}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                <div className="grid gap-3">
+                  <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    End Date
+                  </p>
+
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={'outline'}
+                        className={cn(
+                          'w-full justify-start text-left font-normal',
+                          !endDate && 'text-muted-foreground',
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {endDate ? (
+                          format(endDate, 'PPP')
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0 bg-white">
+                      <Calendar
+                        mode="single"
+                        selected={endDate}
+                        onSelect={setEndDate}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+
               {!active ? (
                 <Button
                   className="bg-color2 text-white w-[150px] mb-5"
@@ -107,7 +170,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
                   <div className="grid gap-3">
                     {/* <Label htmlFor="date1">Start Date</Label> */}
                     <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                      Start Date
+                      Valid date until
                     </p>
                     <Popover>
                       <PopoverTrigger asChild>
@@ -115,12 +178,12 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
                           variant={'outline'}
                           className={cn(
                             'w-full justify-start text-left font-normal',
-                            !startDate && 'text-muted-foreground',
+                            !endDatePromo && 'text-muted-foreground',
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {startDate ? (
-                            format(startDate, 'PPP')
+                          {endDatePromo ? (
+                            format(endDatePromo, 'PPP')
                           ) : (
                             <span>Pick a date</span>
                           )}
@@ -129,41 +192,8 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
                       <PopoverContent className="w-auto p-0 bg-white">
                         <Calendar
                           mode="single"
-                          selected={startDate}
-                          onSelect={setStartDate}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-
-                  <div className="grid gap-3">
-                    <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                      End Date
-                    </p>
-
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={'outline'}
-                          className={cn(
-                            'w-full justify-start text-left font-normal',
-                            !endDate && 'text-muted-foreground',
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {endDate ? (
-                            format(endDate, 'PPP')
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0 bg-white">
-                        <Calendar
-                          mode="single"
-                          selected={endDate}
-                          onSelect={setEndDate}
+                          selected={endDatePromo}
+                          onSelect={setEndDatePromo}
                           initialFocus
                         />
                       </PopoverContent>

@@ -14,9 +14,12 @@ export class EventRouter {
   }
 
   private initializeRoutes(): void {
-    this.router.post('/post', this.eventController.createEvent);
-    this.router.get('/', this.eventController.getEvent);
-    this.router.get('/location', this.eventController.getLocation);
+    this.router.post(
+      '/create',
+      verifyToken,
+      this.eventController.createNewEvent,
+    );
+    this.router.post('/', verifyToken, this.eventController.tryEvent);
   }
 
   getRouter(): Router {

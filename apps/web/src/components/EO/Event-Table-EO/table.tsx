@@ -3,7 +3,7 @@ import React from 'react'
 
 const TableEventEO = () => {
     return (
-        <div className='bg-red-300 max-w-full text-justify md:ml-[100px]'>
+        <div className='bg-red-300 w-[950px] text-justify md: ml-[300px]'>
             <Table>
                 <TableHeader className=''>
                     <TableRow>
