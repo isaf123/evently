@@ -9,6 +9,7 @@ import { SIDENAV_ITEMS } from '@/constant';
 import { SideNavItem } from '@/types';
 import { Icon } from '@iconify/react';
 import { motion, useCycle } from 'framer-motion';
+import ProfileEO from '../ProfileEO/profile';
 
 type MenuItemWithSubMenuProps = {
     item: SideNavItem;
@@ -53,9 +54,10 @@ const HeaderMobile = () => {
                 className="absolute inset-0 right-0 w-full bg-white"
                 variants={sidebar}
             />
+
             <motion.ul
                 variants={variants}
-                className="absolute grid w-full gap-3 px-10 py-16 max-h-screen overflow-y-auto"
+                className="absolute grid w-full gap-4 px-10 py-16 max-h-screen overflow-y-auto"
             >
                 {SIDENAV_ITEMS.map((item, idx) => {
                     const isLastItem = idx === SIDENAV_ITEMS.length - 1; // Check if it's the last item
@@ -83,6 +85,8 @@ const HeaderMobile = () => {
                         </div>
                     );
                 })}
+                <ProfileEO />
+
             </motion.ul>
             <MenuToggle toggle={toggleOpen} />
         </motion.nav>

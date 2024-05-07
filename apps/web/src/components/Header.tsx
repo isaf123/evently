@@ -15,12 +15,13 @@ export const Header = () => {
 
   const username = useAppSelector((state) => state.userSlice.username); // Mengambil username dari Redux store
 
-  const router = useRouter()
+  const role = useAppSelector(selectUserRole); // Mengambil role pengguna dari Redux store
+
 
   const handleLogout = () => {
     // Dispatch action logout
     dispatch(setLogoutAction());
-    
+
 
   };
   React.useEffect(() => {
@@ -28,6 +29,9 @@ export const Header = () => {
   }, []);
 
 
+  if (role === 'eo') {
+    return null; // Jika role pengguna adalah "eo", kembalikan null untuk menyembunyikan header
+  }
   // Keep Login for customer
   const keepLogin = async () => {
     try {

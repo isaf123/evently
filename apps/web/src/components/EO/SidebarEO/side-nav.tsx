@@ -8,10 +8,11 @@ import { usePathname } from 'next/navigation';
 import { SIDENAV_ITEMS } from '@/constant';
 import { SideNavItem } from '@/types';
 import { Icon } from '@iconify/react';
+import ProfileEO from '../ProfileEO/profile'
 
 const SideNav = () => {
     return (
-        <div className="md:w-60 bg-white h-screen flex-1 fixed border-r border-zinc-200 hidden md:flex">
+        <div className="md:w-62 bg-white h-screen flex-1 fixed border-r border-zinc-200 hidden md:flex">
             <div className="flex flex-col space-y-6 w-full">
                 <Link
                     href="/"
@@ -22,6 +23,7 @@ const SideNav = () => {
                 </Link>
 
                 <div className="flex flex-col space-y-2  md:px-6 ">
+                    <ProfileEO />
                     {SIDENAV_ITEMS.map((item, idx) => {
                         return <MenuItem key={idx} item={item} />;
                     })}
