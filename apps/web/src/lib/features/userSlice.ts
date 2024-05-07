@@ -5,12 +5,14 @@ import { RootState } from "@/lib/store"; // Pastikan Anda memiliki file store.ts
 interface IData {
     role: "customers" | "eo";
     username: string;
+    email: string; // Tambahkan field email
     token: string;
 }
 
 const data: IData = {
     token: "",
     username: "",
+    email: "", // Inisialisasi email kosong
     role: "customers" || "eo",
 };
 
@@ -22,13 +24,13 @@ const userSlice = createSlice({
             console.log(action.payload);
 
             // Menyimpan data ke local storage
-            const { token, username, role } = action.payload;
+            const { token, username, email, role } = action.payload;
             if (role === "customers") {
                 Cookies.set("Token Cust", token);
             } else if (role === "eo") {
                 Cookies.set("Token EO", token);
             }
-            return { ...state, token, username, role };
+            return { ...state, token, username, email, role };
         },
         setLogout: () => {
             Cookies.remove("Token Cust");
@@ -45,6 +47,7 @@ const actions = {
 export const { setSuccessLoginAction, setLogoutAction } = actions;
 
 export const selectUserRole = (state: RootState) => state.userSlice.role;
+export const selectUserEmail = (state: RootState) => state.userSlice.email
 
 // Selector untuk memeriksa apakah user adalah EO
 export const selectIsUserEO = (state: RootState) => state.userSlice.role === "eo";
