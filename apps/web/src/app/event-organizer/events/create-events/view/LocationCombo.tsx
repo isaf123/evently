@@ -45,7 +45,7 @@ const getLocations = [
   },
 ];
 
-interface ILocationComboProps {}
+interface ILocationComboProps { }
 
 const LocationCombo: React.FunctionComponent<ILocationComboProps> = (props) => {
   const [open, setOpen] = React.useState(false);
@@ -87,7 +87,7 @@ const LocationCombo: React.FunctionComponent<ILocationComboProps> = (props) => {
         >
           {value
             ? getLocations?.find((framework) => framework.value === value)
-                ?.label
+              ?.label
             : 'Select location...'}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>

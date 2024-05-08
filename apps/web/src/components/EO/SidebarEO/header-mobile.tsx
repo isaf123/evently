@@ -85,8 +85,9 @@ const HeaderMobile = () => {
                         </div>
                     );
                 })}
-                <ProfileEO />
-
+                <div className='hidden'>
+                    <ProfileEO />
+                </div>
             </motion.ul>
             <MenuToggle toggle={toggleOpen} />
         </motion.nav>

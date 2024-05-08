@@ -15,7 +15,8 @@ import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { setCreateEventAction } from '@/lib/features/createEventSlice';
 import { title } from 'process';
 
-interface IEventDescriptionProps {}
+interface IEventDescriptionProps { }
+
 
 const EventDescription: React.FunctionComponent<IEventDescriptionProps> = (
   props,
