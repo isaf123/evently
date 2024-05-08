@@ -86,6 +86,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       }
     } catch (error: any) {
       showMessage(error, 'error');
+
     }
   };
 
@@ -99,6 +100,10 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
     }
   };
   // console.log(activeDate);
+
+    }
+  };
+
 
   const handleData = async () => {
     try {
@@ -147,6 +152,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
         },
         { headers: { Authorization: `Bearer ${Cookies.get('Token EO')}` } },
       );
+
       console.log(response.data);
       showMessage(response.data.message, 'success');
       dispatch(
@@ -164,6 +170,10 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       // setTimeout(() => {
       //   router.replace('/event-organizer/dashboard');
       // }, 2000);
+
+      showMessage(response.data.message, 'success');
+      // router.replace('/event-organizer/dashboard');
+
     } catch (error: any) {
       if (error.response) {
         showMessage(error.response.data.error.message, 'error');
