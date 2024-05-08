@@ -62,7 +62,8 @@ export class EventController {
       return res.status(201).send({
         rc: 201,
         success: true,
-        result: 'Add new event success',
+        message: 'Add new event success',
+        result: newevent,
       });
       // console.log('oke');
     } catch (error) {
