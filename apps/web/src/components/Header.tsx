@@ -9,6 +9,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { keepLogin } from '@/services/authService';
 
 export const Header = () => {
   const dispatch = useAppDispatch();
@@ -16,6 +17,8 @@ export const Header = () => {
   const username = useAppSelector((state) => state.userSlice.username); // Mengambil username dari Redux store
 
   const role = useAppSelector(selectUserRole); // Mengambil role pengguna dari Redux store
+
+  const router = useRouter()
 
 
   const handleLogout = () => {
@@ -25,7 +28,7 @@ export const Header = () => {
 
   };
   React.useEffect(() => {
-    keepLogin()
+    searchToken()
   }, []);
 
 
@@ -33,16 +36,17 @@ export const Header = () => {
     return null; // Jika role pengguna adalah "eo", kembalikan null untuk menyembunyikan header
   }
   // Keep Login for customer
-  const keepLogin = async () => {
+  const searchToken = async () => {
     try {
-      const tokenCust = Cookies.get('Token Cust')
-      console.log('Token Cust', tokenCust);
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}auth/keeplogin`, {
-        headers: { Authorization: `Bearer ${tokenCust}` }
-      })
-      dispatch(setSuccessLoginAction(response.data));
+      const data = await keepLogin();
+      if (data) {
+        dispatch(setSuccessLoginAction(data));
+      } else {
+        // Jika tidak ada token, arahkan ke halaman sign-in
+        router.push('/signin');
+      }
     } catch (error: any) {
-      showMessage(error.response.data, "error")
+      showMessage(error, "error");
     }
   }
 

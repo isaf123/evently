@@ -138,7 +138,7 @@ export class AuthController {
             const token = sign(
                 { id: userId, role: user.role },
                 process.env.TOKEN_KEY || 'secret',
-                { expiresIn: '5m' },
+                { expiresIn: '1h' },
             );
             return res.status(200).send({
                 username: user.name,
