@@ -17,6 +17,7 @@ import { title } from 'process';
 
 interface IEventDescriptionProps { }
 
+
 const EventDescription: React.FunctionComponent<IEventDescriptionProps> = (
   props,
 ) => {
