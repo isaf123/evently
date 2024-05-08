@@ -20,7 +20,7 @@ const data: IData | any = {
   category: '',
   available_seat: '',
   event_type: '',
-  price: '',
+  price: 0,
   location: '',
   address: '',
 };
