@@ -38,5 +38,6 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
         title: 'Report',
         path: '/event-organizer/report',
         icon: <Icon icon="line-md:document-report" width="24" height="24" />,
-    }
+    },
+
 ];
