@@ -33,6 +33,18 @@ export class EventController {
         address,
       } = req.body;
 
+      const findEventName = await prisma.masterEvent.findFirst({
+        where: { title: title },
+      });
+
+      if (findEventName) {
+        throw {
+          rc: 400,
+          success: false,
+          message: 'event already exist',
+        };
+      }
+
       const newevent = await createEvent({
         flyer_event,
         title,
@@ -97,8 +109,6 @@ export class EventController {
         success: true,
         result: getdata,
       });
-
-      return res.status(200).send({ success: 'success' });
     } catch (error) {
       next(error);
     }
