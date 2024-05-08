@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import LocationCombo from './LocationCombo';
-interface IEventDetailProps {}
+interface IEventDetailProps { }
 
 const EventDetail: React.FunctionComponent<IEventDetailProps> = (props) => {
   const dispatch = useAppDispatch();

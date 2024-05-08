@@ -17,7 +17,6 @@ import { title } from 'process';
 
 interface IEventDescriptionProps { }
 
-
 const EventDescription: React.FunctionComponent<IEventDescriptionProps> = (
   props,
 ) => {
@@ -53,6 +52,7 @@ const EventDescription: React.FunctionComponent<IEventDescriptionProps> = (
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
+              placeholder='Fill description events'
               className="min-h-32"
               onChange={(e) => {
                 setDesc(e.target.value);

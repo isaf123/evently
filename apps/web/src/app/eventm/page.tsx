@@ -53,6 +53,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   const [file, setFile] = React.useState<File | null>(null);
   const [picName, setPicName] = useState<string>('');
 
+
   const createEvent = useAppSelector((state) => {
     return state.eventReducer;
   });
@@ -90,7 +91,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
           end_date: endDate,
           description,
           category,
-          available_seat,
+          available_seat: Number(available_seat),
           event_type,
           price,
           location,
