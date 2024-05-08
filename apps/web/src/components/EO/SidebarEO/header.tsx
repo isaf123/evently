@@ -13,6 +13,7 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import { DropdownMenu, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
+import { keepLogin } from '@/services/authService';
 
 const Header = () => {
     const scrolled = useScroll(5);
@@ -30,16 +31,18 @@ const Header = () => {
     const profileName = capitalizeFirstLetter(username);
 
     React.useEffect(() => {
-        keepLogin()
+        searchToken()
     }, []);
 
-    const keepLogin = async () => {
+    const searchToken = async () => {
         try {
-            const tokenEO = Cookies.get('Token EO')
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}auth/keeplogin`, {
-                headers: { Authorization: `Bearer ${tokenEO}` }
-            })
-            dispatch(setSuccessLoginAction(response.data))
+            const data = await keepLogin();
+            if (data) {
+                dispatch(setSuccessLoginAction(data));
+            } else {
+                // Jika tidak ada token, arahkan ke halaman sign-in
+                router.push('/signin');
+            }
         } catch (error: any) {
             showMessage(error.response.data, "error")
         }

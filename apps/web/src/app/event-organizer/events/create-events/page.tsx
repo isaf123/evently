@@ -43,6 +43,8 @@ import AddressSeat from './view/AddressSeat';
 import { usePathname } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { setSuccessLoginAction } from '@/lib/features/userSlice';
+import SideNav from '@/components/EO/SidebarEO/side-nav';
+import Header from '@/components/EO/SidebarEO/header';
 
 interface IMakeEventProps { }
 
@@ -125,6 +127,12 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   return (
     <div className="w-full m-auto  min-h-screen py-20">
       <ToastContainer></ToastContainer>
+      <div className='flex'>
+        <SideNav />
+      </div>
+      <div className="flex-1">
+        <Header />
+      </div>
       <div className="flex justify-center items-start flex-col md:flex-row w-fit m-auto gap-8">
         <div>
           <EventDesccription></EventDesccription>
