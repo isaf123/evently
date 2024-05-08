@@ -53,7 +53,6 @@ const EventDescription: React.FunctionComponent<IEventDescriptionProps> = (
             <Textarea
               id="description"
               className="min-h-32"
-              placeholder='Fill the description'
               onChange={(e) => {
                 setDesc(e.target.value);
                 dispatch(setCreateEventAction({ description: e.target.value }));

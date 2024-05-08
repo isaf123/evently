@@ -23,7 +23,7 @@ export const Header = () => {
 
   const handleLogout = () => {
     // Dispatch action logout
-    dispatch(setLogoutAction());
+    dispatch(setLogoutAction())
   };
   React.useEffect(() => {
     searchToken()

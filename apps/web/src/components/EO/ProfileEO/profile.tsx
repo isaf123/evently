@@ -20,7 +20,11 @@ const ProfileEO = () => {
                 <p className='text-[16px] font-bold'>{profileName}</p>
                 <p className='text-[12px] text-neutral-500'>{email}</p>
             </div>
-
+            <div>
+                <button className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded'>
+                    Sign Out
+                </button>
+            </div>
         </div>
     )
 }
