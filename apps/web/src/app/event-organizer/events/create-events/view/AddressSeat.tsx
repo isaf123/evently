@@ -31,7 +31,9 @@ const AddressSeat: React.FunctionComponent<IAddressSeatProps> = (props) => {
           className="w-full"
           placeholder="ex. 400"
           onChange={(e) => {
-            dispatch(setCreateEventAction({ available_seat: e.target.value }));
+            dispatch(
+              setCreateEventAction({ available_seat: Number(e.target.value) }),
+            );
           }}
         />
       </div>
