@@ -11,7 +11,9 @@ import EventDetail from './view/EventLocationPayment';
 import EventDate from './view/EventDate';
 import EventPromo from './view/EventPromo';
 import { useAppSelector } from '@/lib/hooks';
-import LocationCombo from './view/LocationCombo';
+import { showMessage } from '@/components/Alert/Toast';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import {
   Card,
@@ -37,8 +39,11 @@ import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import EventCategory from './view/EventCategory';
+import AddressSeat from './view/AddressSeat';
+import { usePathname } from 'next/navigation';
+import Cookies from 'js-cookie';
 
-interface IMakeEventProps {}
+interface IMakeEventProps { }
 
 const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   const [active, setActive] = useState<Boolean>(false);
@@ -52,15 +57,56 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
     return state.eventReducer;
   });
   console.log(createEvent);
+  // console.log('ini tanggal', startDate);
+  console.log(Cookies.get('Token EO'));
+  console.log(startDate?.toISOString());
+  console.log(endDate?.toISOString());
 
   const handleData = async () => {
     try {
-    } catch (error) {}
+      if (
+        Object.values(createEvent).includes('') ||
+        startDate == undefined ||
+        endDate == undefined
+      ) {
+        throw 'please fill all data';
+      }
+      const {
+        title,
+        description,
+        category,
+        available_seat,
+        event_type,
+        price,
+        location,
+        address,
+      } = createEvent;
+
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}event`,
+        {
+          title,
+          start_date: startDate,
+          end_date: endDate,
+          description,
+          category,
+          available_seat,
+          event_type,
+          price,
+          location,
+          address,
+        },
+        { headers: { Authorization: `Bearer ${Cookies.get('Token EO')}` } },
+      );
+    } catch (error: any) {
+      showMessage(error, 'error');
+      console.log(error);
+    }
   };
-  console.log(startDate);
-  console.log(endDate);
+
   return (
     <div className="w-full m-auto  min-h-screen py-20">
+      <ToastContainer></ToastContainer>
       <div className="flex justify-center items-start flex-col md:flex-row w-fit m-auto gap-8">
         <div>
           <EventDesccription></EventDesccription>
@@ -70,7 +116,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
             </CardHeader>
             <CardContent>
               <EventDetail></EventDetail>
-
+              <AddressSeat></AddressSeat>
               <div className="grid gap-6 sm:grid-cols-2 mb-6">
                 <div className="grid gap-3">
                   {/* <Label htmlFor="date1">Start Date</Label> */}
@@ -245,7 +291,12 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
               </div>
             </CardContent>
           </Card>
-          <Button className="w-full bg-color2 hover:bg-blue-400 text-white mt-8">
+          <Button
+            className="w-full bg-color2 hover:bg-blue-400 text-white mt-8"
+            onClick={() => {
+              handleData();
+            }}
+          >
             Create Event
           </Button>
         </div>

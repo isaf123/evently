@@ -46,3 +46,11 @@ export const trimText = (text: string | number = 0, mount: number) => {
     }
   }
 };
+
+export const convertDate = (dat: Date) => {
+  return new Date(dat).toLocaleString('id-ID', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+};

@@ -5,66 +5,13 @@ import { compareSync } from 'bcrypt';
 import { createEvent } from '@/services/event/createEvent';
 
 export class EventController {
-  async createNewEvent(req: Request, res: Response, next: NextFunction) {
-    try {
-      const userRole = res.locals.decript.role;
-      const usersId = res.locals.decript.id;
-      if (userRole != 'eo') {
-        throw {
-          rc: 400,
-          success: false,
-          message: 'no valid user',
-        };
-      }
-      const {
-        flyer_event,
-        title,
-        start_date,
-        end_date,
-        description,
-        category,
-        available_seat,
-        event_type,
-        category_id,
-        price,
-        location,
-        code_event,
-        address,
-      } = req.body;
-
-      const newevent = await createEvent({
-        flyer_event,
-        title,
-        start_date,
-        end_date,
-        description,
-        category,
-        available_seat,
-        event_type,
-        category_id,
-        price,
-        location,
-        code_event,
-        address,
-        usersId,
-      });
-      return res.status(200).send({
-        rc: 400,
-        success: true,
-        message: 'Add New Event Success',
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async tryEvent(req: Request, res: Response, next: NextFunction) {
     try {
       const userRole = res.locals.decript.role;
       const usersId = res.locals.decript.id;
-      console.log(userRole);
-      console.log(usersId);
-      console.log('dapat :', res.locals.decript);
+
+      console.log('INIIIIIII ::', typeof usersId);
+
       if (userRole !== 'eo') {
         throw {
           rc: 400,
@@ -81,10 +28,8 @@ export class EventController {
         category,
         available_seat,
         event_type,
-        category_id,
         price,
         location,
-        code_event,
         address,
       } = req.body;
 
@@ -97,34 +42,62 @@ export class EventController {
         category,
         available_seat,
         event_type,
-        category_id,
         price,
         location,
-        code_event,
         address,
         usersId,
       });
-      return res.status(200).send({
-        message: 'Add New Event Success',
+      return res.status(201).send({
+        rc: 201,
+        success: true,
+        result: 'Add new event success',
       });
       // console.log('oke');
     } catch (error) {
-      console.log(error);
+      return res.status(500).send({ error });
     }
   }
+
   async getAllEvent(req: Request, res: Response, next: NextFunction) {
     try {
-      const allEvent = await prisma.masterEvent.findMany();
-      if (allEvent) {
-      }
+      const allEvent = await prisma.masterEvent.findMany({
+        select: {
+          title: true,
+          start_date: true,
+          end_date: true,
+          price: true,
+          flyer_event: true,
+        },
+      });
+      return res.status(200).send({
+        rc: 200,
+        success: true,
+        result: allEvent,
+      });
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
-  async createLocation(req: Request, res: Response, next: NextFunction) {
+
+  async debounceSearch(req: Request, res: Response, next: NextFunction) {
     try {
-      // const  = req.body;
-      // await prisma.masterEvent.create();
+      const search = req.params.title;
+      const getdata = await prisma.masterEvent.findMany({
+        where: { title: { contains: search } },
+        select: {
+          title: true,
+          start_date: true,
+          end_date: true,
+          price: true,
+          flyer_event: true,
+        },
+      });
+      return res.status(200).send({
+        rc: 200,
+        success: true,
+        result: getdata,
+      });
+
       return res.status(200).send({ success: 'success' });
     } catch (error) {
       next(error);
