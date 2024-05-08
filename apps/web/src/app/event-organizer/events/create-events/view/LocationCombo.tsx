@@ -22,30 +22,7 @@ import { useAppDispatch } from '@/lib/hooks';
 import { setCreateEventAction } from '@/lib/features/createEventSlice';
 import { Label } from '@radix-ui/react-label';
 
-const getLocations = [
-  {
-    value: 'next.js',
-    label: 'Next.js',
-  },
-  {
-    value: 'sveltekit',
-    label: 'SvelteKit',
-  },
-  {
-    value: 'nuxt.js',
-    label: 'Nuxt.js',
-  },
-  {
-    value: 'remix',
-    label: 'Remix',
-  },
-  {
-    value: 'astro',
-    label: 'Astro',
-  },
-];
-
-interface ILocationComboProps {}
+interface ILocationComboProps { }
 
 const LocationCombo: React.FunctionComponent<ILocationComboProps> = (props) => {
   const [open, setOpen] = React.useState(false);
@@ -87,14 +64,14 @@ const LocationCombo: React.FunctionComponent<ILocationComboProps> = (props) => {
         >
           {value
             ? getLocations?.find((framework) => framework.value === value)
-                ?.label
+              ?.label
             : 'Select location...'}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[300px] p-0">
         <Command className="bg-white">
-          <CommandInput placeholder="Search framework..." />
+          <CommandInput placeholder="Search location..." />
           <CommandList className="bg-white">
             <CommandEmpty>No framework found.</CommandEmpty>
             <CommandGroup>

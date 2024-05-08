@@ -85,7 +85,6 @@ const HeaderMobile = () => {
                         </div>
                     );
                 })}
-                <ProfileEO />
 
             </motion.ul>
             <MenuToggle toggle={toggleOpen} />
