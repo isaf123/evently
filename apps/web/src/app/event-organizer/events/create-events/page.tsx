@@ -48,7 +48,7 @@ import Header from '@/components/EO/SidebarEO/header';
 import { keepLogin } from '@/services/authService';
 import HeaderMobile from '@/components/EO/SidebarEO/header-mobile';
 
-interface IMakeEventProps {}
+interface IMakeEventProps { }
 
 const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   const [active, setActive] = useState<Boolean>(false);
