@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { useAppDispatch } from '@/lib/hooks';
 import { setCreateEventAction } from '@/lib/features/createEventSlice';
 
-interface IAddressSeatProps {}
+interface IAddressSeatProps { }
 
 const AddressSeat: React.FunctionComponent<IAddressSeatProps> = (props) => {
   const dispatch = useAppDispatch();
@@ -31,7 +31,9 @@ const AddressSeat: React.FunctionComponent<IAddressSeatProps> = (props) => {
           className="w-full"
           placeholder="ex. 400"
           onChange={(e) => {
-            dispatch(setCreateEventAction({ available_seat: e.target.value }));
+            dispatch(
+              setCreateEventAction({ available_seat: Number(e.target.value) }),
+            );
           }}
         />
       </div>

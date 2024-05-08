@@ -57,8 +57,8 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   const [endDatePromo, setEndDatePromo] = React.useState<Date>();
   const [file, setFile] = React.useState<File | null>(null);
   const [picName, setPicName] = useState<string>('');
-  const dispatch = useAppDispatch()
-  const router = useRouter()
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const createEvent = useAppSelector((state) => {
     return state.eventReducer;
@@ -69,7 +69,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   console.log(startDate?.toISOString());
   console.log(endDate?.toISOString());
   React.useEffect(() => {
-    searchToken()
+    searchToken();
   }, []);
 
   // Keep Login for customer
@@ -83,9 +83,9 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
         router.push('/signin');
       }
     } catch (error: any) {
-      showMessage(error, "error");
+      showMessage(error, 'error');
     }
-  }
+  };
 
   const handleData = async () => {
     try {
@@ -123,8 +123,14 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
         },
         { headers: { Authorization: `Bearer ${Cookies.get('Token EO')}` } },
       );
+      showMessage(response.data.message, 'success');
+      // router.replace('/event-organizer/dashboard');
     } catch (error: any) {
-      showMessage(error, 'error');
+      if (error.response) {
+        showMessage(error.response.data.error.message, 'error');
+      } else {
+        showMessage(error, 'error');
+      }
       console.log(error);
     }
   };
@@ -132,7 +138,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   return (
     <div className="">
       <ToastContainer></ToastContainer>
-      <div className='flex'>
+      <div className="flex">
         <SideNav />
       </div>
       <div className="flex-1">
