@@ -6,6 +6,7 @@ import HeaderMobile from '@/components/EO/SidebarEO/header-mobile'
 import SideNav from '@/components/EO/SidebarEO/side-nav'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import Link from 'next/link'
 import React from 'react'
 
 const DashboardEOPage = () => {
@@ -19,7 +20,7 @@ const DashboardEOPage = () => {
                     List Event EO
                 </div>
                 <div className='flex md:justify-between gap-[60px] md:gap-4 md:ml-[300px]'>
-                    <Button className='font-bold bg-blue-600 mb-5 text-white p-4'>Create an Event</Button>
+                    <Link href='/event-organizer/events/create-events' className='font-bold bg-blue-600 mb-5 text-white p-4'>Create an Event</Link>
 
                     <Input type='search' className='w-[180px] md:w-[300px] mr-[200px]' />
                 </div>

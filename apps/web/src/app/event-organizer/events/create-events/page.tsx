@@ -10,7 +10,7 @@ import EventDesccription from './view/EventDescription';
 import EventDetail from './view/EventLocationPayment';
 import EventDate from './view/EventDate';
 import EventPromo from './view/EventPromo';
-import { useAppSelector } from '@/lib/hooks';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { showMessage } from '@/components/Alert/Toast';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -42,6 +42,7 @@ import EventCategory from './view/EventCategory';
 import AddressSeat from './view/AddressSeat';
 import { usePathname } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { setSuccessLoginAction } from '@/lib/features/userSlice';
 
 interface IMakeEventProps { }
 
@@ -52,6 +53,23 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   const [endDatePromo, setEndDatePromo] = React.useState<Date>();
   const [file, setFile] = React.useState<File | null>(null);
   const [picName, setPicName] = useState<string>('');
+  const dispatch = useAppDispatch()
+
+  const keepLogin = async () => {
+    try {
+      const tokenEO = Cookies.get('Token EO')
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}auth/keeplogin`, {
+        headers: { Authorization: `Bearer ${tokenEO}` }
+      })
+      dispatch(setSuccessLoginAction(response.data))
+    } catch (error: any) {
+      showMessage(error.response.data, "error")
+    }
+  }
+
+  React.useEffect(() => {
+    keepLogin()
+  }, []);
 
   const createEvent = useAppSelector((state) => {
     return state.eventReducer;
