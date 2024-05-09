@@ -13,7 +13,6 @@ import EventPromo from './view/EventPromo';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { showMessage } from '@/components/Alert/Toast';
 import { toast, ToastContainer } from 'react-toastify';
-import { setCreateEventAction } from '@/lib/features/createEventSlice';
 import 'react-toastify/dist/ReactToastify.css';
 
 import {
@@ -53,10 +52,9 @@ interface IMakeEventProps {}
 
 const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   const [active, setActive] = useState<Boolean>(false);
-  const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
-  const [endDatePromo, setEndDatePromo] = useState<Date>();
-  const [activeDate, setActiveDate] = useState<Boolean>(true);
+  const [startDate, setStartDate] = React.useState<Date>();
+  const [endDate, setEndDate] = React.useState<Date>();
+  const [endDatePromo, setEndDatePromo] = React.useState<Date>();
   const [file, setFile] = React.useState<File | null>(null);
   const [picName, setPicName] = useState<string>('');
   const dispatch = useAppDispatch();
@@ -65,14 +63,14 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   const createEvent = useAppSelector((state) => {
     return state.eventReducer;
   });
-  // console.log(createEvent);
-
+  console.log(createEvent);
+  // console.log('ini tanggal', startDate);
+  console.log(Cookies.get('Token EO'));
+  console.log(startDate?.toISOString());
+  console.log(endDate?.toISOString());
   React.useEffect(() => {
     searchToken();
   }, []);
-  React.useEffect(() => {
-    validateDate();
-  }, [startDate, endDate]);
 
   // Keep Login for customer
   const searchToken = async () => {
@@ -86,24 +84,8 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       }
     } catch (error: any) {
       showMessage(error, 'error');
-
     }
   };
-
-  const validateDate = () => {
-    if (!startDate || !endDate) {
-      setActiveDate(true);
-    } else if (startDate.getTime() > endDate.getTime()) {
-      setActiveDate(false);
-    } else if (startDate.getTime() < endDate.getTime()) {
-      setActiveDate(true);
-    }
-  };
-  // console.log(activeDate);
-
-    }
-  };
-
 
   const handleData = async () => {
     try {
@@ -113,10 +95,6 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
         endDate == undefined
       ) {
         throw 'please fill all data';
-      }
-
-      if (!activeDate) {
-        throw 'Invalid date';
       }
       const {
         title,
@@ -128,13 +106,6 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
         location,
         address,
       } = createEvent;
-
-      if (
-        (event_type == 'paid' && price == 0) ||
-        (event_type == 'paid' && price < 1000)
-      ) {
-        throw 'invalid price';
-      }
 
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event`,
@@ -152,28 +123,8 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
         },
         { headers: { Authorization: `Bearer ${Cookies.get('Token EO')}` } },
       );
-
-      console.log(response.data);
-      showMessage(response.data.message, 'success');
-      dispatch(
-        setCreateEventAction({
-          title: '',
-          description: '',
-          category: '',
-          available_seat: 0,
-          event_type: '',
-          price: 0,
-          location: '',
-          address: '',
-        }),
-      );
-      // setTimeout(() => {
-      //   router.replace('/event-organizer/dashboard');
-      // }, 2000);
-
       showMessage(response.data.message, 'success');
       // router.replace('/event-organizer/dashboard');
-
     } catch (error: any) {
       if (error.response) {
         showMessage(error.response.data.error.message, 'error');
@@ -203,8 +154,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
               <CardContent>
                 <EventDetail></EventDetail>
                 <AddressSeat></AddressSeat>
-                {/* //////////////////////////////////      START DATE      ////////////////////////////////////////////////////////////////////// */}
-                <div className="grid gap-6 sm:grid-cols-2 mb-2">
+                <div className="grid gap-6 sm:grid-cols-2 mb-6">
                   <div className="grid gap-3">
                     {/* <Label htmlFor="date1">Start Date</Label> */}
                     <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -237,7 +187,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
                       </PopoverContent>
                     </Popover>
                   </div>
-                  {/*/////////////////////////////////////////   END DATE    ///////////////////////////////////////////////// */}
+
                   <div className="grid gap-3">
                     <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                       End Date
@@ -271,17 +221,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
                     </Popover>
                   </div>
                 </div>
-                <div className="mb-3 h-[10px]">
-                  {!activeDate ? (
-                    <p className="text-red-600 text-sm mb-6">
-                      please input valid date
-                    </p>
-                  ) : (
-                    <></>
-                  )}
-                </div>
 
-                {/* ////////////////////////////////BUTTON PROMO/////////////////////////////// */}
                 {!active ? (
                   <Button
                     className="bg-color2 text-white w-[150px] mb-5"
@@ -375,6 +315,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
                         id="photo-event"
                         onChange={(e) => {
                           if (e.target.files?.length) {
+                            console.log(e.target.files[0].name);
                             setPicName(e.target.files[0].name);
                           }
                         }}
