@@ -23,6 +23,8 @@ model Users {
   avatar_users  String?
   name          String          @unique
   email         String          @unique
+  address       String?
+  phone         String?
   password      String
   referral_code String
   role          Role
@@ -62,13 +64,13 @@ model MasterEvent {
   start_date     DateTime
   end_date       DateTime
   description    String?         @db.Text
-  category       Category
   available_seat Int
   event_type     EventType
   price          Int
   location       String
   usersId        Int
   address        String
+  category       Category
   user_id        Users           @relation(fields: [usersId], references: [id])
   reviews_event  reviews_event[]
   transactions   Transaction[]
@@ -76,15 +78,6 @@ model MasterEvent {
 
   @@index([usersId], map: "master_event_usersId_fkey")
   @@map("master_event")
-}
-
-enum Category {
-  Music
-  Nightlife
-  Holidays
-  Hobby
-  Culinary
-  Other
 }
 
 model Transaction {
@@ -134,6 +127,15 @@ model reviews_event {
 
   @@index([event_id], map: "Reviews_Event_event_id_fkey")
   @@index([user_id], map: "Reviews_Event_user_id_fkey")
+}
+
+enum Category {
+  Music
+  Nightlife
+  Holidays
+  Hobby
+  Culinary
+  Other
 }
 
 enum Role {

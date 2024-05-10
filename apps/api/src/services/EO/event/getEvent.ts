@@ -1,20 +1,20 @@
 import prisma from "@/prisma"
 
-export const getEvents = async (query: string, page: number, pageSize: number) => {
+export const getEvents = async (q: string) => {
     try {
-        const skip = (page - 1) * pageSize
         const events = await prisma.masterEvent.findMany({
             where: {
+
                 OR: [
                     {
                         title: {
-                            contains: query
+                            contains: q,
                         }
                     },
                     {
                         user_id: {
                             name: {
-                                contains: query
+                                contains: q
                             }
                         }
                     }
@@ -27,7 +27,6 @@ export const getEvents = async (query: string, page: number, pageSize: number) =
                     }
                 }
             },
-            skip, take: pageSize
         })
         return events
     } catch (error) {
