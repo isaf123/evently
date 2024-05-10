@@ -7,15 +7,7 @@ import SideNav from '@/components/EO/SidebarEO/side-nav'
 import React from 'react'
 import { CreateEventButton } from '../../../components/EO/Button/ButtonCreateEvent/button';
 
-const EventEOPage = ({ searchParams }: {
-    searchParams?: {
-        query?: string
-        page?: string
-    }
-}) => {
-
-    const query = searchParams?.query || ""
-    const currentPage = Number(searchParams?.page) || 1
+const EventEOPage = () => {
     return (
         <div className='flex'>
             <SideNav />
@@ -26,7 +18,7 @@ const EventEOPage = ({ searchParams }: {
                     <div className="flex items-center justify-between gap-1 mb-5">
                         <CreateEventButton />
                     </div>
-                    <TableEventEO query={query} currentPage={currentPage} />
+                    <TableEventEO />
                 </div>
             </div>
         </div >

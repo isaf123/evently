@@ -5,6 +5,7 @@ import axios from 'axios';
 import * as React from 'react';
 import { formatDate } from '../../../lib/EO/formatDate';
 import { generateEventCode } from '@/lib/EO/generateEventCode';
+import Cookies from 'js-cookie';
 
 interface EventData {
     id: number;
@@ -28,17 +29,18 @@ interface EventData {
 
 const TableEventEO = () => {
     const [dataEvent, setDataEvent] = React.useState<EventData[]>([])
-    const [currentPage, setCurrentPage] = React.useState(1); // State untuk menyimpan halaman saat ini
-    const [query, setQuery] = React.useState(''); // State untuk menyimpan nilai pencarian
-
     const getEvents = async () => {
         try {
+            const cookies = Cookies.get('Token EO')
+            // console.log(cookies);
+
             const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}event-organizer/event`, {
-                params: {
-                    query, // Mengirimkan query pencarian
-                    page: currentPage // Mengirimkan halaman saat ini
+                headers: {
+                    Authorization: `Bearer ${cookies}`
                 }
             })
+            console.log('data event', response);
+
             const events = response.data.map((event: EventData, index: number) => ({
                 ...event,
                 eventCode: generateEventCode(index + 1) // Menambahkan properti eventCode ke setiap event
@@ -53,16 +55,9 @@ const TableEventEO = () => {
         }
     }
 
-    // Panggil getEvents setiap kali currentPage atau query berubah
     React.useEffect(() => {
-        getEvents();
-    }, [currentPage, query]);
-
-    // Handler untuk memperbarui nilai query saat input berubah
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setQuery(e.target.value);
-        setCurrentPage(1); // Setel halaman kembali ke halaman pertama setiap kali melakukan pencarian baru
-    };
+        getEvents()
+    }, []);
 
     return (
         <div>
@@ -70,8 +65,6 @@ const TableEventEO = () => {
                 type='text'
                 placeholder='Search...'
                 className='w-full border-gray-200 py-2 pl-10 text-sm outline-2 rounded-sm'
-                value={query}
-                onChange={handleSearch}
             />
             <Table className='w-full text-sm text-left text-gray-500'>
                 <TableHeader className='text-sm text-gray-700 uppercase bg-gray-50'>

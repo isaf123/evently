@@ -121,7 +121,6 @@ export class AuthController {
   async keepLogin(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = res.locals.decript.id;
-      console.log('ini user dengan response locals', userId);
 
       const user = await prisma.users.findUnique({
         where: { id: userId },
