@@ -54,7 +54,7 @@ export default class App {
   private routes(): void {
     const authRouter = new AuthRouter();
     const eventEORouter = new EventEORouter();
-    const eventCustRouter = new EventCustRouter();
+    const eventCustRouter = new EventCustRouter()
 
     this.app.get('/', (req: Request, res: Response) => {
       res.send(`Hello, Purwadhika Student !`);
