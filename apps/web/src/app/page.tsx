@@ -24,8 +24,8 @@ export default function Home() {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event`,
       );
-      setNewEvent(response.data.result.reverse());
-      console.log(response.data.result);
+      setNewEvent(response.data.reverse());
+      console.log(response.data);
     } catch (error) { }
   };
 

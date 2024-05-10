@@ -1,7 +1,7 @@
 import { EventEOController } from '@/controllers/EO/event.controller';
 import { Router } from 'express';
 
-export class EventRouter {
+export class EventEORouter {
     private router: Router;
     private eventController: EventEOController;
 

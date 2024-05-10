@@ -26,6 +26,7 @@ interface EventData {
     eventCode: any
 }
 
+
 const TableEventEO: React.FunctionComponent = () => {
     const [dataEvent, setDataEvent] = React.useState<EventData[]>([])
     const getEvents = async () => {
@@ -66,7 +67,7 @@ const TableEventEO: React.FunctionComponent = () => {
                         <TableCell className='px-6 py-3'>{event.title}</TableCell>
                         <TableCell className='px-6 py-3 hidden md:table-cell'>{event.user_id.name}</TableCell>
                         <TableCell className='px-6 py-3'>{formatDate(event.start_date.toString())}</TableCell>
-                        <TableCell></TableCell>
+                        <TableCell className='flex justify-center'></TableCell>
                     </TableRow>
                 ))}
             </TableBody>
