@@ -5,6 +5,7 @@ import axios from 'axios';
 import * as React from 'react';
 import { formatDate } from '../../../lib/EO/formatDate';
 import { generateEventCode } from '@/lib/EO/generateEventCode';
+import Pagination from '../ButtonPaginationEvent/pagination';
 
 interface EventData {
     id: number;
@@ -27,7 +28,16 @@ interface EventData {
 }
 
 
-const TableEventEO: React.FunctionComponent = () => {
+interface TableProps {
+    data: any[];
+    headers: string[];
+    totalPages: number; // Menambahkan props untuk total halaman
+    currentPage: number; // Menambahkan props untuk halaman saat ini
+    onPageChange: (page: number) => void; // Menambahkan props untuk fungsi perubahan halaman
+}
+
+
+const TableEventEO: React.FunctionComponent<TableProps> = ({ data, headers, totalPages, currentPage, onPageChange }) => {
     const [dataEvent, setDataEvent] = React.useState<EventData[]>([])
     const getEvents = async () => {
         try {
@@ -61,7 +71,6 @@ const TableEventEO: React.FunctionComponent = () => {
             </TableHeader>
             <TableBody>
                 {dataEvent.map((event) => (
-
                     <TableRow key={event.id} className='bg-white border-b'>
                         <TableCell className='px-6 py-3 hidden md:table-cell'>{event.eventCode}</TableCell>
                         <TableCell className='px-6 py-3'>{event.title}</TableCell>
@@ -72,6 +81,8 @@ const TableEventEO: React.FunctionComponent = () => {
                 ))}
             </TableBody>
         </Table>
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} />
+
     </div>;
 };
 
