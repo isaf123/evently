@@ -1,22 +1,77 @@
-import { Table, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import React from 'react'
+'use client'
+import { showMessage } from '@/components/Alert/Toast';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import axios from 'axios';
+import * as React from 'react';
+import { formatDate } from '../../../lib/EO/formatDate';
+import { generateEventCode } from '@/lib/EO/generateEventCode';
 
-const TableEventEO = () => {
-    return (
-        <div className='bg-red-300 w-[950px] text-justify md: ml-[300px]'>
-            <Table>
-                <TableHeader className=''>
-                    <TableRow>
-                        <TableHead className='text-center'>Event Code</TableHead>
-                        <TableHead className='text-center'>Event Name</TableHead>
-                        <TableHead className='text-center'>Creator</TableHead>
-                        <TableHead className='text-center'>Status</TableHead>
-                        <TableHead className='text-center'>Action</TableHead>
-                    </TableRow>
-                </TableHeader>
-            </Table>
-        </div>
-    )
+interface EventData {
+    id: number;
+    flyer_event: string | null;
+    title: string;
+    start_date: string;
+    end_date: string;
+    description: string;
+    category: string;
+    available_seat: number;
+    event_type: string;
+    price: number;
+    location: string;
+    usersId: number;
+    address: string;
+    user_id: {
+        name: string;
+    }; // Perhatikan bagian ini
+    eventCode: any
 }
 
-export default TableEventEO
+const TableEventEO: React.FunctionComponent = () => {
+    const [dataEvent, setDataEvent] = React.useState<EventData[]>([])
+    const getEvents = async () => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}event-organizer/event`)
+            const events = response.data.map((event: EventData, index: number) => ({
+                ...event,
+                eventCode: generateEventCode(index + 1) // Menambahkan properti eventCode ke setiap event
+            }));
+            setDataEvent(events)
+        } catch (error: any) {
+            if (error.response) {
+                showMessage(error.response.data.error.message, 'error');
+            } else {
+                showMessage(error, 'error');
+            }
+        }
+    }
+    React.useEffect(() => {
+        getEvents()
+    }, []);
+    return <div>
+        <Table className='w-full text-sm text-left text-gray-500'>
+            <TableHeader className='text-sm text-gray-700 uppercase bg-gray-50'>
+                <TableRow>
+                    <TableHead className='px-6 py-3 hidden md:table-cell'>Event Code</TableHead>
+                    <TableHead className='px-6 py-3'>Event Name</TableHead>
+                    <TableHead className='px-6 py-3 hidden md:table-cell'>Creator</TableHead>
+                    <TableHead className='px-6 py-3'>Start Date</TableHead>
+                    <TableHead className='px-6 py-3 text-center'>Action</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {dataEvent.map((event) => (
+
+                    <TableRow key={event.id} className='bg-white border-b'>
+                        <TableCell className='px-6 py-3 hidden md:table-cell'>{event.eventCode}</TableCell>
+                        <TableCell className='px-6 py-3'>{event.title}</TableCell>
+                        <TableCell className='px-6 py-3 hidden md:table-cell'>{event.user_id.name}</TableCell>
+                        <TableCell className='px-6 py-3'>{formatDate(event.start_date.toString())}</TableCell>
+                        <TableCell></TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    </div>;
+};
+
+export default TableEventEO;

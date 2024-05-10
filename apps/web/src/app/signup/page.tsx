@@ -60,8 +60,11 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
 
       router.push("/signin")
     } catch (error: any) {
-      showMessage(error.response, "error")
-
+      if (error.response) {
+        showMessage(error.response.data.error.message, 'error');
+      } else {
+        showMessage(error, 'error');
+      }
     }
   }
 

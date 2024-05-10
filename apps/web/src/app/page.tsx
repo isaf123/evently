@@ -25,8 +25,8 @@ export default function Home() {
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event`,
       );
       setNewEvent(response.data.result.reverse());
-      // console.log(response.data.result);
-    } catch (error) {}
+      console.log(response.data.result);
+    } catch (error) { }
   };
 
   const mapNewEvent = () => {
