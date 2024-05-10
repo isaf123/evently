@@ -1,3 +1,4 @@
+'use client'
 import { Input } from '@/components/ui/input'
 import { IoSearch } from 'react-icons/io5'
 import React from 'react'

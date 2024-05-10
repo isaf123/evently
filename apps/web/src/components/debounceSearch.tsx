@@ -20,7 +20,7 @@ import { useDebounce } from 'use-debounce';
 import { trimText } from '@/lib/text';
 import { Search } from 'lucide-react';
 
-interface IDebounceSearchProps {}
+interface IDebounceSearchProps { }
 
 const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
   props,
@@ -37,10 +37,10 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
   const getDataSearch = async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}event/search/${debounceValue}`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}event/${debounceValue}`,
       );
-      console.log(response.data.result);
-      setDataSearch(response.data.result);
+      console.log(response.data);
+      setDataSearch(response.data);
     } catch (error) {
       console.log('error');
     }
@@ -49,7 +49,7 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
   const mappingDataSearch = () => {
     return dataSearch?.map((val: any, idx: number) => {
       return (
-        <div className="w-full h-[100px] flex border-t-1 border-b-1 border-t border-b items-center gap-3">
+        <div className="w-full h-[100px] flex border-t-1 border-b-1 border-t border-b items-center gap-3" key={idx}>
           <div className="w-[160px] h-[80px] bg-gray-400 rounded-md hidden md:block"></div>
           <div>
             <p className="md:text-lg font-medium">{trimText(val.title, 40)}</p>

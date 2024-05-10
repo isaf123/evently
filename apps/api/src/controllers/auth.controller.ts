@@ -14,7 +14,6 @@ import { findUniqueUsers } from '@/services/auth/forgotPassword/findUniqueUser';
 import { saveResetToken } from '@/services/auth/forgotPassword/saveResetToken';
 import { sendEmailForgotPass } from '@/utils/emailSendForgotPassword';
 
-import { createEvent } from '@/services/event/createEvent';
 
 import { checkReferralCode } from '@/services/auth/referralCode/checkReferralCode';
 
