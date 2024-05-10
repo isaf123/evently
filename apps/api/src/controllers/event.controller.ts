@@ -2,7 +2,7 @@ import prisma from '@/prisma';
 import { NextFunction, Request, Response } from 'express';
 import { sign } from 'jsonwebtoken';
 import { compareSync } from 'bcrypt';
-import { createEvent } from '@/services/event/createEvent';
+import { createEvent } from '@/services/EO/event/createEvent';
 
 export class EventController {
   async tryEvent(req: Request, res: Response, next: NextFunction) {
