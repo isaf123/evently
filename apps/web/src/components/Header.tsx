@@ -44,7 +44,11 @@ export const Header = () => {
         router.push('/signin');
       }
     } catch (error: any) {
-      showMessage(error, "error");
+      if (error.response) {
+        showMessage(error.response.data.error.message, 'error');
+      } else {
+        showMessage(error, 'error');
+      }
     }
   }
 

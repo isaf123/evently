@@ -1,9 +1,9 @@
 // import { AuthController } from '@/controllers/auth.controller';
-import { EventController } from '@/controllers/event.controller';
+import { EventController } from '@/controllers/customer/event.controller';
 import { verifyToken } from '@/middleware/verifiedToken';
 import { Router } from 'express';
 
-export class EventRouter {
+export class EventCustRouter {
   private router: Router;
   private eventController: EventController;
 

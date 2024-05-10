@@ -48,7 +48,7 @@ import Header from '@/components/EO/SidebarEO/header';
 import { keepLogin } from '@/services/authService';
 import HeaderMobile from '@/components/EO/SidebarEO/header-mobile';
 
-interface IMakeEventProps {}
+interface IMakeEventProps { }
 
 const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   const [active, setActive] = useState<Boolean>(false);
@@ -85,6 +85,11 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
     } catch (error: any) {
       showMessage(error, 'error');
     }
+  };
+
+  const handleFlyaer = async () => {
+    try {
+    } catch (error) { }
   };
 
   const handleData = async () => {
@@ -124,6 +129,17 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
         { headers: { Authorization: `Bearer ${Cookies.get('Token EO')}` } },
       );
       showMessage(response.data.message, 'success');
+      console.log(response.data.result.id);
+
+      const formData = new FormData();
+      if (file) {
+        formData.append('eventPic', file);
+        const uploadPhoto = await axios.patch(
+          process.env.NEXT_PUBLIC_BASE_API_URL +
+          `eventpic/photo/${response.data.result.id}`,
+          formData,
+        );
+      }
       // router.replace('/event-organizer/dashboard');
     } catch (error: any) {
       if (error.response) {
@@ -134,6 +150,21 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       console.log(error);
     }
   };
+
+  // const onSavePhoto = async () => {
+  //   try {
+  //     const formData = new FormData();
+  //     if (file) {
+  //       formData.append('eventPic', file);
+  //       const uploadPhoto = await axios.patch(
+  //         process.env.NEXT_PUBLIC_BASE_API_URL + 'eventpic/photo/106',
+  //         formData,
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <div className="">
@@ -316,6 +347,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
                         onChange={(e) => {
                           if (e.target.files?.length) {
                             console.log(e.target.files[0].name);
+                            setFile(e.target.files[0]);
                             setPicName(e.target.files[0].name);
                           }
                         }}
@@ -328,6 +360,14 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
                 </div>
               </CardContent>
             </Card>
+            {/* <Button
+              className="w-full bg-color2 hover:bg-blue-400 text-white mt-8"
+              onClick={() => {
+                onSavePhoto();
+              }}
+            >
+              Upload Photo
+            </Button> */}
             <Button
               className="w-full bg-color2 hover:bg-blue-400 text-white mt-8"
               onClick={() => {

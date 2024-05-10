@@ -44,19 +44,19 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
       })
       const { role, token } = response.data;
       if (role === 'eo') {
-        console.log('ini halaman EO');
-        console.log('ini tokennya', token);
         dispatch(setSuccessLoginAction(response.data))
         router.replace('/event-organizer/dashboard')
       } else if (role === 'customers') {
-        console.log('ini halaman Customers');
-        console.log('token customers', token);
         dispatch(setSuccessLoginAction(response.data))
         router.replace('/')
       }
 
     } catch (error: any) {
-      showMessage(error.response.data, "error")
+      if (error.response) {
+        showMessage(error.response.data.error.message, 'error');
+      } else {
+        showMessage(error, 'error');
+      }
     }
   }
 

@@ -21,7 +21,6 @@ const userSlice = createSlice({
     initialState: { ...data },
     reducers: {
         setSuccessLogin: (state, action) => {
-            console.log(action.payload);
 
             // Menyimpan data ke local storage
             const { token, username, email, role } = action.payload;
