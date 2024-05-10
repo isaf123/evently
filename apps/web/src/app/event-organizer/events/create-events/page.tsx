@@ -113,7 +113,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       } = createEvent;
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}event`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}event-organizer/event/create`,
         {
           title,
           start_date: startDate,
@@ -143,9 +143,9 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       // router.replace('/event-organizer/dashboard');
     } catch (error: any) {
       if (error.response) {
-        showMessage(error.response.data.error.message, 'error');
-      } else {
-        showMessage(error, 'error');
+        showMessage(error.response.data, 'error');
+      } else if (error.response.data.error) {
+        showMessage(error.response.data, 'error');
       }
       console.log(error);
     }
