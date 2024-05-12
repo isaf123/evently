@@ -1,10 +1,10 @@
 import prisma from "@/prisma"
+import { Response } from "express"
 
 export const getEvents = async (q: string) => {
     try {
         const events = await prisma.masterEvent.findMany({
             where: {
-
                 OR: [
                     {
                         title: {
@@ -26,8 +26,10 @@ export const getEvents = async (q: string) => {
                         name: true
                     }
                 }
-            },
+
+            }
         })
+        console.log('data events', events);
         return events
     } catch (error) {
         throw error
