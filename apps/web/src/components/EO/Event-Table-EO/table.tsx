@@ -49,7 +49,7 @@ const TableEventEO = () => {
             setDataEvent(events)
         } catch (error: any) {
             if (error.response) {
-                showMessage(error.response.data.error.message, 'error');
+                showMessage(error.response.data.error, 'error');
             } else {
                 showMessage(error, 'error');
             }
