@@ -17,10 +17,10 @@ export class EventEORouter {
   }
 
   private initializeRoutes(): void {
-    this.router.get('/event', verifyToken, this.eventController.getEvents);
+    this.router.get('/event', verifyToken, eventOrganizerMiddleware, this.eventController.getEvents);
     this.router.post(
       '/',
-      verifyToken,
+      verifyToken, eventOrganizerMiddleware,
       uploader('/eventpic', 'EVENTPIC').array('flyer_event'),
       this.eventController.createEvent,
     );
