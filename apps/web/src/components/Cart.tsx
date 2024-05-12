@@ -3,11 +3,12 @@ import { max } from 'cypress/types/lodash';
 import * as React from 'react';
 import { trimText } from '@/lib/text';
 import { useRouter } from 'next/navigation';
+import { rupiah } from '@/lib/text';
 interface ICartEventProps {
   children?: string;
   startdate?: string;
   enddate?: string;
-  price?: string;
+  price: number;
   organizer?: string;
   image?: null | string;
 }
@@ -31,7 +32,11 @@ const CartEvent: React.FunctionComponent<ICartEventProps> = (props) => {
           <p>-</p>
           <p className="text-xs text-gray-600">{props.enddate}</p>
         </div>
-        <p className="mt-3">{props.price}</p>
+        {props.price == 0 ? (
+          <p className="mt-3">free</p>
+        ) : (
+          <p className="mt-3">{rupiah(props.price)}</p>
+        )}
         <div className="w-full text-right mt-5 text-sm">{props.organizer}</div>
       </div>
     </div>

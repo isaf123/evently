@@ -20,13 +20,13 @@ import { useDebounce } from 'use-debounce';
 import { trimText } from '@/lib/text';
 import { Search } from 'lucide-react';
 
-interface IDebounceSearchProps { }
+interface IDebounceSearchProps {}
 
 const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
   props,
 ) => {
   const [search, setSearch] = React.useState<string>('');
-  const [dataSearch, setDataSearch] = React.useState<any[]>();
+  const [dataSearch, setDataSearch] = React.useState<any[] | null>([]);
 
   const [debounceValue] = useDebounce(search, 1200);
 
@@ -40,7 +40,7 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event/${debounceValue}`,
       );
       console.log(response.data);
-      setDataSearch(response.data);
+      setDataSearch(response.data.result);
     } catch (error) {
       console.log('error');
     }
@@ -49,16 +49,19 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
   const mappingDataSearch = () => {
     return dataSearch?.map((val: any, idx: number) => {
       return (
-        <div className="w-full h-[100px] flex border-t-1 border-b-1 border-t border-b items-center gap-3" key={idx}>
+        <div
+          className="w-full h-[100px] flex border-t-1 border-b-1 border-t border-b items-center gap-3"
+          key={idx}
+        >
           <div className="w-[160px] h-[80px] bg-gray-400 rounded-md hidden md:block"></div>
           <div>
-            <p className="md:text-lg font-medium">{trimText(val.title, 40)}</p>
+            <p className="md:text-lg font-medium">{trimText(val?.title, 40)}</p>
             <div className="flex items-center gap-1 text-xs text-gray-400">
-              <p>{convertDate(val.start_date)}</p>
+              <p>{convertDate(val?.start_date)}</p>
               <p>-</p>
-              <p>{convertDate(val.end_date)}</p>
+              <p>{convertDate(val?.end_date)}</p>
             </div>
-            <p className="text-sm">{rupiah(val.price)}</p>
+            <p className="text-sm">{rupiah(val?.price)}</p>
           </div>
         </div>
       );
@@ -67,7 +70,12 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">Open</Button>
+        <Button variant="outline">
+          <span className="mr-2">
+            <Search className="w-4 h-4"></Search>
+          </span>
+          Search your event here
+        </Button>
       </SheetTrigger>
       <SheetContent
         className="bg-white w-[320px] md:w-[680px] top-0

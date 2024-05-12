@@ -10,9 +10,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-
-
-
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
@@ -20,45 +17,48 @@ import { useState } from 'react';
 import { showMessage } from '@/components/Alert/Toast';
 import axios from 'axios';
 import { ToastContainer } from 'react-toastify';
-import "react-toastify/dist/ReactToastify.css";
+import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '@/lib/hooks';
 import { setSuccessLoginAction } from '@/lib/features/userSlice';
 
-interface ILoginPageProps { }
+interface ILoginPageProps {}
 
 const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
   const [dataUser, setDataUser] = useState({
     email: '',
     password: '',
   });
-  const dispatch = useAppDispatch()
-  const router = useRouter()
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const handleLogin = async () => {
     try {
       console.log('ini ENV', process.env.NEXT_PUBLIC_BASE_API_URL);
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}auth/login`, {
-        email: dataUser.email,
-        password: dataUser.password
-      })
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}auth/login`,
+        {
+          email: dataUser.email,
+          password: dataUser.password,
+        },
+      );
       const { role, token } = response.data;
       if (role === 'eo') {
-        dispatch(setSuccessLoginAction(response.data))
-        router.replace('/event-organizer/dashboard')
+        dispatch(setSuccessLoginAction(response.data));
+        router.replace('/event-organizer/dashboard');
       } else if (role === 'customers') {
-        dispatch(setSuccessLoginAction(response.data))
-        router.replace('/')
+        dispatch(setSuccessLoginAction(response.data));
+        router.replace('/');
       }
-
     } catch (error: any) {
+      console.log(error);
       if (error.response) {
-        showMessage(error.response.data.error.message, 'error');
+        showMessage(error.response.data, 'error');
       } else {
         showMessage(error, 'error');
       }
     }
-  }
+  };
 
   return (
     <div>
@@ -122,8 +122,6 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
           </div>
         </CardContent>
       </Card>
-
-
     </div>
   );
 };

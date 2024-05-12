@@ -3,7 +3,7 @@ import * as React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import axios from 'axios';
-import { trimText } from '@/lib/text';
+import { trimText, trimFormat } from '@/lib/text';
 import { useEffect, useState } from 'react';
 import { category, times } from '@/lib/text';
 import EventDesccription from './view/EventDescription';
@@ -48,13 +48,14 @@ import Header from '@/components/EO/SidebarEO/header';
 import { keepLogin } from '@/services/authService';
 import HeaderMobile from '@/components/EO/SidebarEO/header-mobile';
 
-interface IMakeEventProps { }
+interface IMakeEventProps {}
 
 const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   const [active, setActive] = useState<Boolean>(false);
-  const [startDate, setStartDate] = React.useState<Date>();
-  const [endDate, setEndDate] = React.useState<Date>();
-  const [endDatePromo, setEndDatePromo] = React.useState<Date>();
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
+  const [endDatePromo, setEndDatePromo] = useState<Date>();
+  const [activeDate, setActiveDate] = useState<Boolean>(true);
   const [file, setFile] = React.useState<File | null>(null);
   const [picName, setPicName] = useState<string>('');
   const dispatch = useAppDispatch();
@@ -63,6 +64,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   const createEvent = useAppSelector((state) => {
     return state.eventReducer;
   });
+
   console.log(createEvent);
   // console.log('ini tanggal', startDate);
   console.log(Cookies.get('Token EO'));
@@ -71,6 +73,9 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   React.useEffect(() => {
     searchToken();
   }, []);
+  React.useEffect(() => {
+    validateDate();
+  }, [startDate, endDate]);
 
   // Keep Login for customer
   const searchToken = async () => {
@@ -87,10 +92,22 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
     }
   };
 
-  const handleFlyaer = async () => {
-    try {
-    } catch (error) { }
+  const validateDate = () => {
+    if (!startDate || !endDate) {
+      setActiveDate(true);
+    } else if (startDate.getTime() > endDate.getTime()) {
+      setActiveDate(false);
+    } else if (startDate.getTime() < new Date().getTime()) {
+      setActiveDate(false);
+    } else if (startDate.getTime() < endDate.getTime()) {
+      setActiveDate(true);
+    }
   };
+  if (startDate) {
+    console.log('ini waktu :', startDate?.getTime() > new Date().getTime());
+  }
+
+  console.log(trimFormat(picName));
 
   const handleData = async () => {
     try {
@@ -101,70 +118,68 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       ) {
         throw 'please fill all data';
       }
-      const {
-        title,
-        description,
-        category,
-        available_seat,
-        event_type,
-        price,
-        location,
-        address,
-      } = createEvent;
+      // if (activeDate == false) {
+      //   throw 'Invalid date';
+      // }
 
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}event`,
-        {
-          title,
-          start_date: startDate,
-          end_date: endDate,
-          description,
-          category,
-          available_seat,
-          event_type,
-          price,
-          location,
-          address,
-        },
-        { headers: { Authorization: `Bearer ${Cookies.get('Token EO')}` } },
-      );
-      showMessage(response.data.message, 'success');
-      console.log(response.data.result.id);
+      // if (createEvent.event_type == 'paid' && createEvent.price < 100) {
+      //   throw 'invalid price';
+      // }
+
+      // if (createEvent.available_seat < 1) {
+      //   throw 'invalid seat';
+      // }
+
+      // if (!(trimFormat(picName) == 'png' || 'jpg')) {
+      //   throw 'invalid file format';
+      // }
 
       const formData = new FormData();
       if (file) {
-        formData.append('eventPic', file);
-        const uploadPhoto = await axios.patch(
-          process.env.NEXT_PUBLIC_BASE_API_URL +
-          `eventpic/photo/${response.data.result.id}`,
-          formData,
-        );
+        formData.append('flyer_event', file);
       }
+      formData.append('title', createEvent.title);
+      formData.append('description', createEvent.description);
+      formData.append('category', createEvent.category);
+      formData.append('available_seat', createEvent.available_seat);
+      formData.append('event_type', createEvent.event_type);
+      formData.append('price', createEvent.price);
+      formData.append('location', createEvent.location);
+      formData.append('address', createEvent.address);
+      formData.append('start_date', startDate.toISOString());
+      formData.append('end_date', endDate.toISOString());
+
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}event-organizer`,
+        formData,
+        { headers: { Authorization: `Bearer ${Cookies.get('Token EO')}` } },
+      );
+      console.log(response.data);
+      showMessage(response.data.message, 'success');
+      // dispatch(
+      //   setCreateEventAction({
+      //     title: '',
+      //     description: '',
+      //     category: '',
+      //     available_seat: 0,
+      //     event_type: '',
+      //     price: 0,
+      //     location: '',
+      //     address: '',
+      //   }),
+      // );
+
       // router.replace('/event-organizer/dashboard');
     } catch (error: any) {
-      if (error.response) {
-        showMessage(error.response.data.error.message, 'error');
-      } else {
-        showMessage(error, 'error');
-      }
       console.log(error);
+
+      if (error.response) {
+        showMessage(error.response.data, 'error');
+      }
+      showMessage(error, 'error');
     }
   };
-
-  // const onSavePhoto = async () => {
-  //   try {
-  //     const formData = new FormData();
-  //     if (file) {
-  //       formData.append('eventPic', file);
-  //       const uploadPhoto = await axios.patch(
-  //         process.env.NEXT_PUBLIC_BASE_API_URL + 'eventpic/photo/106',
-  //         formData,
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  console.log(createEvent);
 
   return (
     <div className="">
@@ -175,7 +190,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       <div className="flex-1">
         <Header />
         <HeaderMobile />
-        <div className="flex justify-center items-center flex-col md:flex-row w-fit md:ml-[300px] gap-8">
+        <div className="flex justify-center items-center md:items-start flex-col md:flex-row w-fit md:ml-[300px] gap-8 mt-10 m-auto">
           <div>
             <EventDesccription></EventDesccription>
             <Card x-chunk="dashboard-07-chunk-2">
@@ -331,7 +346,8 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
               <CardHeader>
                 <CardTitle>Event Images</CardTitle>
                 <CardDescription>
-                  Choose image for your event here
+                  Image must be in <span className="italic">.jpg/.png</span>{' '}
+                  format
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -354,7 +370,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
                       />
                     </button>
                     <div className="text-sm mt-10 ml-4">
-                      {`${trimText(picName, 12)} `}
+                      {`${trimText(picName, 12)} .${trimFormat(picName)}`}
                     </div>
                   </div>
                 </div>

@@ -26,7 +26,7 @@ export default function Home() {
       );
       setNewEvent(response.data.reverse());
       console.log(response.data);
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const mapNewEvent = () => {
@@ -34,7 +34,7 @@ export default function Home() {
       return (
         <CarouselItem className="md:basis-1/4 mr-3 md:mr-8" key={idx}>
           <CartEvent
-            price={rupiah(val.price)}
+            price={val.price}
             startdate={convertDate(val.start_date)}
             enddate={convertDate(val.end_date)}
           >
@@ -112,22 +112,19 @@ export default function Home() {
         <Carousel>
           <CarouselContent className="py-4 px-2">
             <CarouselItem className="basis-1/4 mr-8">
-              <CartEvent></CartEvent>
+              <CartEvent price={0}></CartEvent>
             </CarouselItem>
             <CarouselItem className="basis-1/4 mr-8">
-              <CartEvent></CartEvent>
+              <CartEvent price={0}></CartEvent>
             </CarouselItem>
             <CarouselItem className="basis-1/4 mr-8">
-              <CartEvent></CartEvent>
+              <CartEvent price={0}></CartEvent>
             </CarouselItem>
             <CarouselItem className="basis-1/4 mr-8">
-              <CartEvent></CartEvent>
+              <CartEvent price={0}></CartEvent>
             </CarouselItem>
             <CarouselItem className="basis-1/4 mr-8">
-              <CartEvent></CartEvent>
-            </CarouselItem>
-            <CarouselItem className="basis-1/4 mr-8">
-              <CartEvent></CartEvent>
+              <CartEvent price={0}></CartEvent>
             </CarouselItem>
           </CarouselContent>
           <CarouselPrevious />

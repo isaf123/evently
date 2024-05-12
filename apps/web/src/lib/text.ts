@@ -54,3 +54,8 @@ export const convertDate = (dat: Date) => {
     day: 'numeric',
   });
 };
+
+export const trimFormat = (format: string) => {
+  const split = format.split('.');
+  return split[split.length - 1];
+};
