@@ -33,3 +33,4 @@ export const customerMiddleware = (req: Request, res: Response, next: NextFuncti
         throw error
     }
 }
+

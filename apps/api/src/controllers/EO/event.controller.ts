@@ -2,7 +2,6 @@ import prisma from "@/prisma";
 import { createEvent } from "@/services/EO/event/createEvent";
 import { getEvents } from "@/services/EO/event/getEvent";
 import { NextFunction, Request, Response } from "express";
-
 export class EventEOController {
     async getEvents(req: Request, res: Response,) {
         try {

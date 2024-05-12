@@ -1,73 +1,11 @@
-'use client'
-import { showMessage } from '@/components/Alert/Toast';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import axios from 'axios';
-import * as React from 'react';
-import { formatDate } from '../../../lib/EO/formatDate';
-import { generateEventCode } from '@/lib/EO/generateEventCode';
-import Cookies from 'js-cookie';
-
-interface EventData {
-    id: number;
-    flyer_event: string | null;
-    title: string;
-    start_date: string;
-    end_date: string;
-    description: string;
-    category: string;
-    available_seat: number;
-    event_type: string;
-    price: number;
-    location: string;
-    usersId: number;
-    address: string;
-    user_id: {
-        name: string;
-    };
-    eventCode: any
-}
+import { Table, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import React from 'react'
 
 const TableEventEO = () => {
-    const [dataEvent, setDataEvent] = React.useState<EventData[]>([])
-    const getEvents = async () => {
-        try {
-            const cookies = Cookies.get('Token EO')
-            // console.log(cookies);
-
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}event-organizer/event`, {
-                headers: {
-                    Authorization: `Bearer ${cookies}`
-                }
-            })
-            console.log('data event', response);
-
-            const events = response.data.map((event: EventData, index: number) => ({
-                ...event,
-                eventCode: generateEventCode(index + 1) // Menambahkan properti eventCode ke setiap event
-            }));
-            setDataEvent(events)
-        } catch (error: any) {
-            if (error.response) {
-                showMessage(error.response.data.error.message, 'error');
-            } else {
-                showMessage(error, 'error');
-            }
-        }
-    }
-
-    React.useEffect(() => {
-        getEvents()
-    }, []);
-
     return (
-        <div>
-            <input
-                type='text'
-                placeholder='Search...'
-                className='w-full border-gray-200 py-2 pl-10 text-sm outline-2 rounded-sm'
-            />
-            <Table className='w-full text-sm text-left text-gray-500'>
-                <TableHeader className='text-sm text-gray-700 uppercase bg-gray-50'>
+        <div className='bg-red-300 w-[950px] text-justify md: ml-[300px]'>
+            <Table>
+                <TableHeader className=''>
                     <TableRow>
                         <TableHead className='px-6 py-3 hidden md:table-cell'>Event Code</TableHead>
                         <TableHead className='px-6 py-3'>Event Name</TableHead>

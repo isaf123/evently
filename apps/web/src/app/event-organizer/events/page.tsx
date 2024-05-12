@@ -19,8 +19,8 @@ const EventEOPage = () => {
                         <CreateEventButton />
                     </div>
                     <TableEventEO />
-                </div>
-            </div>
+                </div >
+            </div >
         </div >
     )
 }
