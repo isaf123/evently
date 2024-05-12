@@ -1,25 +1,9 @@
 import prisma from "@/prisma"
-import { Response } from "express"
 
-export const getEvents = async (q: string) => {
+export const getEvents = async (data: any) => {
     try {
         const events = await prisma.masterEvent.findMany({
-            where: {
-                OR: [
-                    {
-                        title: {
-                            contains: q,
-                        }
-                    },
-                    {
-                        user_id: {
-                            name: {
-                                contains: q
-                            }
-                        }
-                    }
-                ]
-            },
+            where: { usersId: data },
             include: {
                 user_id: {
                     select: {

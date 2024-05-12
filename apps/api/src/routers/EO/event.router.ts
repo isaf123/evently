@@ -17,7 +17,7 @@ export class EventEORouter {
   }
 
   private initializeRoutes(): void {
-    this.router.get('/event', this.eventController.getEvents);
+    this.router.get('/event', verifyToken, this.eventController.getEvents);
     this.router.post(
       '/',
       verifyToken,
