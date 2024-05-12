@@ -43,7 +43,7 @@ export const Header = () => {
         dispatch(setSuccessLoginAction(data));
       } else {
         // Jika tidak ada token, arahkan ke halaman sign-in
-        // router.push('/signin');
+
       }
     } catch (error: any) {
       if (error.response) {

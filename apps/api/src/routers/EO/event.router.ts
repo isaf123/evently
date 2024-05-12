@@ -1,4 +1,7 @@
 import { EventEOController } from '@/controllers/EO/event.controller';
+
+import { eventOrganizerMiddleware } from '@/middleware/authMiddleware';
+
 import { verifyToken } from '@/middleware/verifiedToken';
 import { Router } from 'express';
 import { uploader } from '@/middleware/uploader';
@@ -22,6 +25,7 @@ export class EventEORouter {
       this.eventController.createEvent,
     );
   }
+
 
   getRouter(): Router {
     return this.router;

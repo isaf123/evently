@@ -2,7 +2,11 @@ import prisma from '@/prisma';
 import { NextFunction, Request, Response } from 'express';
 import { createEvent } from '@/services/EO/event/createEvent';
 
+import { sign } from 'jsonwebtoken';
+import { compareSync } from 'bcrypt';
+
 export class EventController {
+
   async getAllEvent(req: Request, res: Response, next: NextFunction) {
     try {
       const allEvent = await prisma.masterEvent.findMany({

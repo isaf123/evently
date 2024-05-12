@@ -1,5 +1,4 @@
 import { AuthController } from '@/controllers/auth.controller';
-import { protectRoute } from '@/middleware/authMiddleware';
 import { verifyToken } from '@/middleware/verifiedToken';
 import { Router } from 'express';
 
