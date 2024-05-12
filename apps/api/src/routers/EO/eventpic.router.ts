@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { EventPicController } from '@/controllers/customer/eventpic.controller';
+import { EventPicController } from '@/controllers/EO/eventpic.controller';
 import { uploader } from '@/middleware/uploader';
 
 export class EventPicRouter {
