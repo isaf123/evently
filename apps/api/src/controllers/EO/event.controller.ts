@@ -16,7 +16,8 @@ export class EventEOController {
     try {
       const userRole = res.locals.decript.role;
       const usersId = res.locals.decript.id;
-
+      console.log(req.body);
+      console.log(req.files);
       const files = req.files as Express.Multer.File[];
       const validation = await validationEvent(
         req.body,
