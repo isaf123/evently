@@ -20,7 +20,7 @@ import { useDebounce } from 'use-debounce';
 import { trimText } from '@/lib/text';
 import { Search } from 'lucide-react';
 
-interface IDebounceSearchProps {}
+interface IDebounceSearchProps { }
 
 const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
   props,
@@ -78,8 +78,7 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
         </Button>
       </SheetTrigger>
       <SheetContent
-        className="bg-white w-[320px] md:w-[680px] top-0
-         min-h-screen"
+        className="bg-white w-[320px] md:w-[680px] top-0 min-h-screen"
         side={'bottom'}
       >
         <SheetHeader>
