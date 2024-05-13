@@ -13,6 +13,7 @@ import { AuthRouter } from './routers/auth.router';
 import { EventEORouter } from './routers/EO/event.router';
 import { EventCustRouter } from './routers/customer/event.router';
 import { EventPicRouter } from './routers/EO/eventpic.router';
+import { PromoEventRouter } from './routers/EO/promo.router';
 export default class App {
   readonly app: Express;
 
@@ -57,6 +58,7 @@ export default class App {
     const eventEORouter = new EventEORouter();
     const eventCustRouter = new EventCustRouter();
     const eventPicRouter = new EventPicRouter();
+    const promoEventRouter = new PromoEventRouter();
 
     this.app.get('/', (req: Request, res: Response) => {
       res.send(`Hello, Purwadhika Student !`);
@@ -65,6 +67,7 @@ export default class App {
     this.app.use('/auth', authRouter.getRouter());
     this.app.use('/event-organizer', eventEORouter.getRouter());
     this.app.use('/event', eventCustRouter.getRouter());
+    this.app.use('/promo', promoEventRouter.getRouter());
     this.app.use('/eventpic', eventPicRouter.getRouter());
   }
 

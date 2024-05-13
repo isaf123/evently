@@ -1,5 +1,5 @@
 import prisma from '@/prisma';
-import { createEvent, validationEvent } from '@/services/EO/event/createEvent';
+import { createEvent } from '@/services/EO/event/createEvent';
 import { getEvents } from '@/services/EO/event/getEvent';
 import { NextFunction, Request, Response } from 'express';
 export class EventEOController {
@@ -16,19 +16,8 @@ export class EventEOController {
     try {
       const userRole = res.locals.decript.role;
       const usersId = res.locals.decript.id;
-      console.log(req.body);
-      console.log(req.files);
+
       const files = req.files as Express.Multer.File[];
-      const validation = await validationEvent(
-        req.body,
-        files[0].filename,
-        usersId,
-      );
-
-      if (validation) {
-        throw validation;
-      }
-
       const newEvent = await createEvent(req.body, files[0].filename, usersId);
 
       return res.status(201).send({

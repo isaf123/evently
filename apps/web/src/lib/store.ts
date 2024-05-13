@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import eventReducer from './features/eventQuerySLice';
 import userSlice from './features/userSlice';
+import promoEventSlice from './features/promoEventSlice';
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       eventReducer,
-      userSlice
+      userSlice,
+      promoEventSlice,
     },
   });
 };
