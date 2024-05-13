@@ -35,6 +35,17 @@ import {
   Calendar as CalendarIcon,
   CircleX,
 } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -47,6 +58,7 @@ import SideNav from '@/components/EO/SidebarEO/side-nav';
 import Header from '@/components/EO/SidebarEO/header';
 import { keepLogin } from '@/services/authService';
 import HeaderMobile from '@/components/EO/SidebarEO/header-mobile';
+import { setCreateEventAction } from '@/lib/features/createEventSlice';
 
 interface IMakeEventProps {}
 
@@ -54,6 +66,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   const [active, setActive] = useState<Boolean>(false);
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
+  const [startDatePromo, setStartDatePromo] = useState<Date>();
   const [endDatePromo, setEndDatePromo] = useState<Date>();
   const [activeDate, setActiveDate] = useState<Boolean>(true);
   const [file, setFile] = React.useState<File | null>(null);
@@ -65,11 +78,12 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
     return state.eventReducer;
   });
 
+  const promoEvent = useAppSelector((state) => {
+    return state.promoEventSlice;
+  });
+
   console.log(createEvent);
-  // console.log('ini tanggal', startDate);
-  console.log(Cookies.get('Token EO'));
-  console.log(startDate?.toISOString());
-  console.log(endDate?.toISOString());
+  console.log(promoEvent);
   React.useEffect(() => {
     searchToken();
   }, []);
@@ -103,12 +117,10 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       setActiveDate(true);
     }
   };
-  if (startDate) {
-    console.log('ini waktu :', startDate?.getTime() > new Date().getTime());
-  }
-
   console.log(trimFormat(picName));
 
+  console.log('ini start', startDatePromo);
+  console.log('ini end', endDatePromo);
   const handleData = async () => {
     try {
       if (
@@ -118,21 +130,22 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       ) {
         throw 'please fill all data';
       }
-      // if (activeDate == false) {
-      //   throw 'Invalid date';
-      // }
 
-      // if (createEvent.event_type == 'paid' && createEvent.price < 100) {
-      //   throw 'invalid price';
-      // }
+      if (activeDate == false) {
+        throw 'Invalid date';
+      }
 
-      // if (createEvent.available_seat < 1) {
-      //   throw 'invalid seat';
-      // }
+      if (createEvent.event_type == 'paid' && createEvent.price < 100) {
+        throw 'invalid price';
+      }
 
-      // if (!(trimFormat(picName) == 'png' || 'jpg')) {
-      //   throw 'invalid file format';
-      // }
+      if (createEvent.available_seat < 1) {
+        throw 'invalid seat';
+      }
+
+      if (!(trimFormat(picName) == 'png' || trimFormat(picName) == 'jpg')) {
+        throw 'invalid file type';
+      }
 
       const formData = new FormData();
       if (file) {
@@ -149,27 +162,28 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       formData.append('start_date', startDate.toISOString());
       formData.append('end_date', endDate.toISOString());
 
-      const response = await axios.post(
+      const responseEvent = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event-organizer`,
         formData,
         { headers: { Authorization: `Bearer ${Cookies.get('Token EO')}` } },
       );
-      console.log(response.data);
-      showMessage(response.data.message, 'success');
-      // dispatch(
-      //   setCreateEventAction({
-      //     title: '',
-      //     description: '',
-      //     category: '',
-      //     available_seat: 0,
-      //     event_type: '',
-      //     price: 0,
-      //     location: '',
-      //     address: '',
-      //   }),
-      // );
 
-      // router.replace('/event-organizer/dashboard');
+      console.log(responseEvent.data.result.id);
+      showMessage(responseEvent.data.message, 'success');
+      dispatch(
+        setCreateEventAction({
+          title: '',
+          description: '',
+          category: '',
+          available_seat: 0,
+          event_type: '',
+          price: 0,
+          location: '',
+          address: '',
+        }),
+      );
+
+      router.replace('/event-organizer/events');
     } catch (error: any) {
       console.log(error);
 
@@ -179,7 +193,6 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       showMessage(error, 'error');
     }
   };
-  console.log(createEvent);
 
   return (
     <div className="">
@@ -190,7 +203,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       <div className="flex-1">
         <Header />
         <HeaderMobile />
-        <div className="flex justify-center items-center md:items-start flex-col md:flex-row w-fit md:ml-[300px] gap-8 mt-10 m-auto">
+        <div className="flex justify-center items-center md:items-start flex-col md:flex-row w-fit md:ml-[300px] gap-8 my-10 m-auto">
           <div>
             <EventDesccription></EventDesccription>
             <Card x-chunk="dashboard-07-chunk-2">
@@ -202,7 +215,6 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
                 <AddressSeat></AddressSeat>
                 <div className="grid gap-6 sm:grid-cols-2 mb-6">
                   <div className="grid gap-3">
-                    {/* <Label htmlFor="date1">Start Date</Label> */}
                     <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                       Start Date
                     </p>
@@ -293,14 +305,48 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
                     </div>
                   </Button>
                 )}
+
+                {/* ////////////////////////////////////////////     PROMOS   ///////////////////////////////////////////////////// */}
                 {active ? <EventPromo></EventPromo> : <></>}
                 {active ? (
                   <div className="grid gap-6 sm:grid-cols-2 mb-6">
                     <div className="grid gap-3">
-                      {/* <Label htmlFor="date1">Start Date</Label> */}
                       <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        Valid date until
+                        Start Date Promo
                       </p>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={'outline'}
+                            className={cn(
+                              'w-full justify-start text-left font-normal',
+                              !startDatePromo && 'text-muted-foreground',
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {startDatePromo ? (
+                              format(startDatePromo, 'PPP')
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0 bg-white">
+                          <Calendar
+                            mode="single"
+                            selected={startDatePromo}
+                            onSelect={setStartDatePromo}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+
+                    <div className="grid gap-3">
+                      <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        End Date Promo
+                      </p>
+
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
@@ -362,7 +408,6 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
                         id="photo-event"
                         onChange={(e) => {
                           if (e.target.files?.length) {
-                            console.log(e.target.files[0].name);
                             setFile(e.target.files[0]);
                             setPicName(e.target.files[0].name);
                           }
@@ -376,22 +421,36 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
                 </div>
               </CardContent>
             </Card>
-            {/* <Button
-              className="w-full bg-color2 hover:bg-blue-400 text-white mt-8"
-              onClick={() => {
-                onSavePhoto();
-              }}
-            >
-              Upload Photo
-            </Button> */}
-            <Button
-              className="w-full bg-color2 hover:bg-blue-400 text-white mt-8"
-              onClick={() => {
-                handleData();
-              }}
-            >
-              Create Event
-            </Button>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full bg-color2 hover:bg-blue-400 text-white mt-8"
+                >
+                  Create your event
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="bg-white">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Create event</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you absolutely sure? This action will create your event.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-color2 text-white"
+                    onClick={() => {
+                      handleData();
+                    }}
+                  >
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </div>

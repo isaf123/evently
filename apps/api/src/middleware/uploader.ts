@@ -1,8 +1,13 @@
 import { Request } from 'express';
 import multer from 'multer';
 import { join } from 'path'; // untuk merge file location
+import { NextFunction } from 'express';
 
-export const uploader = (dirName?: string, filePrefix?: string) => {
+export const uploader = (
+  dirName?: string,
+  filePrefix?: string,
+  next?: NextFunction,
+) => {
   const defaultDir = join(__dirname, '../../public'); //define directory utama
 
   const configStore = multer.diskStorage({

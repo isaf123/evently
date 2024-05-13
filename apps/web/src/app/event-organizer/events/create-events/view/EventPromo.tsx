@@ -1,12 +1,10 @@
 'use client';
 import * as React from 'react';
-
 import { useAppDispatch } from '@/lib/hooks';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { PlusCircle } from 'lucide-react';
+import { setPromoDataAction } from '@/lib/features/promoEventSlice';
 
 interface IEventDetailProps {}
 
@@ -23,10 +21,10 @@ const EventPromo: React.FunctionComponent<IEventDetailProps> = (props) => {
           id="promo"
           type="text"
           className="w-full"
-          // onChange={(e) => {
-          //   // setName(e.target.value);
-          //   dispatch(setPromoEventAction({ title: e.target.value }));
-          // }}
+          onChange={(e) => {
+            // setName(e.target.value);
+            dispatch(setPromoDataAction({ name_voucher: e.target.value }));
+          }}
         />
       </div>
       <div className="grid gap-3">
@@ -35,10 +33,10 @@ const EventPromo: React.FunctionComponent<IEventDetailProps> = (props) => {
           id="promo"
           type="text"
           className="w-full"
-          // onChange={(e) => {
-          //   // setName(e.target.value);
-          //   dispatch(setPromoEventAction({ title: e.target.value }));
-          // }}
+          onChange={(e) => {
+            // setName(e.target.value);
+            dispatch(setPromoDataAction({ discount: Number(e.target.value) }));
+          }}
         />
       </div>
     </div>
