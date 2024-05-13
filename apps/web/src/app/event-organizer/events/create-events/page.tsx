@@ -59,6 +59,7 @@ import Header from '@/components/EO/SidebarEO/header';
 import { keepLogin } from '@/services/authService';
 import HeaderMobile from '@/components/EO/SidebarEO/header-mobile';
 import { setCreateEventAction } from '@/lib/features/createEventSlice';
+import { create } from 'cypress/types/lodash';
 
 interface IMakeEventProps {}
 
@@ -82,7 +83,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
     return state.promoEventSlice;
   });
 
-  console.log(createEvent);
+  // console.log(createEvent);
   console.log(promoEvent);
   React.useEffect(() => {
     searchToken();
@@ -117,7 +118,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       setActiveDate(true);
     }
   };
-  console.log(trimFormat(picName));
+  console.log(createEvent);
 
   console.log('ini start', startDatePromo);
   console.log('ini end', endDatePromo);
@@ -135,11 +136,14 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
         throw 'Invalid date';
       }
 
-      if (createEvent.event_type == 'paid' && createEvent.price < 100) {
+      if (
+        (createEvent.event_type == 'paid' && createEvent.price < 100) ||
+        isNaN(createEvent.price)
+      ) {
         throw 'invalid price';
       }
 
-      if (createEvent.available_seat < 1) {
+      if (createEvent.available_seat < 1 || isNaN(createEvent.available_seat)) {
         throw 'invalid seat';
       }
 
@@ -170,20 +174,22 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
 
       console.log(responseEvent.data.result.id);
       showMessage(responseEvent.data.message, 'success');
-      dispatch(
-        setCreateEventAction({
-          title: '',
-          description: '',
-          category: '',
-          available_seat: 0,
-          event_type: '',
-          price: 0,
-          location: '',
-          address: '',
-        }),
-      );
+      const { name_voucher, discount } = promoEvent;
 
-      router.replace('/event-organizer/events');
+      // dispatch(
+      //   setCreateEventAction({
+      //     title: '',
+      //     description: '',
+      //     category: '',
+      //     available_seat: 0,
+      //     event_type: '',
+      //     price: 0,
+      //     location: '',
+      //     address: '',
+      //   }),
+      // );
+
+      // router.replace('/event-organizer/events');
     } catch (error: any) {
       console.log(error);
 
