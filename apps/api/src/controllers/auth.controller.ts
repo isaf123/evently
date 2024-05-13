@@ -14,7 +14,6 @@ import { findUniqueUsers } from '@/services/auth/forgotPassword/findUniqueUser';
 import { saveResetToken } from '@/services/auth/forgotPassword/saveResetToken';
 import { sendEmailForgotPass } from '@/utils/emailSendForgotPassword';
 
-
 import { checkReferralCode } from '@/services/auth/referralCode/checkReferralCode';
 
 export class AuthController {
@@ -135,7 +134,7 @@ export class AuthController {
       const token = sign(
         { id: userId, role: user.role },
         process.env.TOKEN_KEY || 'secret',
-        { expiresIn: '1h' },
+        // { expiresIn: '1h' },
       );
       return res.status(200).send({
         username: user.name,

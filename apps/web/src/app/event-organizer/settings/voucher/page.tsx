@@ -9,6 +9,9 @@ import axios from 'axios';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { convertDate } from '@/lib/text';
+import { showMessage } from '@/components/Alert/Toast';
+import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from 'react-toastify';
 import {
   Card,
   CardContent,
@@ -34,6 +37,13 @@ const DashboardEOPage = () => {
   const [startDatePromo, setStartDatePromo] = useState<Date>();
   const [endDatePromo, setEndDatePromo] = useState<Date>();
   const [active, setActive] = useState<Boolean>(false);
+  const [sendPromo, setSendPromo] = useState<{
+    promo_name: string;
+    discount: number;
+  }>({
+    promo_name: '',
+    discount: 0,
+  });
   const [modal, setModal] = useState<{
     title: string;
     id: number;
@@ -46,13 +56,14 @@ const DashboardEOPage = () => {
     end_date: '',
   });
 
+  console.log(startDatePromo);
+  console.log(endDatePromo);
   useEffect(() => {
     getData();
   }, []);
   const getData = async () => {
     try {
       const cookies = Cookies.get('Token EO');
-      // console.log(cookies);
 
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event-organizer/event`,
@@ -62,18 +73,17 @@ const DashboardEOPage = () => {
           },
         },
       );
-      console.log('data event', response.data);
       setData(response.data);
     } catch (error) {
       console.log(error);
     }
   };
-  console.log(modal);
+  console.log(sendPromo);
   const mapping = () => {
     return data.map((val: any, idx: number) => {
       return (
         <div
-          className=" w-full md:w-[280px] h-[120px] rounded-lg px-3 py-2 border border-gray-400"
+          className=" w-full md:w-[260px] h-[120px] rounded-lg px-3 py-2 border border-gray-400"
           key={idx}
         >
           <p className="font-medium text-lg">{trimText(val.title, 22)}</p>
@@ -88,6 +98,9 @@ const DashboardEOPage = () => {
           </div>
 
           <div className="w-full flex justify-end md:justify-normal">
+            <Button className="bg-color2 text-white mt-2 border" type="button">
+              Check promo details
+            </Button>
             <Button
               className="bg-color2 text-white mt-2 border"
               type="button"
@@ -103,7 +116,7 @@ const DashboardEOPage = () => {
                 setActive(!active);
               }}
             >
-              add voucher
+              <Plus className="w-3 h-3 font-bold"></Plus>
             </Button>
           </div>
         </div>
@@ -113,12 +126,54 @@ const DashboardEOPage = () => {
 
   const createPromo = async () => {
     try {
-      const responseEvent = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}promo`,
+      if (
+        isNaN(sendPromo.discount) ||
+        sendPromo.discount > 99 ||
+        sendPromo.discount < 1
+      ) {
+        throw 'invalid discount';
+      }
 
+      if (!startDatePromo || !endDatePromo) {
+        throw 'fill the date';
+      }
+
+      if (startDatePromo && endDatePromo) {
+        const startPromoTime = new Date(startDatePromo).getTime();
+        const endPromoTime = new Date(endDatePromo).getTime();
+        const startEventTime = new Date(modal.start_date).getTime();
+        const endEventTime = new Date(modal.end_date).getTime();
+        if (startPromoTime > startEventTime || endPromoTime > startEventTime) {
+          throw 'invalid, cant exceed event date';
+        }
+
+        if (
+          startPromoTime > endPromoTime ||
+          startPromoTime < new Date().getTime()
+        ) {
+          throw 'invalid promo date';
+        }
+      }
+
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}promo`,
+        {
+          name_voucher: sendPromo.promo_name,
+          discount: sendPromo.discount,
+          start_date: startDatePromo?.toISOString(),
+          end_date: endDatePromo?.toISOString(),
+          event_id: modal.id,
+        },
         { headers: { Authorization: `Bearer ${Cookies.get('Token EO')}` } },
       );
-    } catch (error) {}
+      console.log(response);
+      showMessage('create promo success', 'success');
+    } catch (error: any) {
+      if (error.response) {
+        showMessage(error.response.data, 'error');
+      }
+      showMessage(error, 'error');
+    }
   };
   return (
     <div className="flex">
@@ -127,14 +182,16 @@ const DashboardEOPage = () => {
         <Header />
         <HeaderMobile />
         <div className="flex flex-col container px-[20px]  my-[10px] mx-auto md:py-20">
+          <ToastContainer></ToastContainer>
           {active ? (
             <div className="bg-black h-full w-[1670px] fixed top-12 z-10 right-0 backdrop-blur-md opacity-50"></div>
           ) : (
             <></>
           )}
-          <h1 className=" text-xl md:text-3xl font-bold mb-5 md:mx-[200px]">
-            Create your voucher here
+          <h1 className="md:mx-[200px] text-xl md:text-3xl font-bold mb-6">
+            Create Your Promo Here
           </h1>
+
           <div className="w-full h-fit bg-white flex gap-8 flex-wrap relative md:mx-[200px]">
             {mapping()}
             {active ? (
@@ -144,7 +201,15 @@ const DashboardEOPage = () => {
               >
                 <CardHeader>
                   <CardTitle>{trimText(modal.title, 40)}</CardTitle>
-                  <CardDescription>Create you event here, easy</CardDescription>
+                  <div className=" flex items-center gap-2">
+                    <p className="text-xs text-gray-600">
+                      {convertDate(new Date(modal.start_date))}
+                    </p>
+                    <p>-</p>
+                    <p className="text-xs text-gray-600">
+                      {convertDate(new Date(modal.end_date))}
+                    </p>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <Plus
@@ -161,12 +226,30 @@ const DashboardEOPage = () => {
                         type="text"
                         className="w-full"
                         placeholder="Name your event here"
-                        onChange={(e) => {}}
+                        onChange={(e) => {
+                          const newData = {
+                            ...sendPromo,
+                            promo_name: e.target.value,
+                          };
+                          setSendPromo(newData);
+                        }}
                       />
                     </div>
                     <div className="grid gap-3">
                       <Label htmlFor="promo">Discount (in %)</Label>
-                      <Input id="promo" type="text" className="w-full" />
+                      <Input
+                        id="promo"
+                        type="text"
+                        className="w-full"
+                        placeholder="ex : 20"
+                        onChange={(e) => {
+                          const newData = {
+                            ...sendPromo,
+                            discount: Number(e.target.value),
+                          };
+                          setSendPromo(newData);
+                        }}
+                      />
                     </div>
                   </div>
                   <div className="grid gap-6 sm:grid-cols-2 mb-6">
@@ -235,7 +318,12 @@ const DashboardEOPage = () => {
                       </Popover>
                     </div>
                   </div>
-                  <Button className="bg-color2 text-white w-full">
+                  <Button
+                    className="bg-color2 text-white w-full"
+                    onClick={() => {
+                      createPromo();
+                    }}
+                  >
                     create voucher
                   </Button>
                 </CardContent>

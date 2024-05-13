@@ -15,28 +15,42 @@ export const validationPromo = async (
     console.log(req.body);
     const { name_voucher, discount, start_date, end_date, event_id } = req.body;
 
+    const findPromo = await prisma.voucher.findFirst({
+      where: { name_voucher },
+    });
+
+    if (findPromo) {
+      throw 'promo already exist';
+    }
+
     const findevent = await prisma.masterEvent.findUnique({
       where: { id: event_id },
     });
 
+    if (!findevent) {
+      throw 'event not found';
+    }
+
+    if (isNaN(discount) || discount > 99 || discount < 1) {
+      throw 'invalid discount';
+    }
+
+    console.log(findevent);
+
     const startPromo = new Date(start_date).getTime();
     const endPromo = new Date(end_date).getTime();
-
-    if (startPromo > endPromo || startPromo < new Date().getTime()) {
-      throw 'invalid promo date';
-    }
 
     if (findevent) {
       const startEvent = new Date(findevent.start_date).getTime();
       const endtEvent = new Date(findevent.end_date).getTime();
-      if (startPromo > startEvent || endtEvent) {
-        throw 'invalid ';
+      if (startPromo > startEvent || endPromo > startEvent) {
+        console.log(startPromo > startEvent);
+        throw 'invalid, cant exceed event date ';
       }
     }
 
-    console.log(findevent);
-    if (isNaN(discount) || discount > 100 || discount < 1) {
-      throw 'invalid discount';
+    if (startPromo > endPromo || startPromo < new Date().getTime()) {
+      throw 'invalid promo date';
     }
 
     return next();
