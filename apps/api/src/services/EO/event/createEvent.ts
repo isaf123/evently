@@ -28,6 +28,7 @@ export const createEvent = async (
         usersId,
       },
     });
+
     return newEvent;
   } catch (error) {
     return error;

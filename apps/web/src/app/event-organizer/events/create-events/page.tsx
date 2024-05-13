@@ -59,6 +59,7 @@ import Header from '@/components/EO/SidebarEO/header';
 import { keepLogin } from '@/services/authService';
 import HeaderMobile from '@/components/EO/SidebarEO/header-mobile';
 import { setCreateEventAction } from '@/lib/features/createEventSlice';
+import { create } from 'cypress/types/lodash';
 
 interface IMakeEventProps { }
 
@@ -82,7 +83,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
     return state.promoEventSlice;
   });
 
-  console.log(createEvent);
+  // console.log(createEvent);
   console.log(promoEvent);
   React.useEffect(() => {
     searchToken();
@@ -105,7 +106,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       showMessage(error, 'error');
     }
   };
-
+  console.log('ini file:', file);
   const validateDate = () => {
     if (!startDate || !endDate) {
       setActiveDate(true);
@@ -117,8 +118,9 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       setActiveDate(true);
     }
   };
-  console.log(trimFormat(picName));
+  console.log(createEvent);
 
+  console.log(startDate);
   console.log('ini start', startDatePromo);
   console.log('ini end', endDatePromo);
   const handleData = async () => {
@@ -135,12 +137,19 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
         throw 'Invalid date';
       }
 
-      if (createEvent.event_type == 'paid' && createEvent.price < 100) {
+      if (
+        (createEvent.event_type == 'paid' && createEvent.price < 100) ||
+        isNaN(createEvent.price)
+      ) {
         throw 'invalid price';
       }
 
-      if (createEvent.available_seat < 1) {
+      if (createEvent.available_seat < 1 || isNaN(createEvent.available_seat)) {
         throw 'invalid seat';
+      }
+
+      if (!file) {
+        throw 'please input your image';
       }
 
       if (!(trimFormat(picName) == 'png' || trimFormat(picName) == 'jpg')) {
@@ -169,7 +178,8 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       );
 
       console.log(responseEvent.data.result.id);
-      showMessage(responseEvent.data.message, 'success');
+      const { name_voucher, discount } = promoEvent;
+
       dispatch(
         setCreateEventAction({
           title: '',
@@ -183,7 +193,10 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
         }),
       );
 
-      router.replace('/event-organizer/events');
+      showMessage('Add new event success', 'success');
+      setTimeout(() => {
+        router.replace('/event-organizer/events');
+      }, 1500);
     } catch (error: any) {
       console.log(error);
 
@@ -279,105 +292,6 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
                     </Popover>
                   </div>
                 </div>
-
-                {!active ? (
-                  <Button
-                    className="bg-color2 text-white w-[150px] mb-5"
-                    onClick={() => {
-                      setActive(!active);
-                    }}
-                  >
-                    <div className="w-full h-full flex justify-center items-center gap-3">
-                      <PlusCircle className="w-5 h-5"></PlusCircle>
-                      <p>Add promo</p>
-                    </div>
-                  </Button>
-                ) : (
-                  <Button
-                    className="bg-red-500 text-white w-[150px] mb-5"
-                    onClick={() => {
-                      setActive(!active);
-                    }}
-                  >
-                    <div className="w-full h-full flex justify-center items-center gap-3">
-                      <CircleX className="w-5 h-5"></CircleX>
-                      <p>cancel promo</p>
-                    </div>
-                  </Button>
-                )}
-
-                {/* ////////////////////////////////////////////     PROMOS   ///////////////////////////////////////////////////// */}
-                {active ? <EventPromo></EventPromo> : <></>}
-                {active ? (
-                  <div className="grid gap-6 sm:grid-cols-2 mb-6">
-                    <div className="grid gap-3">
-                      <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        Start Date Promo
-                      </p>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={'outline'}
-                            className={cn(
-                              'w-full justify-start text-left font-normal',
-                              !startDatePromo && 'text-muted-foreground',
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {startDatePromo ? (
-                              format(startDatePromo, 'PPP')
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0 bg-white">
-                          <Calendar
-                            mode="single"
-                            selected={startDatePromo}
-                            onSelect={setStartDatePromo}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-
-                    <div className="grid gap-3">
-                      <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        End Date Promo
-                      </p>
-
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={'outline'}
-                            className={cn(
-                              'w-full justify-start text-left font-normal',
-                              !endDatePromo && 'text-muted-foreground',
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {endDatePromo ? (
-                              format(endDatePromo, 'PPP')
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0 bg-white">
-                          <Calendar
-                            mode="single"
-                            selected={endDatePromo}
-                            onSelect={setEndDatePromo}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  </div>
-                ) : (
-                  <></>
-                )}
               </CardContent>
             </Card>
           </div>

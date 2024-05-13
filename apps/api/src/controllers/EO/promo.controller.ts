@@ -15,7 +15,6 @@ export class PromoEventController {
           start_date,
           end_date,
           event_id,
-          user_id: res.locals.id,
         },
       });
       console.log(usersId);
