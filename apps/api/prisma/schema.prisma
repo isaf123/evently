@@ -23,8 +23,6 @@ model Users {
   avatar_users  String?
   name          String          @unique
   email         String          @unique
-  address       String?
-  phone         String?
   password      String
   referral_code String
   role          Role
@@ -34,9 +32,10 @@ model Users {
   otp           String?
   token         String?         @unique
   isActive      Boolean         @default(true)
+  address       String?
+  phone         String?
   MasterEvent   MasterEvent[]
-  ReferredBy    Referral?       @relation("ParentUserReferral")
-  Referrals     Referral?       @relation("ReferralToUser")
+  Poin          Poin[]
   reviews_event reviews_event[]
   transactions  Transaction[]
   vouchers      Voucher[]
@@ -44,16 +43,16 @@ model Users {
   @@map("users")
 }
 
-model Referral {
-  id             Int       @id @default(autoincrement())
-  referral_code  String
-  user_id        Int       @unique
-  parent_user_id Int       @unique
-  createdAt      DateTime  @default(now())
-  expiredAt      DateTime?
-  parent_user    Users     @relation("ParentUserReferral", fields: [parent_user_id], references: [id])
-  user           Users     @relation("ReferralToUser", fields: [user_id], references: [id])
+model Poin {
+  id            Int       @id @default(autoincrement())
+  referral_code String
+  createdAt     DateTime  @default(now())
+  expiredAt     DateTime?
+  amount        Int       @default(10000)
+  usersId       Int?
+  Users         Users?    @relation(fields: [usersId], references: [id])
 
+  @@index([usersId], map: "referral_usersId_fkey")
   @@map("referral")
 }
 
@@ -81,17 +80,18 @@ model MasterEvent {
 }
 
 model Transaction {
-  id                 Int               @id @default(autoincrement())
-  date_transaction   DateTime
-  invoice_code       String
-  user_id            Int
-  event_id           Int
-  total_price        Int
-  status_transaction TransactionStatus
-  voucherId          Int?
-  event              MasterEvent       @relation(fields: [event_id], references: [id])
-  user               Users             @relation(fields: [user_id], references: [id])
-  voucher            Voucher?          @relation(fields: [voucherId], references: [id])
+  id                   Int               @id @default(autoincrement())
+  date_transaction     DateTime
+  invoice_code         String
+  user_id              Int
+  event_id             Int
+  status_transaction   TransactionStatus
+  voucherId            Int?
+  total_price          Int
+  price_after_discount Int
+  event                MasterEvent       @relation(fields: [event_id], references: [id])
+  user                 Users             @relation(fields: [user_id], references: [id])
+  voucher              Voucher?          @relation(fields: [voucherId], references: [id])
 
   @@index([event_id], map: "transaction_event_id_fkey")
   @@index([user_id], map: "transaction_user_id_fkey")
@@ -102,7 +102,7 @@ model Transaction {
 model Voucher {
   id           Int           @id @default(autoincrement())
   name_voucher String
-  discount     Float
+  discount     Float         @default(0.1)
   start_date   DateTime
   end_date     DateTime
   event_id     Int?

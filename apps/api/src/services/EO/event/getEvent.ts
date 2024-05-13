@@ -1,6 +1,6 @@
 import prisma from "@/prisma"
 
-export const getEvents = async (data: any) => {
+export const getEvents = async (data: any, offset: number, limit: number) => {
     try {
         const events = await prisma.masterEvent.findMany({
             where: { usersId: data },
@@ -10,8 +10,9 @@ export const getEvents = async (data: any) => {
                         name: true
                     }
                 }
-
-            }
+            },
+            skip: offset,
+            take: limit
         })
         console.log('data events', events);
         return events

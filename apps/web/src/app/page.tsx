@@ -26,7 +26,7 @@ export default function Home() {
       );
       setNewEvent(response.data.reverse());
       console.log(response.data);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const mapNewEvent = () => {
