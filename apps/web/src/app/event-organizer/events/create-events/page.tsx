@@ -61,7 +61,7 @@ import HeaderMobile from '@/components/EO/SidebarEO/header-mobile';
 import { setCreateEventAction } from '@/lib/features/createEventSlice';
 import { create } from 'cypress/types/lodash';
 
-interface IMakeEventProps { }
+interface IMakeEventProps {}
 
 const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   const [active, setActive] = useState<Boolean>(false);
@@ -170,6 +170,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       formData.append('address', createEvent.address);
       formData.append('start_date', startDate.toISOString());
       formData.append('end_date', endDate.toISOString());
+      formData.append('max_ticket', createEvent.max_ticket);
 
       const responseEvent = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event-organizer`,
@@ -177,26 +178,28 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
         { headers: { Authorization: `Bearer ${Cookies.get('Token EO')}` } },
       );
 
-      console.log(responseEvent.data.result.id);
+      console.log(responseEvent);
       const { name_voucher, discount } = promoEvent;
 
-      dispatch(
-        setCreateEventAction({
-          title: '',
-          description: '',
-          category: '',
-          available_seat: 0,
-          event_type: '',
-          price: 0,
-          location: '',
-          address: '',
-        }),
-      );
+      // dispatch(
+      //   setCreateEventAction({
+      //     title: '',
+      //     description: '',
+      //     category: '',
+      //     available_seat: 0,
+      //     event_type: '',
+      //     price: 0,
+      //     location: '',
+      //     address: '',
+      //   }),
+      // );
 
-      showMessage('Add new event success', 'success');
-      setTimeout(() => {
-        router.replace('/event-organizer/events');
-      }, 1500);
+      console.log(responseEvent);
+
+      // showMessage('Add new event success', 'success');
+      // setTimeout(() => {
+      //   router.replace('/event-organizer/events');
+      // }, 1500);
     } catch (error: any) {
       console.log(error);
 
@@ -221,7 +224,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
             <EventDesccription></EventDesccription>
             <Card x-chunk="dashboard-07-chunk-2">
               <CardHeader>
-                <CardTitle>Product Details</CardTitle>
+                <CardTitle>Event Details</CardTitle>
               </CardHeader>
               <CardContent>
                 <EventDetail></EventDetail>

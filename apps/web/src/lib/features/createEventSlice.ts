@@ -8,6 +8,7 @@ interface IData {
   description?: string;
   category?: string;
   available_seat?: number;
+  max_ticket?: number;
   event_type?: string;
   price?: number;
   location?: string;
@@ -23,6 +24,7 @@ const data: IData | any = {
   price: 0,
   location: '',
   address: '',
+  max_ticket: 0,
 };
 
 const createEventSlice = createSlice({
