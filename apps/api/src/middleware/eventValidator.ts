@@ -12,17 +12,29 @@ export const validationEvent = async (
   next: NextFunction,
 ) => {
   try {
-    const { title, available_seat, event_type, price, start_date, end_date } =
-      req.body;
+    const {
+      title,
+      available_seat,
+      event_type,
+      price,
+      start_date,
+      end_date,
+      max_ticket,
+    } = req.body;
     const findEvent = await prisma.masterEvent.findFirst({
       where: { title },
     });
+
     if (findEvent) {
       throw 'event already exisst';
     }
 
-    if (available_seat < 1) {
-      throw 'invalid seat';
+    if (available_seat < 1 || isNaN(available_seat)) {
+      throw 'invalid max ticket';
+    }
+
+    if (max_ticket < 1 || isNaN(max_ticket)) {
+      throw 'invalid max ticket';
     }
 
     if (

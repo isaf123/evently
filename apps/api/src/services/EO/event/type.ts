@@ -11,4 +11,5 @@ export interface Ievent {
   location: string;
   usersId: number;
   address: string;
+  max_ticket: number;
 }

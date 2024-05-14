@@ -26,6 +26,7 @@ export const createEvent = async (
         end_date: eventData.end_date,
         flyer_event: pic,
         usersId,
+        max_ticket: Number(eventData.max_ticket),
       },
     });
 

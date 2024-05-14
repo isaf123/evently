@@ -7,7 +7,11 @@ export class EventEOController {
   async getEvents(req: Request, res: Response) {
     try {
       const { offset = 0, limit = 5 } = req.query;
-      const events = await getEvents(res.locals.decript.id, Number(offset), Number(limit));
+      const events = await getEvents(
+        res.locals.decript.id,
+        Number(offset),
+        Number(limit),
+      );
       return res.status(200).send(events);
     } catch (error) {
       return res.status(500).send({ error });
@@ -25,6 +29,8 @@ export class EventEOController {
       }
       const newEvent = await createEvent(req.body, files[0].filename, usersId);
 
+      console.log('EVENT BARU ::::', newEvent);
+
       return res.status(201).send({
         rc: 201,
         success: true,
@@ -38,15 +44,15 @@ export class EventEOController {
 
   async deleteEvent(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = res.locals.decript.id
+      const id = res.locals.decript.id;
       if (!id) {
-        return res.status(404).send('Event not found!')
+        return res.status(404).send('Event not found!');
       }
-      await deleteEvent(id)
+      await deleteEvent(id);
 
-      return res.status(200).send('Event Deleted Successfully!')
+      return res.status(200).send('Event Deleted Successfully!');
     } catch (error) {
-      return res.status(500).send({ error })
+      return res.status(500).send({ error });
     }
   }
 }

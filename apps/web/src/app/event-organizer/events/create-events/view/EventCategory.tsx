@@ -17,6 +17,7 @@ interface IEventCategoryProps {}
 
 const EventCategory: React.FunctionComponent<IEventCategoryProps> = (props) => {
   const dispatch = useAppDispatch();
+
   return (
     <Card x-chunk="dashboard-07-chunk-3" className="w-[360px] mb-8">
       <CardHeader>
@@ -25,14 +26,14 @@ const EventCategory: React.FunctionComponent<IEventCategoryProps> = (props) => {
       <CardContent>
         <div className="grid gap-6">
           <div className="grid gap-3">
-            <Label htmlFor="status">Status</Label>
+            <Label htmlFor="status">Category</Label>
             <Select
               onValueChange={(e) => {
                 dispatch(setCreateEventAction({ category: e }));
               }}
             >
               <SelectTrigger id="status" aria-label="Select status">
-                <SelectValue placeholder="Select status" />
+                <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent className="bg-white">
                 {category.map((val: any, idx: number) => {
