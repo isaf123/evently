@@ -28,71 +28,94 @@ export class AuthController {
       if (existingUser)
         return res.status(409).json('Email Already Registered.');
       const hashedPassword = await hashPassword(password);
+
       await prisma.$transaction(async (tx) => {
+        console.log('referral code other', referral_code_other);
         const newUsers = await tx.users.create({
           data: {
             name,
             email,
             password: hashedPassword,
             role,
-            referral_code,
+            referral_code
           }
         })
 
-        // Lakukan pengecekan pada referral_code dengan referral_code_other
-        const newVoucher = await tx.voucher.create({
-          data: {
-            name_voucher: 'discount register',
-            start_date: new Date(),
-            end_date: addMonth(new Date(), 3),
-            event_id: null,
-            user_id: newUsers.id
-          }
-        })
-        const findUserId = await tx.users.findFirst({
+        const findReferralCode = await tx.users.findUnique({
           where: {
             referral_code: referral_code_other
           }
         })
-        if (!findUserId) {
-          throw res.status(404).send('No Referral Code Exists')
-        }
-        const findPointUser = await tx.poin.findFirst({
-          where: {
-            usersId: findUserId.id
-          }
-        })
 
-        if (findPointUser) {
-          const findByReferralCode = await tx.poin.findUnique({
+
+        if (newUsers.role === 'eo') {
+          return res.status(201).send(newUsers)
+        }
+
+        if (referral_code_other) {
+          console.log('data referral code terakhir', findReferralCode);
+          if (!findReferralCode || findReferralCode.role !== 'customers') {
+            throw res.status(401).send('Invalid Referral Code')
+          }
+          await tx.voucher.create({
+            data: {
+              name_voucher: 'discount register',
+              start_date: new Date(),
+              end_date: addMonth(new Date(), 3),
+              event_id: null,
+              user_id: newUsers.id
+            }
+          })
+          const findUserId = await tx.users.findFirst({
             where: {
               referral_code: referral_code_other
             }
           })
-          await tx.poin.update({
+          if (!findUserId) {
+            throw res.status(404).send('No Referral Code Exists')
+          }
+          const findPointUser = await tx.poin.findFirst({
             where: {
-              id: findByReferralCode?.id
-            },
-            data: {
-              amount: findPointUser.amount + 10000,
-              usersId: findPointUser.usersId
-            }
-          })
-        } else {
-          await tx.poin.create({
-            data: {
-              referral_code: referral_code_other,
-              createdAt: new Date(),
-              expiredAt: addMonth(new Date(), 3),
-              amount: 10000,
               usersId: findUserId.id
             }
           })
+
+          if (findPointUser) {
+            const findByReferralCode = await tx.poin.findUnique({
+              where: {
+                referral_code: referral_code_other
+              }
+            })
+            await tx.poin.update({
+              where: {
+                id: findByReferralCode?.id
+              },
+              data: {
+                amount: findPointUser.amount + 10000,
+                usersId: findPointUser.usersId
+              }
+            })
+          } else {
+            await tx.poin.create({
+              data: {
+                referral_code: referral_code_other,
+                createdAt: new Date(),
+                expiredAt: addMonth(new Date(), 3),
+                amount: 10000,
+                usersId: findUserId.id
+              }
+            })
+          }
         }
-        return res.status(201).send(newUsers);
+
+        return res.status(201).send(newUsers)
       })
     } catch (error) {
       next(error);
+    } finally {
+      async () => {
+        await prisma.$disconnect()
+      }
     }
   }
 

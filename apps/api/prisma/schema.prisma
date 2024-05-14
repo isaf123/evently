@@ -21,7 +21,7 @@ model Sample {
 model Users {
   id            Int             @id @default(autoincrement())
   avatar_users  String?
-  name          String          @unique
+  name          String
   email         String          @unique
   password      String
   referral_code String?         @unique

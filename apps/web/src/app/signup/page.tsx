@@ -40,6 +40,8 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
     setShowReferralCode(!showReferralCode)
   }
   const router = useRouter()
+  console.log('data user', dataUser);
+
   const handleRegister = async () => {
     try {
       console.log('ini ENV', process.env.NEXT_PUBLIC_BASE_API_URL);
