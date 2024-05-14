@@ -24,7 +24,7 @@ model Users {
   name          String          @unique
   email         String          @unique
   password      String
-  referral_code String
+  referral_code String?         @unique
   role          Role
   tryLogin      Int             @default(0)
   createdAt     DateTime        @default(now())
@@ -45,15 +45,15 @@ model Users {
 
 model Poin {
   id            Int       @id @default(autoincrement())
-  referral_code String
+  referral_code String?   @unique
   createdAt     DateTime  @default(now())
   expiredAt     DateTime?
   amount        Int       @default(10000)
-  usersId       Int?
-  Users         Users?    @relation(fields: [usersId], references: [id])
+  usersId       Int
+  Users         Users     @relation(fields: [usersId], references: [id])
 
   @@index([usersId], map: "referral_usersId_fkey")
-  @@map("referral")
+  @@map("poin")
 }
 
 model MasterEvent {
@@ -85,9 +85,9 @@ model Transaction {
   invoice_code         String
   user_id              Int
   event_id             Int
+  total_price          Int
   status_transaction   TransactionStatus
   voucherId            Int?
-  total_price          Int
   price_after_discount Int
   event                MasterEvent       @relation(fields: [event_id], references: [id])
   user                 Users             @relation(fields: [user_id], references: [id])
