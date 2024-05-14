@@ -38,7 +38,8 @@ export class AuthController {
             referral_code,
           }
         })
-        // Buat voucher baru
+
+        // Lakukan pengecekan pada referral_code dengan referral_code_other
         const newVoucher = await tx.voucher.create({
           data: {
             name_voucher: 'discount register',
@@ -48,31 +49,27 @@ export class AuthController {
             user_id: newUsers.id
           }
         })
-        // Temukan ID user berdasarkan referral_code_other
         const findUserId = await tx.users.findFirst({
           where: {
             referral_code: referral_code_other
           }
         })
-        // Jika tidak ada referral_code_other atau pun salah
         if (!findUserId) {
-          return res.status(404).send('No Referral Code Exists')
+          throw res.status(404).send('No Referral Code Exists')
         }
-        // Temukan poin pengguna berdasarkan referral_code_other
-        const findPointUser = await prisma.poin.findFirst({
+        const findPointUser = await tx.poin.findFirst({
           where: {
             usersId: findUserId.id
           }
         })
-        // Jika poin pengguna ditemukan, tambahkan 10000 poin
 
         if (findPointUser) {
-          const findByReferralCode = await prisma.poin.findUnique({
+          const findByReferralCode = await tx.poin.findUnique({
             where: {
               referral_code: referral_code_other
             }
           })
-          await prisma.poin.update({
+          await tx.poin.update({
             where: {
               id: findByReferralCode?.id
             },
@@ -82,7 +79,7 @@ export class AuthController {
             }
           })
         } else {
-          await prisma.poin.create({
+          await tx.poin.create({
             data: {
               referral_code: referral_code_other,
               createdAt: new Date(),
@@ -96,10 +93,6 @@ export class AuthController {
       })
     } catch (error) {
       next(error);
-    } finally {
-      async () => {
-        await prisma.$disconnect()
-      }
     }
   }
 
