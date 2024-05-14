@@ -61,7 +61,7 @@ import HeaderMobile from '@/components/EO/SidebarEO/header-mobile';
 import { setCreateEventAction } from '@/lib/features/createEventSlice';
 import { create } from 'cypress/types/lodash';
 
-interface IMakeEventProps {}
+interface IMakeEventProps { }
 
 const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   const [active, setActive] = useState<Boolean>(false);

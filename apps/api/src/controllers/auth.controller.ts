@@ -1,8 +1,6 @@
 import prisma from '@/prisma';
 import { findUsers } from '@/services/auth/login/findFirstUser';
 import { checkExistingUsers } from '@/services/auth/register/checkUsers';
-import { createUsers } from '@/services/auth/register/createUsers';
-import { Role } from '@/services/auth/register/typeUsers';
 import { validateEmail } from '@/utils/emailValidator';
 import { hashPassword } from '@/utils/hashPassword';
 import { NextFunction, Request, Response } from 'express';
@@ -15,30 +13,84 @@ import { saveResetToken } from '@/services/auth/forgotPassword/saveResetToken';
 import { sendEmailForgotPass } from '@/utils/emailSendForgotPassword';
 
 import { checkReferralCode } from '@/services/auth/referralCode/checkReferralCode';
+import { addMonth } from '@/services/auth/register/addMonth';
 
 export class AuthController {
   // Task 1: Doing Register
   async registerUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, email, password, role, referral_code } = req.body;
+      const { name, email, password, role, referral_code, referral_code_other } = req.body;
+      console.log('referral code', referral_code_other);
+
       if (!validateEmail(email))
         return res.status(400).json('Email not valid!');
       const existingUser = await checkExistingUsers(email);
       if (existingUser)
         return res.status(409).json('Email Already Registered.');
-      if (!Object.values(Role).includes(role))
-        return res.status(400).json(`${role} not valid`);
       const hashedPassword = await hashPassword(password);
-      const referredUser = await checkReferralCode(referral_code);
-      console.log(!referredUser);
-      const newUsers = await createUsers({
-        name,
-        email,
-        password: hashedPassword,
-        role,
-        referral_code,
-      });
-      return res.status(201).send(newUsers);
+      await prisma.$transaction(async (tx) => {
+        const newUsers = await tx.users.create({
+          data: {
+            name,
+            email,
+            password: hashedPassword,
+            role,
+            referral_code,
+          }
+        })
+
+        // Lakukan pengecekan pada referral_code dengan referral_code_other
+        const newVoucher = await tx.voucher.create({
+          data: {
+            name_voucher: 'discount register',
+            start_date: new Date(),
+            end_date: addMonth(new Date(), 3),
+            event_id: null,
+            user_id: newUsers.id
+          }
+        })
+        const findUserId = await tx.users.findFirst({
+          where: {
+            referral_code: referral_code_other
+          }
+        })
+        if (!findUserId) {
+          throw res.status(404).send('No Referral Code Exists')
+        }
+        const findPointUser = await tx.poin.findFirst({
+          where: {
+            usersId: findUserId.id
+          }
+        })
+
+        if (findPointUser) {
+          const findByReferralCode = await tx.poin.findUnique({
+            where: {
+              referral_code: referral_code_other
+            }
+          })
+          await tx.poin.update({
+            where: {
+              id: findByReferralCode?.id
+            },
+            data: {
+              amount: findPointUser.amount + 10000,
+              usersId: findPointUser.usersId
+            }
+          })
+        } else {
+          await tx.poin.create({
+            data: {
+              referral_code: referral_code_other,
+              createdAt: new Date(),
+              expiredAt: addMonth(new Date(), 3),
+              amount: 10000,
+              usersId: findUserId.id
+            }
+          })
+        }
+        return res.status(201).send(newUsers);
+      })
     } catch (error) {
       next(error);
     }

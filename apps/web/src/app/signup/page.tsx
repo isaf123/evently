@@ -53,7 +53,8 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
         email: dataUser.email,
         password: dataUser.password,
         role: dataUser.role,
-        referral_code: generateReferralCode(6)
+        referral_code: generateReferralCode(6),
+        referral_code_other: dataUser.referral_code
       })
       console.log(dataUser);
 
@@ -61,7 +62,7 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
       router.push("/signin")
     } catch (error: any) {
       if (error.response) {
-        showMessage(error.response.data.error.message, 'error');
+        showMessage(error.response.data, 'error');
       } else {
         showMessage(error, 'error');
       }
