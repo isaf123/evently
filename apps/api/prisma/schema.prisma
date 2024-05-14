@@ -69,6 +69,7 @@ model MasterEvent {
   location       String
   usersId        Int
   address        String
+  max_ticket     Int
   category       Category
   user_id        Users           @relation(fields: [usersId], references: [id])
   reviews_event  reviews_event[]
@@ -89,6 +90,7 @@ model Transaction {
   status_transaction   TransactionStatus
   voucherId            Int?
   price_after_discount Int
+  ticket_count         Int
   event                MasterEvent       @relation(fields: [event_id], references: [id])
   user                 Users             @relation(fields: [user_id], references: [id])
   voucher              Voucher?          @relation(fields: [voucherId], references: [id])
