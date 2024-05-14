@@ -68,7 +68,7 @@ export default class App {
     this.app.use('/event-organizer', eventEORouter.getRouter());
     this.app.use('/event', eventCustRouter.getRouter());
     this.app.use('/promo', promoEventRouter.getRouter());
-    this.app.use('/eventpic', eventPicRouter.getRouter());
+    this.app.use('/eventpic', express.static('public/eventpic'));
   }
 
   public start(): void {

@@ -23,7 +23,10 @@ const CartEvent: React.FunctionComponent<ICartEventProps> = (props) => {
       }}
     >
       <div className="w-full h-[160px] bg-gray-200 rounded-t-xl overflow-hidden">
-        {props.image !== null ? <img src={props.image} alt="" /> : <></>}
+        <img
+          src="http://localhost:3500/eventpic/EVENTPIC1715658625195.jpg"
+          alt=""
+        />
       </div>
       <div className="mx-4 my-2">
         <p className="text-lg font-medium">{trimText(props.children, 24)}</p>
