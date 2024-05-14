@@ -47,7 +47,7 @@ export const Header = () => {
       }
     } catch (error: any) {
       if (error.response) {
-        showMessage(error.response.data.error.message, 'error');
+        showMessage(error.response.data, 'error');
       } else {
         showMessage(error, 'error');
       }
