@@ -97,8 +97,11 @@ const DashboardEOPage = () => {
             </p>
           </div>
 
-          <div className="w-full flex justify-end md:justify-normal">
-            <Button className="bg-color2 text-white mt-2 border" type="button">
+          <div className="w-full flex justify-end md:justify-normal gap-2">
+            <Button
+              className=" text-black mt-2 border border-gray-300"
+              type="button"
+            >
               Check promo details
             </Button>
             <Button
