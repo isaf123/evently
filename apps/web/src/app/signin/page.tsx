@@ -22,7 +22,7 @@ import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '@/lib/hooks';
 import { setSuccessLoginAction } from '@/lib/features/userSlice';
 
-interface ILoginPageProps {}
+interface ILoginPageProps { }
 
 const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
   const [dataUser, setDataUser] = useState({
@@ -90,7 +90,7 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
                 <Link
-                  href="#"
+                  href="/forgot-password"
                   className="ml-auto inline-block text-sm underline"
                 >
                   Forgot your password?

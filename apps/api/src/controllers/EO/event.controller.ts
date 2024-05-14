@@ -20,6 +20,9 @@ export class EventEOController {
       const usersId = res.locals.decript.id;
 
       const files = req.files as Express.Multer.File[];
+      if (files.length === 0) {
+        return res.status(400).send({ message: 'No file uploaded' });
+      }
       const newEvent = await createEvent(req.body, files[0].filename, usersId);
 
       return res.status(201).send({
