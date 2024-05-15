@@ -129,6 +129,10 @@ const DashboardEOPage = () => {
 
   const createPromo = async () => {
     try {
+      if (Object.values(sendPromo).includes('')) {
+        throw 'fill all the data';
+      }
+
       if (
         isNaN(sendPromo.discount) ||
         sendPromo.discount > 99 ||

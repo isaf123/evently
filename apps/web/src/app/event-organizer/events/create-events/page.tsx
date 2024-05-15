@@ -181,25 +181,25 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       console.log(responseEvent);
       const { name_voucher, discount } = promoEvent;
 
-      // dispatch(
-      //   setCreateEventAction({
-      //     title: '',
-      //     description: '',
-      //     category: '',
-      //     available_seat: 0,
-      //     event_type: '',
-      //     price: 0,
-      //     location: '',
-      //     address: '',
-      //   }),
-      // );
+      dispatch(
+        setCreateEventAction({
+          title: '',
+          description: '',
+          category: '',
+          available_seat: 0,
+          event_type: '',
+          price: 0,
+          location: '',
+          address: '',
+        }),
+      );
 
       console.log(responseEvent);
 
-      // showMessage('Add new event success', 'success');
-      // setTimeout(() => {
-      //   router.replace('/event-organizer/events');
-      // }, 1500);
+      showMessage('Add new event success', 'success');
+      setTimeout(() => {
+        router.replace('/event-organizer/events');
+      }, 1500);
     } catch (error: any) {
       console.log(error);
 
