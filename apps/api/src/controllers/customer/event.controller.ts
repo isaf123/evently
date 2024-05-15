@@ -6,6 +6,39 @@ import { sign } from 'jsonwebtoken';
 import { compareSync } from 'bcrypt';
 
 export class EventController {
+  async getEventDetails(req: Request, res: Response) {
+    try {
+      const title = req.params.title.split('-').join(' ');
+      console.log(new Date());
+
+      const getEvent = await prisma.masterEvent.findFirst({
+        where: {
+          title,
+          start_date: { gt: new Date().toISOString() },
+        },
+        include: {
+          Vouchers: {
+            where: {
+              end_date: { gt: new Date().toISOString() },
+              start_date: { lt: new Date().toISOString() },
+            },
+          },
+        },
+      });
+
+      if (!getEvent) {
+        throw 'event not exist';
+      }
+
+      return res.status(200).send({
+        rc: 201,
+        success: true,
+        result: getEvent,
+      });
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  }
 
   async getAllEvent(req: Request, res: Response, next: NextFunction) {
     try {

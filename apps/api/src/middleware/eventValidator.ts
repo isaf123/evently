@@ -28,9 +28,15 @@ export const validationEvent = async (
     if (findEvent) {
       throw 'event already exisst';
     }
+    console.log('seat:', available_seat);
+    console.log('CHEEEEEECKKKK:', Number.isInteger(available_seat));
 
-    if (available_seat < 1 || isNaN(available_seat)) {
-      throw 'invalid max ticket';
+    if (
+      available_seat < 1 ||
+      isNaN(available_seat) ||
+      Number.isInteger(available_seat)
+    ) {
+      throw 'invalid max seat';
     }
 
     if (max_ticket < 1 || isNaN(max_ticket)) {

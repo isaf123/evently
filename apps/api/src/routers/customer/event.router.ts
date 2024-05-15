@@ -15,6 +15,7 @@ export class EventCustRouter {
 
   private initializeRoutes(): void {
     this.router.get('/', this.eventController.getAllEvent);
+    this.router.get('/detail/:title', this.eventController.getEventDetails);
     this.router.get('/:title', this.eventController.debounceSearch);
   }
 

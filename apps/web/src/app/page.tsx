@@ -26,9 +26,10 @@ export default function Home() {
       );
       setNewEvent(response.data.reverse());
       console.log(response.data);
-    } catch (error) { }
+    } catch (error) {}
   };
 
+  console.log(newEvent);
   const mapNewEvent = () => {
     return newEvent?.map((val: any, idx: number) => {
       return (
@@ -37,6 +38,7 @@ export default function Home() {
             price={val.price}
             startdate={convertDate(val.start_date)}
             enddate={convertDate(val.end_date)}
+            image={val.flyer_event}
           >
             {val.title}
           </CartEvent>
