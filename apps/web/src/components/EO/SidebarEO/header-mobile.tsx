@@ -87,7 +87,7 @@ const HeaderMobile = () => {
                                 <Button onClick={() => {
                                     toggleOpen();
                                     handleLogout()
-                                }} className='text-2xl bg-purple-400 w-full'>Logout</Button>
+                                }} className='text-2xl w-full'>Logout</Button>
                             </MenuItem>
                         </div>
                     )}
