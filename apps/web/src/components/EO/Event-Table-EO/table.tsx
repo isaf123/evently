@@ -9,6 +9,7 @@ import Cookies from 'js-cookie';
 import { EditButton } from '../Button/ButtonEditEvent/button';
 import { DeleteButton } from '../Button/ButtonDeleteEvent/button';
 import { capitalizeLetter } from '@/utils/capitalizeLetter';
+import { deleteEvent } from '@/api/EO/eo';
 interface EventData {
     id: number;
     flyer_event: string | null;
@@ -70,24 +71,14 @@ const TableEventEO = () => {
             }
         }
     }
-
-    const handleNextPage = () => {
-        if (page < totalPages) {
-            setPage(prevPage => prevPage + 1);
-        }
-    };
-
-    const handlePrevPage = () => {
-        if (page > 1) {
-            setPage(prevPage => prevPage - 1);
-        }
-    };
     React.useEffect(() => {
         getEvents(page, pageSize)
     }, [page, pageSize]);
 
-    // Handler untuk memperbarui nilai query saat input berubah
-
+    const handleDeleteEvent = async (eventID: number) => {
+        await deleteEvent(eventID)
+        await getEvents(page, pageSize)
+    }
     return (
         <div>
             <Table className='w-full text-sm text-left text-gray-500'>
@@ -109,7 +100,7 @@ const TableEventEO = () => {
                             <TableCell className='px-6 py-3'>{formatDate(event.start_date.toString())}</TableCell>
                             <TableCell className='flex justify-center items-center gap-[20px]'>
                                 <EditButton />
-                                <DeleteButton />
+                                <DeleteButton onDelete={() => handleDeleteEvent(event.id)} />
                             </TableCell>
                         </TableRow>
                     ))}
