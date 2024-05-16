@@ -5,16 +5,15 @@ import express, {
   Request,
   Response,
   NextFunction,
-  Router,
 } from 'express';
 import cors from 'cors';
 import { PORT } from './config';
 import { AuthRouter } from './routers/auth.router';
 import { EventEORouter } from './routers/EO/event.router';
 import { EventCustRouter } from './routers/customer/event.router';
-import { EventPicRouter } from './routers/EO/eventpic.router';
 import { PromoEventRouter } from './routers/EO/promo.router';
 import { VoucherUserRouter } from './routers/customer/voucher.router';
+import { DashboardEORouter } from './routers/EO/dashboard/dashboard.router';
 export default class App {
   readonly app: Express;
 
@@ -59,8 +58,10 @@ export default class App {
     const eventEORouter = new EventEORouter();
     const eventCustRouter = new EventCustRouter();
     const voucherUserRouter = new VoucherUserRouter();
-    const eventPicRouter = new EventPicRouter();
     const promoEventRouter = new PromoEventRouter();
+
+    // Dashboard EO 
+    const dashboardEORouter = new DashboardEORouter()
 
     this.app.get('/', (req: Request, res: Response) => {
       res.send(`Hello, Purwadhika Student !`);
@@ -72,6 +73,11 @@ export default class App {
     this.app.use('/promo', promoEventRouter.getRouter());
     this.app.use('/voucher-user', voucherUserRouter.getRouter());
     this.app.use('/eventpic', express.static('public/eventpic'));
+
+
+    // Dashboard EO
+
+    this.app.use('/EO', dashboardEORouter.getRouter())
   }
 
   public start(): void {
