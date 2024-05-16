@@ -40,7 +40,6 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
   const transaction = useAppSelector((state) => {
     return state.transactionEventSlice;
   });
-  // console.log('dapeeeeeet:', transaction.total_price);
 
   // point:
   const [activePoint, setActivePoint] = React.useState<Boolean>(true);
@@ -76,7 +75,9 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
 
   const role = Cookies.get('Token Cust');
   React.useEffect(() => {
-    getVoucherPoin();
+    if (role) {
+      getVoucherPoin();
+    }
   }, []);
 
   React.useEffect(() => {
@@ -124,8 +125,6 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
       console.log(error);
     }
   };
-
-  console.log('ini poin', pointUse);
 
   // console.log('ini voucher use :', voucherUser);
 

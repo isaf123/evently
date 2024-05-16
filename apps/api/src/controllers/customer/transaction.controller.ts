@@ -8,35 +8,35 @@ export class TransactionUserController {
       console.log(res.locals.decript.id);
       console.log(req.body);
 
-      // const {
-      //   date_transaction,
-      //   invoice_code,
-      //   price_after_discount,
-      //   status_transaction,
-      //   ticket_count,
-      //   total_price,
-      //   event_id,
-      //   user_id,
-      //   voucherId,
-      //   point_discount,
-      //   voucher_discount,
-      // } = req.body;
+      const {
+        date_transaction,
+        invoice_code,
+        price_after_discount,
+        status_transaction,
+        ticket_count,
+        total_price,
+        event_id,
+        user_id,
+        voucherId,
+        point_discount,
+        voucher_discount,
+      } = req.body;
 
-      // const trans = await prisma.transaction.create({
-      //   data: {
-      //     date_transaction,
-      //     invoice_code,
-      //     price_after_discount,
-      //     status_transaction,
-      //     ticket_count,
-      //     total_price,
-      //     event_id,
-      //     user_id: res.locals.decript.id,
-      //     voucherId,
-      //     point_discount,
-      //     voucher_discount,
-      //   },
-      // });
+      const trans = await prisma.transaction.create({
+        data: {
+          date_transaction,
+          invoice_code,
+          price_after_discount,
+          status_transaction,
+          ticket_count,
+          total_price,
+          event_id,
+          user_id: res.locals.decript.id,
+          voucherId,
+          point_discount,
+          voucher_discount,
+        },
+      });
     } catch (error) {
       console.log(error);
     }

@@ -19,8 +19,9 @@ import { rupiah } from '@/lib/text';
 import { useDebounce } from 'use-debounce';
 import { trimText } from '@/lib/text';
 import { Search } from 'lucide-react';
+import Image from 'next/image';
 
-interface IDebounceSearchProps { }
+interface IDebounceSearchProps {}
 
 const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
   props,
@@ -46,6 +47,8 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
     }
   };
 
+  console.log(dataSearch);
+
   const mappingDataSearch = () => {
     return dataSearch?.map((val: any, idx: number) => {
       return (
@@ -53,7 +56,17 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
           className="w-full h-[100px] flex border-t-1 border-b-1 border-t border-b items-center gap-3"
           key={idx}
         >
-          <div className="w-[160px] h-[80px] bg-gray-400 rounded-md hidden md:block"></div>
+          {val.flyer_event ? (
+            <Image
+              src={`${process.env.NEXT_PUBLIC_BASE_API_URL}eventpic/${val.flyer_event}`}
+              alt=""
+              width={170}
+              height={80}
+              className="h-[80px] w-[170px] rounded-md hidden md:block "
+            ></Image>
+          ) : (
+            <div className="w-[170px] h-[80px] bg-gray-400 rounded-md hidden md:block"></div>
+          )}
           <div>
             <p className="md:text-lg font-medium">{trimText(val?.title, 40)}</p>
             <div className="flex items-center gap-1 text-xs text-gray-400">
@@ -70,7 +83,12 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">
+        <Button
+          variant="outline"
+          onClick={() => {
+            setSearch('');
+          }}
+        >
           <span className="mr-2">
             <Search className="w-4 h-4"></Search>
           </span>
