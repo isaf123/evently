@@ -15,10 +15,9 @@ export class PromoEventController {
           start_date,
           end_date,
           event_id,
-          user_id: null
+          user_id: null,
         },
       });
-      console.log(usersId);
       return res.status(201).send({
         rc: 201,
         success: true,

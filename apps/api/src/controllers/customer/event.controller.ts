@@ -7,6 +7,12 @@ import { compareSync } from 'bcrypt';
 
 export class EventController {
   async getEventDetails(req: Request, res: Response) {
+    const currentDatePlus = new Date();
+    const currentDateMin = new Date();
+    currentDatePlus.setDate(currentDatePlus.getDate() + 1);
+    currentDateMin.setDate(currentDateMin.getDate() - 1);
+    const toISOStringplus = currentDatePlus.toISOString();
+    const toISOStringMin = currentDateMin.toISOString();
     try {
       const title = req.params.title.split('-').join(' ');
       console.log(new Date());
@@ -14,13 +20,12 @@ export class EventController {
       const getEvent = await prisma.masterEvent.findFirst({
         where: {
           title,
-          start_date: { gt: new Date().toISOString() },
         },
         include: {
           Vouchers: {
             where: {
-              end_date: { gt: new Date().toISOString() },
-              start_date: { lt: new Date().toISOString() },
+              end_date: { gt: toISOStringMin },
+              start_date: { lt: toISOStringplus },
             },
           },
         },
