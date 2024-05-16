@@ -23,10 +23,15 @@ export class VoucherUserController {
     try {
       const usersId = res.locals.decript.id;
       const poin = await prisma.poin.findMany({
-        where: { usersId },
+        where: {
+          usersId,
+          expiredAt: {
+            gt: new Date(),
+          },
+        },
       });
 
-      return res.status(200).send(poin);
+      return res.status(200).send({ result: poin });
     } catch (error) {
       console.log(error);
     }
