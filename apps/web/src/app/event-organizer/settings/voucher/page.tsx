@@ -86,7 +86,7 @@ const DashboardEOPage = () => {
           className=" w-full md:w-[260px] h-[120px] rounded-lg px-3 py-2 border border-gray-400"
           key={idx}
         >
-          <p className="font-medium text-lg">{trimText(val.title, 22)}</p>
+          <p className="font-medium text-lg">{trimText(val.title, 18)}</p>
           <div className=" flex items-center gap-2">
             <p className="text-xs text-gray-600">
               {convertDate(new Date(val.start_date))}

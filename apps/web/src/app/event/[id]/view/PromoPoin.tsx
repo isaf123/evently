@@ -22,6 +22,9 @@ import { convertDate } from '@/lib/text';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { rupiah } from '@/lib/text';
+import { useAppDispatch } from '@/lib/hooks';
+import { setTransactionAction } from '@/lib/features/transactionEventSlice';
+import { useAppSelector } from '@/lib/hooks';
 
 interface IPromoPoinProps {
   data: any[];
@@ -32,9 +35,15 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
   const [selectTitle, setSelectTitle] = React.useState<string>('');
   const [selectDiscount, setSelectDiscount] = React.useState<number>(0);
   const [active, setActive] = React.useState<Boolean>(true);
+  const dispatch = useAppDispatch();
+
+  const transaction = useAppSelector((state) => {
+    return state.transactionEventSlice;
+  });
+  // console.log('dapeeeeeet:', transaction.total_price);
+
   // point:
-  const [selectActivePoint, setSelectActivePoint] =
-    React.useState<Boolean>(true);
+  const [activePoint, setActivePoint] = React.useState<Boolean>(true);
   const [pointUser, setPointUser] = React.useState<{
     amount: number;
     expiredAt: Date;
@@ -54,6 +63,7 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
     start_date: Date;
     end_date: Date;
     user_id: number;
+    id: number;
   }>({
     name_voucher: '',
     discount: 0,
@@ -61,6 +71,7 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
     start_date: new Date(),
     end_date: new Date(),
     user_id: 0,
+    id: 0,
   });
 
   const role = Cookies.get('Token Cust');
@@ -68,15 +79,35 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
     getVoucherPoin();
   }, []);
 
+  React.useEffect(() => {
+    if (pointUser.amount < transaction.total_price) {
+      setPointUse(pointUser.amount);
+      if (activePoint) {
+        dispatch(setTransactionAction({ point: pointUser.amount }));
+      }
+    } else {
+      setPointUse(transaction.total_price);
+      if (activePoint) {
+        dispatch(setTransactionAction({ point: transaction.total_price }));
+      }
+    }
+
+    if (!transaction.total_price) {
+      setActivePoint(false);
+      setActive(true);
+      dispatch(setTransactionAction({ discount: 0, point: 0 }));
+    }
+  }, [transaction.total_price]);
+
   const getVoucherPoin = async () => {
     try {
       const voucherUser = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}voucher-user`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}transaction-user`,
         { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
       );
 
       const point = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}voucher-user/point`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}transaction-user/point`,
         { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
       );
 
@@ -94,7 +125,9 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
     }
   };
 
-  console.log('state point :', pointUser);
+  console.log('ini poin', pointUse);
+
+  // console.log('ini voucher use :', voucherUser);
 
   const mapping = () => {
     return props.data.map((val: any, idx: number) => {
@@ -120,9 +153,18 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
               <Button
                 className="border border-gray-200 h-[20px] bg-color2 text-white"
                 onClick={() => {
-                  setActive(!active);
-                  setSelectTitle(val.name_voucher);
-                  setSelectDiscount(val.discount);
+                  if (transaction.total_price) {
+                    setActive(!active);
+                    setSelectTitle(val.name_voucher);
+                    setSelectDiscount(val.discount);
+                    dispatch(
+                      setTransactionAction({
+                        discount:
+                          (val.discount / 100) * transaction.total_price,
+                        voucher_id: val.id,
+                      }),
+                    );
+                  }
                 }}
               >
                 use
@@ -153,16 +195,25 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
               <div className="flex gap-1 items-center">
                 <TicketPercent className="text-green-600"></TicketPercent>
                 <p className="font-bold text-xl text-green-600">
-                  {voucherUser.discount}%
+                  {voucherUser.discount * 100}%
                 </p>
               </div>
 
               <Button
                 className="border border-gray-200 h-[20px] bg-color2 text-white"
                 onClick={() => {
-                  setActive(!active);
-                  setSelectTitle(voucherUser.name_voucher);
-                  setSelectDiscount(voucherUser.discount);
+                  if (transaction.total_price) {
+                    setActive(!active);
+                    setSelectTitle(voucherUser.name_voucher);
+                    setSelectDiscount(voucherUser.discount * 100);
+                    dispatch(
+                      setTransactionAction({
+                        discount:
+                          voucherUser.discount * transaction.total_price,
+                        voucher_id: voucherUser.id,
+                      }),
+                    );
+                  }
                 }}
               >
                 use
@@ -180,56 +231,49 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
     return (
       <div className="min-h-[84px] h-fit w-full  border border-gray-200 shadow-sm rounded-md break-words px-3 py-3 text-sm">
         <div className="flex justify-between">
-          <p className="font-bold">Point : {pointUser.amount / 10000}</p>
-          <div className="flex items-center gap-1">
+          <div className="gap-1 flex">
+            <p className="font-bold">Point : {pointUser.amount}</p>
             <Coins className="w-4 h-4"> </Coins>
-            <p className="text-xs">10.000 / point</p>
           </div>
         </div>
         <p className=" text-xs text-gray-600 mb-3">
           Expired at : {convertDate(pointUser.expiredAt)}
-          {/* {`${convertDate(voucherUser.start_date)} - ${convertDate(voucherUser.end_date)}`} */}
         </p>
-        {/* /////////////////////////////////////////////// */}
+
+        {/* ////////////////////////////////////////////////////////////////////// */}
         <div className="grid gap-3 text-gray-600">
-          <div className="flex items-center w-full justify-end gap-14">
-            {pointUse ? (
-              <p className="font-bold text-xl text-green-600">
-                {rupiah(pointUser.amount * countPoint)}
+          <div className="flex items-center w-full justify-end ">
+            {activePoint ? (
+              <p className="font-bold text-xl text-green-600 w-full">
+                {rupiah(pointUse)}
               </p>
             ) : (
               <></>
             )}
 
-            <div className="flex gap-2 items-center">
-              <button
-                className="bg-color1 h-6 w-6 rounded-md text-white hover:bg-color2 ease-out"
+            {!activePoint ? (
+              <Button
+                className="border border-gray-200 h-[20px] bg-color2 text-white"
                 onClick={() => {
-                  if (countPoint > 0) {
-                    const newCount = countPoint - 1;
-                    setCountPoint(newCount);
-                    setPointUse(pointUser.amount * newCount);
+                  if (transaction.total_price) {
+                    setActivePoint(!activePoint);
                   }
+                  dispatch(setTransactionAction({ point: pointUse }));
                 }}
               >
-                -
-              </button>
-              <p className="text-color1 w-7 text-center text-sm">
-                {countPoint}
-              </p>
-              <button
-                className="bg-color1 h-6 w-6 rounded-md text-white hover:bg-color2 ease-out"
+                use
+              </Button>
+            ) : (
+              <Button
+                className="border border-gray-200 h-[20px] bg-red-400 text-white"
                 onClick={() => {
-                  if (countPoint < pointUser.amount / 10000) {
-                    const newCount = countPoint + 1;
-                    setCountPoint(newCount);
-                    setPointUse(pointUser.amount * newCount);
-                  }
+                  setActivePoint(!activePoint);
+                  dispatch(setTransactionAction({ point: 0 }));
                 }}
               >
-                +
-              </button>
-            </div>
+                cancel
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -289,6 +333,7 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
                         className="rotate-45 font-bold text-lg text-red-600"
                         onClick={() => {
                           setActive(!active);
+                          dispatch(setTransactionAction({ discount: 0 }));
                         }}
                       ></Plus>
                     </div>
@@ -326,7 +371,7 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
             ) : (
               <div className="w-full h-[62px] bg-gray-100 rounded-md flex items-center justify-center">
                 <p className="fonr-medium text-gray-400 text-sm">
-                  discount not found
+                  Point not found
                 </p>
               </div>
             )}

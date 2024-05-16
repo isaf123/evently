@@ -2,20 +2,23 @@ import { createSlice } from '@reduxjs/toolkit';
 // slice untuk mengkonfigurasi pembuatan reducer dan action
 
 interface IData {
-  name_voucher: string;
+  total_price: number;
   discount: number;
-  start_date?: Date;
-  end_date?: Date;
+  point: number;
+  voucher_id: null | number;
+  ticket_count: number;
 }
 
 const data: IData | any = {
-  name_voucher: '',
+  total_price: 0,
   discount: 0,
-  start_date: '',
-  end_date: '',
+  point: 0,
+  voucher_id: null,
+  ticket_count: 0,
 };
-const promoSlice = createSlice({
-  name: 'promo', //name menjadi sebagai type
+
+const TransactionSlice = createSlice({
+  name: 'transaction', //name menjadi sebagai type
   // initialState:{userData:{...data}},
   initialState: { ...data },
   reducers: {
@@ -28,8 +31,8 @@ const promoSlice = createSlice({
 });
 
 const actions = {
-  setPromoDataAction: promoSlice.actions.setPromo,
+  setTransactionAction: TransactionSlice.actions.setPromo,
 };
-export const { setPromoDataAction } = actions;
+export const { setTransactionAction } = actions;
 
-export default promoSlice.reducer;
+export default TransactionSlice.reducer;

@@ -10,6 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Ticket } from 'lucide-react';
 import { rupiah } from '@/lib/text';
 import { convertDate } from '@/lib/text';
+import { useAppDispatch } from '@/lib/hooks';
+import { setTransactionAction } from '@/lib/features/transactionEventSlice';
 interface IEventDetailsProps {
   price: number;
   maxTicket: number;
@@ -18,6 +20,8 @@ interface IEventDetailsProps {
 const TicketBuy: React.FunctionComponent<IEventDetailsProps> = (props) => {
   const [countTicket, setCountTicket] = React.useState<number>(0);
   const [price, setPrice] = React.useState<number>(props.price);
+
+  const dispatch = useAppDispatch();
 
   return (
     <div>
@@ -56,6 +60,12 @@ const TicketBuy: React.FunctionComponent<IEventDetailsProps> = (props) => {
                       const newCount = countTicket - 1;
                       setCountTicket(newCount);
                       setPrice(props.price * newCount);
+                      dispatch(
+                        setTransactionAction({
+                          total_price: props.price * newCount,
+                          ticket_count: newCount,
+                        }),
+                      );
                     }
                   }}
                 >
@@ -71,6 +81,12 @@ const TicketBuy: React.FunctionComponent<IEventDetailsProps> = (props) => {
                       const newCount = countTicket + 1;
                       setCountTicket(newCount);
                       setPrice(props.price * newCount);
+                      dispatch(
+                        setTransactionAction({
+                          total_price: props.price * newCount,
+                          ticket_count: newCount,
+                        }),
+                      );
                     }
                   }}
                 >
