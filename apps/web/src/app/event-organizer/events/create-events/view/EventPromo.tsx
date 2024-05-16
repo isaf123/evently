@@ -4,7 +4,7 @@ import { useAppDispatch } from '@/lib/hooks';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
-import { setPromoDataAction } from '@/lib/features/promoEventSlice';
+import { setPromoDataAction } from '@/lib/features/transactionEventSlice';
 
 interface IEventDetailProps {}
 

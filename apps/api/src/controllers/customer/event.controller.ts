@@ -1,9 +1,6 @@
 import prisma from '@/prisma';
 import { NextFunction, Request, Response } from 'express';
-import { createEvent } from '@/services/EO/event/createEvent';
-
-import { sign } from 'jsonwebtoken';
-import { compareSync } from 'bcrypt';
+import { verify } from 'jsonwebtoken';
 
 export class EventController {
   async getEventDetails(req: Request, res: Response) {
@@ -13,6 +10,7 @@ export class EventController {
     currentDateMin.setDate(currentDateMin.getDate() - 1);
     const toISOStringplus = currentDatePlus.toISOString();
     const toISOStringMin = currentDateMin.toISOString();
+
     try {
       const title = req.params.title.split('-').join(' ');
       console.log(new Date());
@@ -30,15 +28,35 @@ export class EventController {
           },
         },
       });
+      const token = req.header('Authorization')?.split(' ')[1];
+      if (!token) {
+        throw new Error('Token not found!');
+      }
+      const checkToken = verify(token, process.env.TOKEN_KEY || 'secret');
 
       if (!getEvent) {
         throw 'event not exist';
       }
 
+      const countTransaction = await prisma.transaction.aggregate({
+        _sum: {
+          ticket_count: true,
+        },
+        where: {
+          event_id: getEvent?.id,
+          user_id: res.locals.decript.id,
+        },
+      });
+
+      // console.log('dapaaaaat', countTransaction._sum.ticket_count);
+      // console.log(getEvent);
+
       return res.status(200).send({
-        rc: 201,
+        rc: 200,
         success: true,
         result: getEvent,
+        message: 'buy',
+        bought: countTransaction._sum.ticket_count,
       });
     } catch (error) {
       return res.status(400).send(error);

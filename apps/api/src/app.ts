@@ -12,7 +12,7 @@ import { AuthRouter } from './routers/auth.router';
 import { EventEORouter } from './routers/EO/event.router';
 import { EventCustRouter } from './routers/customer/event.router';
 import { PromoEventRouter } from './routers/EO/promo.router';
-import { VoucherUserRouter } from './routers/customer/voucher.router';
+import { TransactionUserRouter } from './routers/customer/transaction.router';
 import { DashboardEORouter } from './routers/EO/dashboard/dashboard.router';
 export default class App {
   readonly app: Express;
@@ -57,11 +57,11 @@ export default class App {
     const authRouter = new AuthRouter();
     const eventEORouter = new EventEORouter();
     const eventCustRouter = new EventCustRouter();
-    const voucherUserRouter = new VoucherUserRouter();
+    const transactionUserRouter = new TransactionUserRouter();
     const promoEventRouter = new PromoEventRouter();
 
-    // Dashboard EO 
-    const dashboardEORouter = new DashboardEORouter()
+    // Dashboard EO
+    const dashboardEORouter = new DashboardEORouter();
 
     this.app.get('/', (req: Request, res: Response) => {
       res.send(`Hello, Purwadhika Student !`);
@@ -71,13 +71,12 @@ export default class App {
     this.app.use('/event-organizer', eventEORouter.getRouter());
     this.app.use('/event', eventCustRouter.getRouter());
     this.app.use('/promo', promoEventRouter.getRouter());
-    this.app.use('/voucher-user', voucherUserRouter.getRouter());
+    this.app.use('/transaction-user', transactionUserRouter.getRouter());
     this.app.use('/eventpic', express.static('public/eventpic'));
-
 
     // Dashboard EO
 
-    this.app.use('/EO', dashboardEORouter.getRouter())
+    this.app.use('/EO', dashboardEORouter.getRouter());
   }
 
   public start(): void {
