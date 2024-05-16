@@ -10,6 +10,10 @@ import { SideNavItem } from '@/types';
 import { Icon } from '@iconify/react';
 import { motion, useCycle } from 'framer-motion';
 import ProfileEO from '../ProfileEO/profile';
+import UserDropdown from './UserDropdown';
+import { Button } from '@/components/ui/button';
+import { useAppDispatch } from '@/lib/hooks';
+import { setLogoutAction } from '@/lib/features/userSlice';
 
 type MenuItemWithSubMenuProps = {
     item: SideNavItem;
@@ -40,6 +44,13 @@ const HeaderMobile = () => {
     const containerRef = useRef(null);
     const { height } = useDimensions(containerRef);
     const [isOpen, toggleOpen] = useCycle(false, true);
+    const [isUserDropdownOpen, setUserDropdownOpen] = useState(false);
+
+    const dispatch = useAppDispatch()
+
+    const handleLogout = () => {
+        dispatch(setLogoutAction())
+    }
 
     return (
         <motion.nav
@@ -59,6 +70,28 @@ const HeaderMobile = () => {
                 variants={variants}
                 className="absolute grid w-full gap-4 px-10 py-16 max-h-screen overflow-y-auto"
             >
+                <div className="flex flex-col">
+                    {/* Tambahkan user dropdown di sini */}
+                    <MenuItem>
+                        <button
+                            onClick={() => setUserDropdownOpen(!isUserDropdownOpen)}
+                            className="flex w-full items-center text-2xl"
+                        >
+                            <ProfileEO /> {/* Assuming this is the user profile component */}
+                            <Icon icon="lucide:chevron-down" className={`${isUserDropdownOpen && 'rotate-180'} absolute top-auto right-[40px] z-30`} width="24" height="24" />
+                        </button>
+                    </MenuItem>
+                    {isUserDropdownOpen && (
+                        <div className="mt-[20px] ml-2 flex flex-col space-y-2 items-center">
+                            <MenuItem>
+                                <Button onClick={() => {
+                                    toggleOpen();
+                                    handleLogout()
+                                }} className='text-2xl bg-purple-400 w-full'>Logout</Button>
+                            </MenuItem>
+                        </div>
+                    )}
+                </div>
                 {SIDENAV_ITEMS.map((item, idx) => {
                     const isLastItem = idx === SIDENAV_ITEMS.length - 1; // Check if it's the last item
 
@@ -85,11 +118,10 @@ const HeaderMobile = () => {
                         </div>
                     );
                 })}
-                <div className='hidden'>
-                    <ProfileEO />
+                <div className="flex flex-col">
+                    <MenuToggle toggle={toggleOpen} />
                 </div>
             </motion.ul>
-            <MenuToggle toggle={toggleOpen} />
         </motion.nav>
     );
 };
