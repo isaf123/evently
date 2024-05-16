@@ -28,15 +28,30 @@ export class EventController {
           },
         },
       });
-      const token = req.header('Authorization')?.split(' ')[1];
-      if (!token) {
-        throw new Error('Token not found!');
-      }
-      const checkToken = verify(token, process.env.TOKEN_KEY || 'secret');
 
       if (!getEvent) {
         throw 'event not exist';
       }
+
+      return res.status(200).send({
+        rc: 200,
+        success: true,
+        result: getEvent,
+        message: 'buy',
+      });
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  }
+
+  async getMaxBuy(req: Request, res: Response) {
+    try {
+      const title = req.params.title.split('-').join(' ');
+      const getEvent = await prisma.masterEvent.findFirst({
+        where: {
+          title,
+        },
+      });
 
       const countTransaction = await prisma.transaction.aggregate({
         _sum: {
@@ -48,16 +63,9 @@ export class EventController {
         },
       });
 
-      // console.log('dapaaaaat', countTransaction._sum.ticket_count);
-      // console.log(getEvent);
+      console.log('ini jumlaaaaaaaaaaaaaaaaaaaaaaaaaaSh', countTransaction);
 
-      return res.status(200).send({
-        rc: 200,
-        success: true,
-        result: getEvent,
-        message: 'buy',
-        bought: countTransaction._sum.ticket_count,
-      });
+      return res.status(200).send(countTransaction);
     } catch (error) {
       return res.status(400).send(error);
     }

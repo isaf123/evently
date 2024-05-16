@@ -56,8 +56,6 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
     return state.transactionEventSlice;
   });
 
-  console.log(transaction);
-
   const path = pathname.split('/')[2];
   const role = Cookies.get('Token Cust');
 
@@ -83,20 +81,31 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event/detail/${path}`,
-        { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
+        // { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
       );
-
       const newData = { ...response.data.result };
-      console.log();
-
-      setbought(response.data.bought);
       setData(newData);
+      if (role) {
+        const maxTicket = await axios.get(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}event/maxbuy/${path}`,
+          { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
+        );
+
+        const count = maxTicket.data._sum.ticket_count;
+        if (count) {
+          setbought(count);
+        } else {
+          setbought(0);
+        }
+
+        console.log(maxTicket);
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
-  // console.log('ini data:', data);
+  console.log('ini tiket', bought);
 
   const creteTransaction = async () => {
     try {
@@ -169,6 +178,7 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
           <div>
             <PromoPoin data={data.Vouchers}></PromoPoin>
             <TicketBuy
+              buyTicket={bought}
               price={data.price}
               maxTicket={data.max_ticket}
             ></TicketBuy>
@@ -178,7 +188,7 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
                 creteTransaction();
               }}
             >
-              Buy Ticket
+              Get Ticket
             </Button>
           </div>
         )}
