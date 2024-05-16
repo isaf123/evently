@@ -9,7 +9,12 @@ import { usePathname } from 'next/navigation';
 import { convertDate } from '@/lib/text';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-
+import { keepLogin } from '@/services/authService';
+import { useAppDispatch } from '@/lib/hooks';
+import { setSuccessLoginAction } from '@/lib/features/userSlice';
+import { useAppSelector } from '@/lib/hooks';
+import { selectUserRole } from '@/lib/features/userSlice';
+import Cookies from 'js-cookie';
 interface IEventPageProps {}
 
 const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
@@ -23,6 +28,8 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
     id?: number;
     price: number;
     flyer_event: string;
+    max_ticket: number;
+    Vouchers: any[];
   }>({
     description: '',
     title: '',
@@ -32,29 +39,47 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
     end_date: '',
     price: 0,
     flyer_event: '',
+    max_ticket: 0,
+    Vouchers: [],
   });
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
 
   const path = pathname.split('/')[2];
-  console.log(path);
+
+  const role = Cookies.get('Token Cust');
 
   React.useEffect(() => {
     getDataTicket();
+    searchToken;
   }, []);
+
+  const searchToken = async () => {
+    try {
+      const data = await keepLogin();
+      if (data) {
+        dispatch(setSuccessLoginAction(data));
+      } else {
+        // Jika tidak ada token, arahkan ke halaman sign-in
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
 
   const getDataTicket = async () => {
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event/detail/${path}`,
       );
-      console.log(response);
+
       const newData = { ...data, ...response.data.result };
       setData(newData);
     } catch (error) {
       console.log(error);
     }
   };
-  console.log(data);
+
   return (
     <div className="md:w-[1220px] m-auto md:py-10 min-h-screen gap-6 flex flex-col md:flex-row px-3">
       <div className=" min-h-screen md:w-[800px]]">
@@ -80,13 +105,13 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
           <p className="mb-8 tracking-wide text-gray-600">{data.description}</p>
         </div>
       </div>
-      {/* ////////////////////////      KANAN                //////////////////////////////// */}
+      {/* ////////////////////////      KANAN          //////////////////////////////// */}
       <div className=" min-h-screen md:w-[30%]">
         <EventDetails
           date={`${convertDate(new Date(data.start_date))} - ${convertDate(new Date(data.end_date))}`}
         >{`${data.address}, ${data.location}`}</EventDetails>
-        <PromoPoin></PromoPoin>
-        <TicketBuy price={data.price}></TicketBuy>
+        <PromoPoin data={data.Vouchers}></PromoPoin>
+        <TicketBuy price={data.price} maxTicket={data.max_ticket}></TicketBuy>
         <Button className="bg-color2 text-white w-full">Buy Ticket</Button>
       </div>
     </div>

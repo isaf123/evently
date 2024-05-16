@@ -106,6 +106,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       showMessage(error, 'error');
     }
   };
+
   console.log('ini file:', file);
   const validateDate = () => {
     if (!startDate || !endDate) {
