@@ -30,11 +30,13 @@ export default function Home() {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event?page=${page1}&pageSize=4`,
       );
+<
       setNewEvent(response.data.result);
       setTotalPage1(response.data.totalPage);
     } catch (error) {
       console.log(error);
     }
+
   };
 
   console.log(newEvent);

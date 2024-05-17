@@ -21,6 +21,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '@/lib/hooks';
 import { setSuccessLoginAction } from '@/lib/features/userSlice';
+import { redirect } from 'next/navigation'
 
 interface ILoginPageProps { }
 

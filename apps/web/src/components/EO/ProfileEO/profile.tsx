@@ -2,11 +2,12 @@ import { useAppSelector } from '@/lib/hooks';
 import React from 'react'
 
 const ProfileEO = () => {
-    const username = useAppSelector((state) => state.userSlice.username);
-    const email = useAppSelector((state) => state.userSlice.email)
-    const initials = username.slice(0, 2).toUpperCase();
+    const username = useAppSelector((state) => state.userSlice?.username);
+    // console.log(username);
+    const email = useAppSelector((state) => state.userSlice?.email)
+    const initials = username?.slice(0, 2).toUpperCase();
     const capitalizeFirstLetter = (string: string) => {
-        return string.charAt(0).toUpperCase() + string.slice(1);
+        return string?.charAt(0).toUpperCase() + string?.slice(1);
     };
 
 
@@ -17,8 +18,8 @@ const ProfileEO = () => {
                 <p>{initials}</p>
             </div>
             <div className='grow'>
-                <p className='text-[16px] font-bold'>{profileName}</p>
-                <p className='text-[12px] text-neutral-500'>{email}</p>
+                <p className='text-[16px] font-bold text-center'>{username}</p>
+                <p className='text-[12px] text-neutral-500 text-center'>Event Organizer</p>
             </div>
         </div>
     )

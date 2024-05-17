@@ -21,11 +21,11 @@ const Header = () => {
     const dispatch = useAppDispatch();
     const router = useRouter()
 
-    const username = useAppSelector((state) => state.userSlice.username);
+    const username = useAppSelector((state) => state.userSlice?.username);
 
-    const initials = username.slice(0, 2).toUpperCase();
+    const initials = username?.slice(0, 2).toUpperCase();
     const capitalizeFirstLetter = (string: string) => {
-        return string.charAt(0).toUpperCase() + string.slice(1);
+        return string?.charAt(0).toUpperCase() + string?.slice(1);
     };
 
     const profileName = capitalizeFirstLetter(username);

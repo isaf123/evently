@@ -14,6 +14,7 @@ import Cookies from 'js-cookie';
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { keepLogin } from '@/services/authService';
+import CustRouter from './Router/CustRouter';
 
 export const Header = () => {
   const dispatch = useAppDispatch();
@@ -55,44 +56,46 @@ export const Header = () => {
   };
 
   return (
-    <div className="text-white bg-[#333A73] w-full h-[80px]">
-      <div className="w-full h-full flex items-center justify-between mr-10">
-        <Link className="ml-20 font-extrabold text-[20px]" href={'/'}>
-          EVENTLY
-        </Link>
-
-        <div className="flex gap-5 mr-20 items-center">
-          <Link className="mr-5 font-medium capitalize" href={'/explore'}>
-            {' '}
-            explore{' '}
+    <CustRouter>
+      <div className="text-white bg-[#333A73] w-full h-[80px]">
+        <div className="w-full h-full flex items-center justify-between mr-10">
+          <Link className="ml-20 font-extrabold text-[20px]" href={'/'}>
+            EVENTLY
           </Link>
-          {username ? (
-            <div className="flex gap-4 items-center justify-center">
-              <Button
-                onClick={handleLogout}
-                className="border border-lg border-white"
-              >
-                Sign Out
-              </Button>
-              <span className="mr-5 font-medium capitalize">{username}</span>
-            </div> // Jika ada username, tampilkan username
-          ) : (
-            <Link className="w-fit h-fit" href={'/signup'}>
-              <Button className="bg-white text-[#333A73] font-bold">
-                Sign Up
-              </Button>
+
+          <div className="flex gap-5 mr-20 items-center">
+            <Link className="mr-5 font-medium capitalize" href={'/explore'}>
+              {' '}
+              explore{' '}
             </Link>
-          )}
-          {!username && ( // Jika tidak ada username, tampilkan tombol Sign In
-            <Link className="w-fit h-fit" href={'/signin'}>
-              <Button className=" border border-lg border-white">
-                Sign In
-              </Button>
-            </Link>
-          )}
+            {username ? (
+              <div className="flex gap-4 items-center justify-center">
+                <Button
+                  onClick={handleLogout}
+                  className="border border-lg border-white"
+                >
+                  Sign Out
+                </Button>
+                <span className="mr-5 font-medium capitalize">{username}</span>
+              </div> // Jika ada username, tampilkan username
+            ) : (
+              <Link className="w-fit h-fit" href={'/signup'}>
+                <Button className="bg-white text-[#333A73] font-bold">
+                  Sign Up
+                </Button>
+              </Link>
+            )}
+            {!username && ( // Jika tidak ada username, tampilkan tombol Sign In
+              <Link className="w-fit h-fit" href={'/signin'}>
+                <Button className=" border border-lg border-white">
+                  Sign In
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </CustRouter>
   );
 };
 
