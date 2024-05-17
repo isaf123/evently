@@ -16,27 +16,99 @@ export class TransactionUserController {
         ticket_count,
         total_price,
         event_id,
-        user_id,
-        voucherId,
+        voucher_id,
         point_discount,
         voucher_discount,
       } = req.body;
 
-      const trans = await prisma.transaction.create({
-        data: {
-          date_transaction,
-          invoice_code,
-          price_after_discount,
-          status_transaction,
-          ticket_count,
-          total_price,
-          event_id,
-          user_id: res.locals.decript.id,
-          voucherId,
-          point_discount,
-          voucher_discount,
-        },
-      });
+      const user_id = res.locals.decript.id
+
+      console.log('voucher', req.body);
+      await prisma.$transaction(async (tx) => {
+        const existsEvent = await tx.transaction.findMany({
+          where: {
+            event_id: event_id
+          }
+        })
+
+        if (!existsEvent) {
+          throw 'Event not exists'
+        }
+
+        const existTrans = await tx.transaction.aggregate({
+          _sum: {
+            ticket_count: true
+          },
+          where: {
+            event_id: event_id,
+            user_id: res.locals.decript.id
+          }
+        })
+
+        if (existTrans === ticket_count) {
+          console.log('dapat transaksi', existTrans);
+          throw 'Reach Max Transaction'
+        }
+
+        if (voucher_id) {
+          const existVoucher = await tx.voucher.findUnique({
+            where: {
+              id: voucher_id
+            }
+          })
+
+
+          if (existVoucher?.user_id) {
+            const findVoucherById = await tx.voucher.findFirst({
+              where: {
+                user_id: user_id
+              }
+            })
+            console.log("dapaaaaaaaat :", findVoucherById?.id)
+
+            const deleteVoucher = await tx.voucher.delete({
+              where: {
+                id: findVoucherById?.id
+              }
+            })
+          }
+
+        }
+
+        if (point_discount) {
+          const findPoint = await tx.poin.findFirst({
+            where: {
+              usersId: user_id
+            }
+          })
+
+          console.log("dapat point :", findPoint?.usersId)
+          if (findPoint) {
+            const deletePoint = await tx.poin.update({
+              where: { id: findPoint.id },
+              data: { amount: findPoint.amount - point_discount }
+            })
+          }
+        }
+        console.log("jlaaaaaaan")
+
+        const trans = await tx.transaction.create({
+          data: {
+            date_transaction,
+            invoice_code,
+            price_after_discount,
+            status_transaction,
+            ticket_count,
+            total_price,
+            voucherId: voucher_id,
+            event_id,
+            user_id: res.locals.decript.id,
+            point_discount,
+            voucher_discount,
+          },
+        });
+      })
+
     } catch (error) {
       console.log(error);
     }
