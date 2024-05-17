@@ -6,12 +6,13 @@ import { NextFunction, Request, Response } from 'express';
 export class EventEOController {
   async getEvents(req: Request, res: Response) {
     try {
-      const { offset = 0, limit = 5 } = req.query;
+      const { query = '' } = req.query;
+
       const events = await getEvents(
         res.locals.decript.id,
-        Number(offset),
-        Number(limit),
+        query as string
       );
+      console.log('ini pencarian events', events);
       return res.status(200).send(events);
     } catch (error) {
       return res.status(500).send({ error });

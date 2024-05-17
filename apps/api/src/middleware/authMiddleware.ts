@@ -7,7 +7,6 @@ export const eventOrganizerMiddleware = (
   next: NextFunction,
 ) => {
   try {
-    console.log('dapaaaaaaaaaaaaaaaaaaaaaat');
     console.log(req.body);
     console.log(req.files);
     const user: IUser | null = (req as any).user;

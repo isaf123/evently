@@ -86,7 +86,7 @@ const DashboardEOPage = () => {
           className=" w-full md:w-[260px] h-[120px] rounded-lg px-3 py-2 border border-gray-400"
           key={idx}
         >
-          <p className="font-medium text-lg">{trimText(val.title, 18)}</p>
+          <p className="font-medium text-xl">{trimText(val.title, 18)}</p>
           <div className=" flex items-center gap-2">
             <p className="text-xs text-gray-600">
               {convertDate(new Date(val.start_date))}
@@ -203,7 +203,7 @@ const DashboardEOPage = () => {
             {mapping()}
             {active ? (
               <Card
-                x-chunk="dashboard-07-chunk-0 "
+                x-chunk="dashboard-07-chunk-0"
                 className="w-[360px] md:w-[670px] mb-8 shadow-lg fixed md:top-40 md:right-[460px] bg-white py-4 z-20"
               >
                 <CardHeader>

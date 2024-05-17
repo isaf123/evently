@@ -13,19 +13,11 @@ import { keepLogin } from '@/services/authService';
 import { useAppDispatch } from '@/lib/hooks';
 import { setSuccessLoginAction } from '@/lib/features/userSlice';
 import { useAppSelector } from '@/lib/hooks';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-
+import { selectUserRole } from '@/lib/features/userSlice';
 import Cookies from 'js-cookie';
-interface IEventPageProps {}
+interface IEventPageProps { }
 
 const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
-  const [bought, setbought] = React.useState<number>(0);
   const [data, setData] = React.useState<{
     description: string;
     title: string;
@@ -52,12 +44,8 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
   });
   const pathname = usePathname();
   const dispatch = useAppDispatch();
-  const transaction = useAppSelector((state) => {
-    return state.transactionEventSlice;
-  });
 
   const path = pathname.split('/')[2];
-  const role = Cookies.get('Token Cust');
 
   React.useEffect(() => {
     getDataTicket();
@@ -81,51 +69,10 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event/detail/${path}`,
-        // { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
       );
-      const newData = { ...response.data.result };
+
+      const newData = { ...data, ...response.data.result };
       setData(newData);
-      if (role) {
-        const maxTicket = await axios.get(
-          `${process.env.NEXT_PUBLIC_BASE_API_URL}event/maxbuy/${path}`,
-          { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
-        );
-
-        const count = maxTicket.data._sum.ticket_count;
-        if (count) {
-          setbought(count);
-        } else {
-          setbought(0);
-        }
-
-        console.log(maxTicket);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  console.log('ini tiket', bought);
-
-  const creteTransaction = async () => {
-    try {
-      const makeTransaction = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}transaction-user`,
-        {
-          date_transaction: new Date().toISOString(),
-          invoice_code: `TRANS${new Date().getTime()}`,
-          event_id: data.id,
-          total_price: transaction.total_price,
-          status_transaction: 'submitted',
-          voucher_id: transaction.voucher_id,
-          ticket_count: transaction.ticket_count,
-          point_discount: transaction.point,
-          voucher_discount: transaction.discount,
-          price_after_discount:
-            transaction.total_price - transaction.discount - transaction.point,
-        },
-        { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
-      );
     } catch (error) {
       console.log(error);
     }
@@ -161,37 +108,9 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
         <EventDetails
           date={`${convertDate(new Date(data.start_date))} - ${convertDate(new Date(data.end_date))}`}
         >{`${data.address}, ${data.location}`}</EventDetails>
-        {bought == data.max_ticket ? (
-          <Card x-chunk="dashboard-07-chunk-0 " className="w-full mb-6">
-            <CardHeader>
-              <CardTitle className="text-xl">..</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="w-full h-[62px] bg-gray-100 rounded-md flex items-center justify-center">
-                <p className="fonr-medium text-gray-400 text-sm">
-                  Reach Max Transaction
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <div>
-            <PromoPoin data={data.Vouchers}></PromoPoin>
-            <TicketBuy
-              buyTicket={bought}
-              price={data.price}
-              maxTicket={data.max_ticket}
-            ></TicketBuy>
-            <Button
-              className="bg-color2 text-white w-full"
-              onClick={() => {
-                creteTransaction();
-              }}
-            >
-              Get Ticket
-            </Button>
-          </div>
-        )}
+        <PromoPoin data={data.Vouchers}></PromoPoin>
+        <TicketBuy price={data.price} maxTicket={data.max_ticket}></TicketBuy>
+        <Button className="bg-color2 text-white w-full">Buy Ticket</Button>
       </div>
     </div>
   );
