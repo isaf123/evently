@@ -32,10 +32,14 @@ const TicketBuy: React.FunctionComponent<IEventDetailsProps> = (props) => {
             <CardTitle className="text-xl text-gray-900">Buy Ticket</CardTitle>
             <div className="flex gap-2">
               <Ticket className="text-gray-400"></Ticket>
-              <p className="font-medium text-gray-500">
-                <span className=" font-bold text-gray-900">IDR </span>
-                {props.price}
-              </p>
+              {props.price ? (
+                <p className="font-medium text-gray-500">
+                  <span className=" font-bold text-gray-900">IDR </span>
+                  {props.price}
+                </p>
+              ) : (
+                <p className="font-bold text-gray-700"> Free</p>
+              )}
             </div>
           </div>
           <CardDescription>
