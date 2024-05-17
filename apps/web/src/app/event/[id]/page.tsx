@@ -83,6 +83,7 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event/detail/${path}`,
         // { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
       );
+
       const newData = { ...response.data.result };
       setData(newData);
       if (role) {
@@ -105,7 +106,7 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
     }
   };
 
-  console.log('ini tiket', bought);
+  console.log('ini data', data.price);
 
   const creteTransaction = async () => {
     try {
@@ -176,7 +177,7 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
           </Card>
         ) : (
           <div>
-            <PromoPoin data={data.Vouchers}></PromoPoin>
+            {data.price ? <PromoPoin data={data.Vouchers}></PromoPoin> : <></>}
             <TicketBuy
               buyTicket={bought}
               price={data.price}

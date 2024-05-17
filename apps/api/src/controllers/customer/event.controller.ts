@@ -73,7 +73,19 @@ export class EventController {
 
   async getAllEvent(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log(req.query);
+
+      const { page, pageSize } = req.query;
+
+      const skip = (Number(page) - 1) * Number(pageSize);
+      const take = Number(page) * Number(pageSize);
       const allEvent = await prisma.masterEvent.findMany({
+        orderBy: [{ id: 'desc' }],
+        skip,
+        take,
+        where: {
+          end_date: { gt: new Date() },
+        },
         select: {
           title: true,
           start_date: true,
@@ -82,7 +94,14 @@ export class EventController {
           flyer_event: true,
         },
       });
-      return res.status(200).send(allEvent);
+      // console.log(allEvent);
+      const totalEvent = await prisma.masterEvent.count();
+      const totalPage = Math.ceil(totalEvent / Number(pageSize));
+      console.log(totalPage);
+
+      return res
+        .status(200)
+        .send({ rc: 200, success: true, result: allEvent, totalPage });
     } catch (error) {
       next(error);
     }
@@ -93,6 +112,7 @@ export class EventController {
       const search = req.params.title;
       const getdata = await prisma.masterEvent.findMany({
         where: { title: { contains: search } },
+
         select: {
           title: true,
           start_date: true,

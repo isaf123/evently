@@ -13,27 +13,35 @@ import { useEffect, useState } from 'react';
 import { rupiah } from '@/lib/text';
 import { convertDate } from '@/lib/text';
 import DebounceSearch from '@/components/debounceSearch';
+import { Button } from '@/components/ui/button';
+import Pagination from '@/components/Pagination';
 
 export default function Home() {
   const [newEvent, setNewEvent] = useState<any[]>();
+  const [page1, setPage1] = useState<number>(1);
+  const [totalPage1, setTotalPage1] = useState<number>(1);
+
+  console.log('ini page :', page1);
   useEffect(() => {
     newsEvent();
-  }, []);
+  }, [page1]);
   const newsEvent = async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}event`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}event?page=${page1}&pageSize=4`,
       );
-      setNewEvent(response.data.reverse());
-      console.log(response.data);
-    } catch (error) {}
+      setNewEvent(response.data.result);
+      setTotalPage1(response.data.totalPage);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   console.log(newEvent);
   const mapNewEvent = () => {
     return newEvent?.map((val: any, idx: number) => {
       return (
-        <CarouselItem className="md:basis-1/4 mr-3 md:mr-8" key={idx}>
+        <div key={idx}>
           <CartEvent
             price={val.price}
             startdate={convertDate(val.start_date)}
@@ -42,20 +50,18 @@ export default function Home() {
           >
             {val.title}
           </CartEvent>
-        </CarouselItem>
+        </div>
       );
     });
   };
   return (
-    <main className=" m-auto  md:py-20  md:px-0">
-      <div className="w-full md:w-[1120px] h-[260px] md:h-[300px] m-auto mt-10 rounded-b-xl md:rounded-xl bg-red-100 overflow-hidden relative md:mb-5 ">
-        <img
-          src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          className=" absolute  md:-bottom-[120px] brightness-75"
-          alt=""
-        />
+    <main className=" m-auto  md:px-0 bg-gray-50">
+      <div className="w-full h-[520px] bg-gray-400 absolute overflow-hidden top-20">
+        <img src="/landingphoto1.png" className="brightness-50" alt="" />
+      </div>
 
-        <div className=" absolute bottom-10 left-10 md:left-10 z-10">
+      <div className="w-full md:w-[1190px] h-[260px] md:h-[300px] m-auto rounded-b-xl md:rounded-xl bg-red-100 overflow-hidden relative md:mb-5 top-0 mt-[320px]">
+        <div className=" absolute bottom-10 left-10 md:left-10 z-10 mt-[">
           <h1 className=" text-white text-2xl md:text-[36px] font-bold">
             Find Your Event Here
           </h1>
@@ -65,22 +71,35 @@ export default function Home() {
           </p>
         </div>
       </div>
-      <div className="flex w-full md:w-[1120px] m-auto justify-between">
+
+      <div className="flex w-full md:w-[1190px] md:m-auto md:mx-none justify-between mx-3">
         <DebounceSearch></DebounceSearch>
-        <p className="md:mb-6 font-medium text-[26px]  text-right  text-black pr-4">
-          Welcome <span className="font-bold text-[#333A73]">ISA</span>
-        </p>
       </div>
       {/* ////////////////////////////////////////////////////////////////////////////////////////// */}
-      <div className="mb-10 md:w-[1120px] m-auto">
-        <p className=" font-medium text-[21px] ml-10 md:ml-0">Newest Event</p>
-        <Carousel className="w-[280px] md:w-full m-auto">
-          <CarouselContent className="py-4 md:px-2">
-            {mapNewEvent()}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+      <div className="mb-10 md:w-[1190px] m-auto">
+        <p className=" font-bold text-[21px] ml-10 md:ml-0 mb-4">
+          Newest Event
+        </p>
+        {newEvent ? (
+          <div>
+            <div className="h-fit w-[370px] md:w-full  m-auto overflow-x-auto ">
+              <div className="flex gap-[23px] mb-6 w-fit mx-3 md:mx-0">
+                {mapNewEvent()}
+              </div>
+            </div>
+            <div className="flex w-full justify-end">
+              <Pagination
+                page={page1}
+                setPage={setPage1}
+                maxPage={totalPage1}
+              ></Pagination>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-gray-100 w-full h-[300px] rounded-lg flex items-center justify-center mb-6">
+            <p className="text-2xl text-gray-300">Event not Available</p>
+          </div>
+        )}
       </div>
 
       <div className="w-full h-[fit] bg-[#333A73] mb-10 pb-10 pt-8">
