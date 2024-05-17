@@ -5,7 +5,7 @@ import EventDetails from './view/EventDetails';
 import TicketBuy from './view/TicketBuy';
 import PromoPoin from './view/PromoPoin';
 import axios from 'axios';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { convertDate } from '@/lib/text';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ import { keepLogin } from '@/services/authService';
 import { useAppDispatch } from '@/lib/hooks';
 import { setSuccessLoginAction } from '@/lib/features/userSlice';
 import { useAppSelector } from '@/lib/hooks';
+
 import {
   Card,
   CardContent,
@@ -22,7 +23,7 @@ import {
 } from '@/components/ui/card';
 
 import Cookies from 'js-cookie';
-interface IEventPageProps {}
+interface IEventPageProps { }
 
 const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
   const [bought, setbought] = React.useState<number>(0);
@@ -56,6 +57,9 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
     return state.transactionEventSlice;
   });
 
+  console.log('transaksi', transaction.ticket_count);
+
+  const router = useRouter()
   const path = pathname.split('/')[2];
   const role = Cookies.get('Token Cust');
 
@@ -106,7 +110,7 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
     }
   };
 
-  console.log('ini data', data.price);
+  console.log("ini transaction:", transaction)
 
   const creteTransaction = async () => {
     try {
@@ -127,6 +131,8 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
         },
         { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
       );
+      // router.push("/event/Wedding-Expo")
+
     } catch (error) {
       console.log(error);
     }

@@ -9,7 +9,6 @@ import { category, times } from '@/lib/text';
 import EventDesccription from './view/EventDescription';
 import EventDetail from './view/EventLocationPayment';
 import EventDate from './view/EventDate';
-import EventPromo from './view/EventPromo';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { showMessage } from '@/components/Alert/Toast';
 import { toast, ToastContainer } from 'react-toastify';
@@ -60,7 +59,7 @@ import { keepLogin } from '@/services/authService';
 import HeaderMobile from '@/components/EO/SidebarEO/header-mobile';
 import { setCreateEventAction } from '@/lib/features/createEventSlice';
 
-interface IMakeEventProps {}
+interface IMakeEventProps { }
 
 const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   const [active, setActive] = useState<Boolean>(false);

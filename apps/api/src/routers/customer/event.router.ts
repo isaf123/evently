@@ -1,6 +1,7 @@
 // import { AuthController } from '@/controllers/auth.controller';
 import { EventController } from '@/controllers/customer/event.controller';
 import { customerMiddleware } from '@/middleware/authMiddleware';
+import { verifyToken } from '@/middleware/verifiedToken';
 
 import { Router } from 'express';
 
