@@ -60,7 +60,7 @@ import { keepLogin } from '@/services/authService';
 import HeaderMobile from '@/components/EO/SidebarEO/header-mobile';
 import { setCreateEventAction } from '@/lib/features/createEventSlice';
 
-interface IMakeEventProps { }
+interface IMakeEventProps {}
 
 const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
   const [active, setActive] = useState<Boolean>(false);
@@ -78,12 +78,8 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
     return state.eventReducer;
   });
 
-  const promoEvent = useAppSelector((state) => {
-    return state.promoEventSlice;
-  });
-
   // console.log(createEvent);
-  console.log(promoEvent);
+
   React.useEffect(() => {
     searchToken();
   }, []);
@@ -179,7 +175,6 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       );
 
       console.log(responseEvent);
-      const { name_voucher, discount } = promoEvent;
 
       dispatch(
         setCreateEventAction({
