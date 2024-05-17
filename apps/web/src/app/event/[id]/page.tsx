@@ -88,6 +88,7 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
         // { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
       );
 
+      console.log('cari voucher:', response);
       const newData = { ...response.data.result };
       setData(newData);
       if (role) {

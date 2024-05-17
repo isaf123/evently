@@ -321,6 +321,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
                           if (e.target.files?.length) {
                             setFile(e.target.files[0]);
                             setPicName(e.target.files[0].name);
+                            console.log('dapet foto :', e.target.files[0]);
                           }
                         }}
                       />

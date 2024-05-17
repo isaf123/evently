@@ -30,12 +30,13 @@ export default function Home() {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event?page=${page1}&pageSize=4`,
       );
+
       setNewEvent(response.data.result);
+      console.log(response.data);
       setTotalPage1(response.data.totalPage);
     } catch (error) {
       console.log(error);
     }
-
   };
 
   console.log(newEvent);
@@ -57,25 +58,36 @@ export default function Home() {
   };
   return (
     <main className=" m-auto  md:px-0 bg-gray-50">
-      <div className="w-full h-[520px] bg-gray-400 absolute overflow-hidden top-20">
+      <div className="w-fit h-[520px] bg-gray-400 absolute overflow-hidden top-20 hidden md:block">
         <img src="/landingphoto1.png" className="brightness-50" alt="" />
       </div>
 
-      <div className="w-full md:w-[1190px] h-[260px] md:h-[300px] m-auto rounded-b-xl md:rounded-xl bg-red-100 overflow-hidden relative md:mb-5 top-0 mt-[320px]">
-        <div className=" absolute bottom-10 left-10 md:left-10 z-10 mt-[">
-          <h1 className=" text-white text-2xl md:text-[36px] font-bold">
+      <div className="w-full md:w-[1190px] h-[260px] md:h-[300px] m-auto rounded-b-xl md:rounded-xl bg-red-100 overflow-hidden relative mb-5 top-0 md:mt-[320px]">
+        <img
+          className="hidden md:block"
+          src="/landingphoto2web.png
+        "
+          alt=""
+        />
+        <img
+          className="block md:hidden"
+          src="/landingphoto2mobile.png"
+          alt=""
+        />
+        <div className=" absolute bottom-10  md:left-10 z-10 w-fit md:w-[600px]">
+          <h1 className=" text-white text-2xl md:text-[36px] font-bold text-center md:text-start mb-2">
             Find Your Event Here
           </h1>
-          <p className="text-white">
+          <p className="text-white mb-6 text-center md:text-start">
             &ldquo;Join our event for unforgettable moments and
             connections!&rdquo;
           </p>
+          <div className="flex w-full md:w-[1190px] md:m-auto md:mx-none justify-center md:justify-start mb-6">
+            <DebounceSearch></DebounceSearch>
+          </div>
         </div>
       </div>
 
-      <div className="flex w-full md:w-[1190px] md:m-auto md:mx-none justify-between mx-3">
-        <DebounceSearch></DebounceSearch>
-      </div>
       {/* ////////////////////////////////////////////////////////////////////////////////////////// */}
       <div className="mb-10 md:w-[1190px] m-auto">
         <p className=" font-bold text-[21px] ml-10 md:ml-0 mb-4">
@@ -83,7 +95,7 @@ export default function Home() {
         </p>
         {newEvent ? (
           <div>
-            <div className="h-fit w-[370px] md:w-full  m-auto overflow-x-auto ">
+            <div className="h-fit w-[370px] md:w-full  m-auto overflow-x-auto md:overflow-x-hidden ">
               <div className="flex gap-[23px] mb-6 w-fit mx-3 md:mx-0">
                 {mapNewEvent()}
               </div>
@@ -129,7 +141,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="mb-5 w-[1120px] m-auto">
+      {/* <div className="mb-5 w-[1120px] m-auto">
         <p className=" font-medium text-[21px]">This Month&apos;s Event</p>
         <Carousel>
           <CarouselContent className="py-4 px-2">
@@ -152,7 +164,7 @@ export default function Home() {
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
-      </div>
+      </div> */}
     </main>
   );
 }
