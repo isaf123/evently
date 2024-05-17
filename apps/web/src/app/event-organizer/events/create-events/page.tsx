@@ -9,7 +9,7 @@ import { category, times } from '@/lib/text';
 import EventDesccription from './view/EventDescription';
 import EventDetail from './view/EventLocationPayment';
 import EventDate from './view/EventDate';
-import EventPromo from './view/EventPromo';
+
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { showMessage } from '@/components/Alert/Toast';
 import { toast, ToastContainer } from 'react-toastify';
@@ -322,6 +322,7 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
                           if (e.target.files?.length) {
                             setFile(e.target.files[0]);
                             setPicName(e.target.files[0].name);
+                            console.log('dapet foto :', e.target.files[0]);
                           }
                         }}
                       />

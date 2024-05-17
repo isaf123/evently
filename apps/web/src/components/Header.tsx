@@ -15,6 +15,30 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { keepLogin } from '@/services/authService';
 import CustRouter from './Router/CustRouter';
+import {
+  Github,
+  LifeBuoy,
+  LogOut,
+  ShoppingBag,
+  Ticket,
+  Users,
+  CircleUser,
+} from 'lucide-react';
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export const Header = () => {
   const dispatch = useAppDispatch();
@@ -44,7 +68,6 @@ export const Header = () => {
         dispatch(setSuccessLoginAction(data));
       } else {
         // Jika tidak ada token, arahkan ke halaman sign-in
-
       }
     } catch (error: any) {
       if (error.response) {
@@ -55,44 +78,71 @@ export const Header = () => {
     }
   };
 
+  console.log('username :', username);
   return (
     <CustRouter>
-      <div className="text-white bg-[#333A73] w-full h-[80px]">
-        <div className="w-full h-full flex items-center justify-between mr-10">
-          <Link className="ml-20 font-extrabold text-[20px]" href={'/'}>
+      <div className="text-white bg-[#333A73] w-full h-[80px] px-4 md:px-20">
+        <div className="w-full h-full flex items-center justify-between ">
+          <Link className=" font-extrabold text-[20px]" href={'/'}>
             EVENTLY
           </Link>
-
-          <div className="flex gap-5 mr-20 items-center">
-            <Link className="mr-5 font-medium capitalize" href={'/explore'}>
-              {' '}
-              explore{' '}
-            </Link>
-            {username ? (
-              <div className="flex gap-4 items-center justify-center">
+          {username ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <Button
-                  onClick={handleLogout}
-                  className="border border-lg border-white"
+                  variant="outline"
+                  className="bg-gray-50 rounded-full border-none px-0 py-0 w-fit h-fit "
                 >
-                  Sign Out
+                  <CircleUser className=" text-gray-600 w-8 h-8"></CircleUser>
                 </Button>
-                <span className="mr-5 font-medium capitalize">{username}</span>
-              </div> // Jika ada username, tampilkan username
-            ) : (
-              <Link className="w-fit h-fit" href={'/signup'}>
-                <Button className="bg-white text-[#333A73] font-bold">
-                  Sign Up
-                </Button>
-              </Link>
-            )}
-            {!username && ( // Jika tidak ada username, tampilkan tombol Sign In
-              <Link className="w-fit h-fit" href={'/signin'}>
-                <Button className=" border border-lg border-white">
-                  Sign In
-                </Button>
-              </Link>
-            )}
-          </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-white">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+
+                <DropdownMenuItem>
+                  <Users className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem>
+                  <Ticket className="mr-2 h-4 w-4" />
+                  <span>My event</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem>
+                  <ShoppingBag className="mr-2 h-4 w-4" />
+                  <span>Transaction</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span
+                    className="cursor-pointer"
+                    onClick={() => {
+                      handleLogout();
+                    }}
+                  >
+                    Log out
+                  </span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="hidden md:block">
+              <div className="flex gap-5 items-center">
+                <Link className="w-fit h-fit" href={'/signup'}>
+                  <Button className="bg-white text-[#333A73] font-bold">
+                    Sign Up
+                  </Button>
+                </Link>
+                <Link className="w-fit h-fit" href={'/signin'}>
+                  <Button className=" border border-lg border-white">
+                    Sign In
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </CustRouter>

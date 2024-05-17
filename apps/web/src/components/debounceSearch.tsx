@@ -84,6 +84,7 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
     <Sheet>
       <SheetTrigger asChild>
         <Button
+          className="bg-white"
           variant="outline"
           onClick={() => {
             setSearch('');
@@ -92,7 +93,7 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
           <span className="mr-2">
             <Search className="w-4 h-4"></Search>
           </span>
-          Search your event here
+          Search event
         </Button>
       </SheetTrigger>
       <SheetContent
