@@ -20,7 +20,6 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
         submenu: true,
         subMenuItems: [
             { title: 'Voucher', path: '/event-organizer/settings/voucher' },
-            { title: 'Customers', path: '/event-organizer/settings/customer' },
         ]
     },
     {

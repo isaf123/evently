@@ -1,5 +1,6 @@
 // import { AuthController } from '@/controllers/auth.controller';
 import { EventController } from '@/controllers/customer/event.controller';
+import { customerMiddleware } from '@/middleware/authMiddleware';
 
 import { Router } from 'express';
 

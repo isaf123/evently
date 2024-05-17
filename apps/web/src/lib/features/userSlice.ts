@@ -7,6 +7,7 @@ interface IData {
     username: string;
     email: string; // Tambahkan field email
     token: string;
+
 }
 
 const data: IData = {
@@ -14,6 +15,7 @@ const data: IData = {
     username: "",
     email: "", // Inisialisasi email kosong
     role: "customers" || "eo",
+
 };
 
 const userSlice = createSlice({
@@ -47,6 +49,7 @@ export const { setSuccessLoginAction, setLogoutAction } = actions;
 
 export const selectUserRole = (state: RootState) => state.userSlice.role;
 export const selectUserEmail = (state: RootState) => state.userSlice.email
+// export const selectUserisActive = (state: RootState) => state.userSlice.isActive
 
 // Selector untuk memeriksa apakah user adalah EO
 export const selectIsUserEO = (state: RootState) => state.userSlice.role === "eo";

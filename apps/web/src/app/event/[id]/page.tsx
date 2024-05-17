@@ -15,7 +15,7 @@ import { setSuccessLoginAction } from '@/lib/features/userSlice';
 import { useAppSelector } from '@/lib/hooks';
 import { selectUserRole } from '@/lib/features/userSlice';
 import Cookies from 'js-cookie';
-interface IEventPageProps {}
+interface IEventPageProps { }
 
 const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
   const [data, setData] = React.useState<{
@@ -46,8 +46,6 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
   const dispatch = useAppDispatch();
 
   const path = pathname.split('/')[2];
-
-  const role = Cookies.get('Token Cust');
 
   React.useEffect(() => {
     getDataTicket();
