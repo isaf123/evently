@@ -6,7 +6,7 @@ import {
   setSuccessLoginAction,
 } from '@/lib/features/userSlice'; // Perhatikan bahwa saya mengubah ini untuk mengambil fungsi logout dan selector role
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { Search } from 'lucide-react';
+import { Menu, Search } from 'lucide-react';
 import Link from 'next/link';
 import { showMessage } from './Alert/Toast';
 import axios from 'axios';
@@ -23,20 +23,15 @@ import {
   Ticket,
   Users,
   CircleUser,
+  UserPlus,
+  LogIn,
 } from 'lucide-react';
 
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
@@ -81,66 +76,120 @@ export const Header = () => {
   console.log('username :', username);
   return (
     <CustRouter>
-      <div className="text-white bg-[#333A73] w-full h-[80px] px-4 md:px-20">
+      <div className="text-white bg-[#333A73] w-full h-[80px] px-4 md:px-28">
         <div className="w-full h-full flex items-center justify-between ">
           <Link className=" font-extrabold text-[20px]" href={'/'}>
             EVENTLY
           </Link>
           {username ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="bg-gray-50 rounded-full border-none px-0 py-0 w-fit h-fit "
-                >
-                  <CircleUser className=" text-gray-600 w-8 h-8"></CircleUser>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 bg-white">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-
-                <DropdownMenuItem>
-                  <Users className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                </DropdownMenuItem>
-
-                <DropdownMenuItem>
-                  <Ticket className="mr-2 h-4 w-4" />
-                  <span>My event</span>
-                </DropdownMenuItem>
-
-                <DropdownMenuItem>
-                  <ShoppingBag className="mr-2 h-4 w-4" />
-                  <span>Transaction</span>
-                </DropdownMenuItem>
-
-                <DropdownMenuItem>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span
-                    className="cursor-pointer"
-                    onClick={() => {
-                      handleLogout();
-                    }}
+            <div className="flex gap-4 items-center">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="bg-gray-50 rounded-full border-none px-0 py-0 w-fit h-fit "
                   >
-                    Log out
-                  </span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <div className="hidden md:block">
-              <div className="flex gap-5 items-center">
-                <Link className="w-fit h-fit" href={'/signup'}>
-                  <Button className="bg-white text-[#333A73] font-bold">
-                    Sign Up
+                    <CircleUser className=" text-gray-600 w-8 h-8"></CircleUser>
                   </Button>
-                </Link>
-                <Link className="w-fit h-fit" href={'/signin'}>
-                  <Button className=" border border-lg border-white">
-                    Sign In
-                  </Button>
-                </Link>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 bg-white ">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+
+                  <DropdownMenuItem>
+                    <Users className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem>
+                    <Ticket className="mr-2 h-4 w-4" />
+                    <span>My event</span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem>
+                    <ShoppingBag className="mr-2 h-4 w-4" />
+                    <span
+                      className="cursor-pointer"
+                      onClick={() => {
+                        router.push('/checkout');
+                      }}
+                    >
+                      Transaction
+                    </span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span
+                      className="cursor-pointer"
+                      onClick={() => {
+                        handleLogout();
+                      }}
+                    >
+                      Log out
+                    </span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <div className="  ">
+                <p className="text-xl font-bold">{username}</p>
+                <p className="text-xs">customer</p>
               </div>
+            </div>
+          ) : (
+            <div>
+              <div className="hidden md:block">
+                <div className="flex gap-5 items-center">
+                  <Link className="w-fit h-fit" href={'/signup'}>
+                    <Button className="bg-white text-[#333A73] font-bold">
+                      Sign Up
+                    </Button>
+                  </Link>
+                  <Link className="w-fit h-fit" href={'/signin'}>
+                    <Button className=" border border-lg border-white">
+                      Sign In
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="bg-gray-50 border-none px-2 py-2 w-fit h-fit block md:hidden"
+                  >
+                    <Menu className="text-black"></Menu>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-40 bg-white ">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+
+                  <DropdownMenuItem>
+                    <UserPlus className="mr-2 h-4 w-4" />
+
+                    <span
+                      onClick={() => {
+                        router.push('/signup');
+                      }}
+                    >
+                      Sign up
+                    </span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem>
+                    <LogIn className="mr-2 h-4 w-4" />
+                    <Link className="w-fit h-fit" href={'/signin'}>
+                      <span
+                        onClick={() => {
+                          router.push('/signin');
+                        }}
+                      >
+                        Sign in
+                      </span>
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           )}
         </div>

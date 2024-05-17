@@ -58,7 +58,7 @@ export default function Home() {
   };
   return (
     <main className=" m-auto  md:px-0 bg-gray-50">
-      <div className="w-fit h-[520px] bg-gray-400 absolute overflow-hidden top-20 hidden md:block">
+      <div className="w-full h-[520px]  absolute overflow-hidden top-20 hidden md:block m-auto">
         <img src="/landingphoto1.png" className="brightness-50" alt="" />
       </div>
 
@@ -74,7 +74,7 @@ export default function Home() {
           src="/landingphoto2mobile.png"
           alt=""
         />
-        <div className=" absolute bottom-10  md:left-10 z-10 w-fit md:w-[600px]">
+        <div className=" absolute bottom-10  md:left-20 z-10 w-fit md:w-[600px]">
           <h1 className=" text-white text-2xl md:text-[36px] font-bold text-center md:text-start mb-2">
             Find Your Event Here
           </h1>

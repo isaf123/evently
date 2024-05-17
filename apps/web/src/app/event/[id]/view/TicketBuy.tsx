@@ -20,7 +20,7 @@ interface IEventDetailsProps {
 
 const TicketBuy: React.FunctionComponent<IEventDetailsProps> = (props) => {
   const [countTicket, setCountTicket] = React.useState<number>(0);
-  const [price, setPrice] = React.useState<number>(props.price);
+  const [price, setPrice] = React.useState<number>(0);
 
   const dispatch = useAppDispatch();
   console.log('props', props.buyTicket);
@@ -67,12 +67,12 @@ const TicketBuy: React.FunctionComponent<IEventDetailsProps> = (props) => {
         <CardContent>
           <div className="grid gap-3 text-gray-600">
             <div className="flex items-center  justify-end gap-20">
-              {price ? (
+              {!price ? (
+                <></>
+              ) : (
                 <p className="font-medium text-lg ">
                   {rupiah(props.price * countTicket)}
                 </p>
-              ) : (
-                <></>
               )}
 
               <div className="flex gap-2 items-center">
