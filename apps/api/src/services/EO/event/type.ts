@@ -13,3 +13,10 @@ export interface Ievent {
   address: string;
   max_ticket: number;
 }
+
+export interface ITransaction {
+  invoice_code: string
+  date_transaction: string
+  event_id: number,
+  total_price: number
+}
