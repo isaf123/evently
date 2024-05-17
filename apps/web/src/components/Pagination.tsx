@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MoveRight, MoveLeft } from 'lucide-react';
+import { MoveRight, MoveLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface IPaginationProps {
@@ -14,8 +14,8 @@ const Pagination: React.FunctionComponent<IPaginationProps> = (props) => {
       <Button
         className={
           props.page == 1
-            ? 'border bg-color1 border-gray-600 shadow-sm  text-white opacity-75'
-            : 'border bg-color1 border-gray-600 shadow-sm  text-white opacity-100'
+            ? 'border bg-white  shadow-md  text-white opacity-35 px-3 py-3'
+            : 'border bg-white shadow-md  text-white opacity-100 px-3 py-3'
         }
         onClick={() => {
           if (props.page > 1) {
@@ -23,13 +23,13 @@ const Pagination: React.FunctionComponent<IPaginationProps> = (props) => {
           }
         }}
       >
-        <MoveLeft></MoveLeft>
+        <ChevronLeft className="text-black"></ChevronLeft>
       </Button>
       <Button
         className={
           props.page == props.maxPage
-            ? 'border bg-color1 border-gray-600 shadow-sm  text-white opacity-75'
-            : 'border bg-color1 border-gray-600 shadow-sm  text-white opacity-100'
+            ? 'border bg-white  shadow-md  text-white opacity-35 px-3 py-3'
+            : 'border bg-white  shadow-md  text-white opacity-100 px-3 py-3'
         }
         onClick={() => {
           if (props.page < props.maxPage) {
@@ -37,7 +37,7 @@ const Pagination: React.FunctionComponent<IPaginationProps> = (props) => {
           }
         }}
       >
-        <MoveRight></MoveRight>
+        <ChevronRight className="text-black"></ChevronRight>
       </Button>
     </div>
   );

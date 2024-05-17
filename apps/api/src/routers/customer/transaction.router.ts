@@ -23,6 +23,11 @@ export class TransactionUserRouter {
       verifyToken,
       this.transactionUserController.getPoin,
     );
+    this.router.get(
+      '/details',
+      verifyToken,
+      this.transactionUserController.transactionDetailsCust,
+    );
     this.router.post(
       '/',
       verifyToken,

@@ -1,3 +1,4 @@
+'use client';
 import prisma from '@/prisma';
 import { NextFunction, Request, Response } from 'express';
 
@@ -21,76 +22,73 @@ export class TransactionUserController {
         voucher_discount,
       } = req.body;
 
-      const user_id = res.locals.decript.id
+      const user_id = res.locals.decript.id;
 
       console.log('voucher', req.body);
       await prisma.$transaction(async (tx) => {
         const existsEvent = await tx.transaction.findMany({
           where: {
-            event_id: event_id
-          }
-        })
+            event_id: event_id,
+          },
+        });
 
         if (!existsEvent) {
-          throw 'Event not exists'
+          throw 'Event not exists';
         }
 
         const existTrans = await tx.transaction.aggregate({
           _sum: {
-            ticket_count: true
+            ticket_count: true,
           },
           where: {
             event_id: event_id,
-            user_id: res.locals.decript.id
-          }
-        })
+            user_id: res.locals.decript.id,
+          },
+        });
 
         if (existTrans === ticket_count) {
           console.log('dapat transaksi', existTrans);
-          throw 'Reach Max Transaction'
+          throw 'Reach Max Transaction';
         }
 
         if (voucher_id) {
           const existVoucher = await tx.voucher.findUnique({
             where: {
-              id: voucher_id
-            }
-          })
-
+              id: voucher_id,
+            },
+          });
 
           if (existVoucher?.user_id) {
             const findVoucherById = await tx.voucher.findFirst({
               where: {
-                user_id: user_id
-              }
-            })
-            console.log("dapaaaaaaaat :", findVoucherById?.id)
+                user_id: user_id,
+              },
+            });
 
             const deleteVoucher = await tx.voucher.delete({
               where: {
-                id: findVoucherById?.id
-              }
-            })
+                id: findVoucherById?.id,
+              },
+            });
           }
-
         }
 
         if (point_discount) {
           const findPoint = await tx.poin.findFirst({
             where: {
-              usersId: user_id
-            }
-          })
+              usersId: user_id,
+            },
+          });
 
-          console.log("dapat point :", findPoint?.usersId)
+          console.log('dapat point :', findPoint?.usersId);
           if (findPoint) {
             const deletePoint = await tx.poin.update({
               where: { id: findPoint.id },
-              data: { amount: findPoint.amount - point_discount }
-            })
+              data: { amount: findPoint.amount - point_discount },
+            });
           }
         }
-        console.log("jlaaaaaaan")
+        console.log('jlaaaaaaan');
 
         const trans = await tx.transaction.create({
           data: {
@@ -107,8 +105,37 @@ export class TransactionUserController {
             voucher_discount,
           },
         });
-      })
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
+  async transactionDetailsCust(req: Request, res: Response) {
+    try {
+      const { page, pageSize } = req.query;
+
+      const skip = (Number(page) - 1) * Number(pageSize);
+      const take = Number(page) * Number(pageSize);
+
+      const transDetails = await prisma.transaction.findMany({
+        orderBy: [{ id: 'desc' }],
+        skip,
+        take,
+        where: { user_id: res.locals.decript.id },
+        include: {
+          event: {
+            select: { flyer_event: true, title: true },
+          },
+        },
+      });
+
+      const totalEvent = await prisma.masterEvent.count();
+      const totalPage = Math.ceil(totalEvent / Number(pageSize));
+
+      return res
+        .status(200)
+        .send({ rc: 200, success: true, result: transDetails, totalPage });
     } catch (error) {
       console.log(error);
     }
