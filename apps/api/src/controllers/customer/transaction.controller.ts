@@ -1,3 +1,4 @@
+import { User } from './../../../../web/src/interfaces/User';
 'use client';
 import prisma from '@/prisma';
 import { NextFunction, Request, Response } from 'express';
@@ -26,11 +27,14 @@ export class TransactionUserController {
 
       console.log('voucher', req.body);
       await prisma.$transaction(async (tx) => {
-        const existsEvent = await tx.transaction.findMany({
+        const existsEvent = await tx.masterEvent.findFirst({
           where: {
-            event_id: event_id,
+            id: event_id,
           },
         });
+
+        console.log("body :", req.body)
+        console.log("event exist :", existsEvent)
 
         if (!existsEvent) {
           throw 'Event not exists';
@@ -39,14 +43,37 @@ export class TransactionUserController {
         const existTrans = await tx.transaction.aggregate({
           _sum: {
             ticket_count: true,
-          },
-          where: {
-            event_id: event_id,
-            user_id: res.locals.decript.id,
-          },
+          }, where: { event_id: existsEvent.id }
         });
 
-        console.log(existTrans._sum.ticket_count);
+        console.log("trans :", existTrans)
+
+        if (existTrans._sum.ticket_count === existsEvent.available_seat) {
+          throw "ticket sold"
+        }
+
+        /// maximal beli untuk User
+
+        const findTrans = await tx.transaction.findMany({
+          where: { event_id: existsEvent.id, user_id: res.locals.decript.id }
+        })
+
+        const maxTransaction = await tx.transaction.aggregate({
+          _sum: {
+            ticket_count: true,
+          }, where: {
+            event_id: existsEvent.id,
+            user_id: res.locals.decript.id
+          }
+        })
+
+        if (maxTransaction._sum.ticket_count === existsEvent.max_ticket) {
+          throw "reach maximal purchase"
+        }
+
+
+        console.log("max transaction :", maxTransaction)
+        console.log("jumlah :", existTrans);
 
 
         if (existTrans._sum.ticket_count === ticket_count) {
@@ -70,11 +97,29 @@ export class TransactionUserController {
 
             const deleteVoucher = await tx.voucher.delete({
               where: {
-                id: findVoucherById?.id,
-              },
-            });
+                id: findVoucherById?.id
+              }
+            })
+
           }
         }
+
+        const trans = await tx.transaction.create({
+          data: {
+            date_transaction,
+            invoice_code,
+            price_after_discount,
+            status_transaction,
+            ticket_count,
+            total_price,
+            event_id,
+            user_id: res.locals.decript.id,
+            point_discount,
+            voucher_discount,
+          },
+        });
+
+
 
         if (point_discount) {
           const findPoint = await tx.poin.findFirst({
@@ -93,21 +138,8 @@ export class TransactionUserController {
         }
         console.log('jlaaaaaaan');
 
-        const trans = await tx.transaction.create({
-          data: {
-            date_transaction,
-            invoice_code,
-            price_after_discount,
-            status_transaction,
-            ticket_count,
-            total_price,
-            voucherId: voucher_id,
-            event_id,
-            user_id: res.locals.decript.id,
-            point_discount,
-            voucher_discount,
-          },
-        });
+
+
       });
     } catch (error) {
       console.log(error);
