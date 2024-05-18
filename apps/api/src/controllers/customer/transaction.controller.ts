@@ -111,6 +111,27 @@ export class TransactionUserController {
     }
   }
 
+  async uploadTransferPic(req: Request, res: Response) {
+    try {
+      console.log(req.files);
+      console.log('dapeeeeeeeeeet :', req.body);
+      const files = req.files as Express.Multer.File[];
+
+      const update = await prisma.transaction.update({
+        where: { id: Number(req.body.trans_id) },
+        data: {
+          status_transaction: 'pending',
+          img_payment: files[0].filename,
+        },
+      });
+
+      console.log('dapaeeeesssst :', files[0].filename);
+      return res.status(200).send({ result: 'Payment success' });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async transactionDetailsCust(req: Request, res: Response) {
     try {
       const { page, pageSize } = req.query;

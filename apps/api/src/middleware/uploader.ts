@@ -20,7 +20,7 @@ export const uploader = (
       const fileDestination = dirName ? defaultDir + dirName : defaultDir;
       // Buat directory jika belum ada
       if (!fs.existsSync(fileDestination)) {
-        fs.mkdirSync(fileDestination, { recursive: true })
+        fs.mkdirSync(fileDestination, { recursive: true });
       }
       console.log('Destination :', fileDestination);
       callback(null, fileDestination);

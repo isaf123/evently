@@ -1,6 +1,9 @@
 import { TransactionUserController } from '@/controllers/customer/transaction.controller';
 import { verifyToken } from '@/middleware/verifiedToken';
 import { Router } from 'express';
+import { uploader } from '@/middleware/uploader';
+import { validationReceipt } from '@/middleware/receiptValidator';
+import { customerMiddleware } from '@/middleware/authMiddleware';
 
 export class TransactionUserRouter {
   private router: Router;
@@ -13,6 +16,15 @@ export class TransactionUserRouter {
   }
 
   private initializeRoutes(): void {
+    this.router.patch(
+      '/upload',
+      verifyToken,
+      customerMiddleware,
+      uploader('/receipt', 'RECEIPT').array('imgTransaction'),
+      validationReceipt,
+      this.transactionUserController.uploadTransferPic,
+    );
+
     this.router.get(
       '/',
       verifyToken,

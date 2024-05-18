@@ -9,7 +9,7 @@ import {
   Menu,
   Package,
   Package2,
-  Search,
+  User,
   ShoppingCart,
   Users,
 } from 'lucide-react';
@@ -30,6 +30,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Pagination from '@/components/Pagination';
+import { usePathname } from 'next/navigation';
 
 interface ICheckoutPageProps {}
 
@@ -55,7 +56,8 @@ const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
     }
   };
 
-  console.log('ini data:', data);
+  const path = usePathname();
+  console.log('ini data:', path);
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -77,15 +79,19 @@ const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
                 href="#"
                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
-                <Home className="h-4 w-4" />
-                Dashboard
+                <User className="h-4 w-4" />
+                Profile
               </Link>
               <Link
-                href="#"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                href="/checkout"
+                className={
+                  path == '/checkout'
+                    ? 'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary bg-gray-100'
+                    : 'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary'
+                }
               >
                 <ShoppingCart className="h-4 w-4" />
-                Orders
+                Your purchase
                 <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
                   6
                 </Badge>
@@ -143,7 +149,7 @@ const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
                   className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
                   <Home className="h-5 w-5" />
-                  Dashboard
+                  Profile
                 </Link>
                 <Link
                   href="#"
@@ -200,32 +206,35 @@ const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
           </div>
         </header>
         <main className="flex flex-1 flex-col px-2 md:px-6">
-          <TableCheckout dataTrans={data}></TableCheckout>
-          <div className="flex w-full justify-end">
-            <Pagination
-              page={page}
-              setPage={SetPage}
-              maxPage={totalPage}
-            ></Pagination>
-          </div>
-          {/* <div className="flex w-full justify-end">
-            <Pagination page={page} setPage={setPage} maxPage={}></Pagination>
-          </div> */}
-          {/* <div className="flex flex-1 items-center justify-center "></div> */}
-          {/* <div
-            className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm"
-            x-chunk="dashboard-02-chunk-1"
-          >
-            <div className="flex flex-col items-center gap-1 text-center">
-              <h3 className="text-2xl font-bold tracking-tight">
-                You have no products
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                You can start selling as soon as you add a product.
-              </p>
-              <Button className="mt-4">Add Product</Button>
+          {data.length ? (
+            <div>
+              <TableCheckout dataTrans={data}></TableCheckout>
+              <div className="flex w-full justify-end">
+                <Pagination
+                  page={page}
+                  setPage={SetPage}
+                  maxPage={totalPage}
+                ></Pagination>
+              </div>
             </div>
-          </div> */}
+          ) : (
+            <div
+              className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm"
+              x-chunk="dashboard-02-chunk-1"
+            >
+              <div className="flex flex-col items-center gap-1 text-center">
+                <h3 className="text-2xl font-bold tracking-tight">
+                  You have no transaction
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  You can start get event as soon as you buy a ticket.
+                </p>
+                <Link href="/">
+                  <Button className="mt-4 border shadow-lg">Get Events</Button>
+                </Link>
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>
