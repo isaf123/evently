@@ -1,7 +1,13 @@
+'use client'
 import { Table, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { ITransaction } from '@/interfaces/transaction';
 import React from 'react'
+import { useState } from 'react';
 
 const TableTransactionEOPage = () => {
+    const [dataTransaction, setDataTransaction] = useState<ITransaction[]>([])
+
+    const getTransaction = () => { }
     return (
         <div>
             <Table className='w-full text-sm text-left text-gray-500'>

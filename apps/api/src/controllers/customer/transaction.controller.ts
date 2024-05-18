@@ -46,7 +46,10 @@ export class TransactionUserController {
           },
         });
 
-        if (existTrans === ticket_count) {
+        console.log(existTrans._sum.ticket_count);
+
+
+        if (existTrans._sum.ticket_count === ticket_count) {
           console.log('dapat transaksi', existTrans);
           throw 'Reach Max Transaction';
         }
