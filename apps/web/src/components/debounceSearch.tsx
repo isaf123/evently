@@ -5,10 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -40,14 +38,12 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event/${debounceValue}`,
       );
-      console.log(response.data);
+
       setDataSearch(response.data.result);
     } catch (error) {
       console.log('error');
     }
   };
-
-  console.log(dataSearch);
 
   const mappingDataSearch = () => {
     return dataSearch?.map((val: any, idx: number) => {
@@ -74,7 +70,11 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
               <p>-</p>
               <p>{convertDate(val?.end_date)}</p>
             </div>
-            <p className="text-sm">{rupiah(val?.price)}</p>
+            {val.price ? (
+              <p className="text-sm">{rupiah(val?.price)}</p>
+            ) : (
+              <p>Free</p>
+            )}
           </div>
         </div>
       );

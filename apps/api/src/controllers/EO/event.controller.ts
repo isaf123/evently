@@ -8,11 +8,8 @@ export class EventEOController {
     try {
       const { query = '' } = req.query;
 
-      const events = await getEvents(
-        res.locals.decript.id,
-        query as string
-      );
-      console.log('ini pencarian events', events);
+      const events = await getEvents(res.locals.decript.id, query as string);
+
       return res.status(200).send(events);
     } catch (error) {
       return res.status(500).send({ error });
@@ -29,8 +26,6 @@ export class EventEOController {
         return res.status(400).send({ message: 'No file uploaded' });
       }
       const newEvent = await createEvent(req.body, files[0].filename, usersId);
-
-      console.log('EVENT BARU ::::', newEvent);
 
       return res.status(201).send({
         rc: 201,
