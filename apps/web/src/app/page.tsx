@@ -58,11 +58,7 @@ export default function Home() {
   };
   return (
     <main className=" m-auto  md:px-0 bg-gray-50">
-      <div className="w-full h-[520px]  absolute overflow-hidden top-20 hidden md:block m-auto">
-        <img src="/landingphoto1.png" className="brightness-50" alt="" />
-      </div>
-
-      <div className="w-full md:w-[1190px] h-[260px] md:h-[300px] m-auto rounded-b-xl md:rounded-xl bg-red-100 overflow-hidden relative mb-5 top-0 md:mt-[320px]">
+      <div className="w-full md:w-[1190px] h-[260px] md:h-[300px] m-auto rounded-b-xl md:rounded-xl bg-red-100 overflow-hidden relative mb-5 top-0 md:mt-20">
         <img
           className="hidden md:block"
           src="/landingphoto2web.png

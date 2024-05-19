@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/card';
 
 import Cookies from 'js-cookie';
-interface IEventPageProps { }
+interface IEventPageProps {}
 
 const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
   const [bought, setbought] = React.useState<number>(0);
@@ -57,9 +57,9 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
     return state.transactionEventSlice;
   });
 
-  console.log('transaksi', transaction.ticket_count);
+  // console.log('transaksi', transaction.ticket_count);
 
-  const router = useRouter()
+  const router = useRouter();
   const path = pathname.split('/')[2];
   const role = Cookies.get('Token Cust');
 
@@ -87,8 +87,8 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event/detail/${path}`,
         // { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
       );
+      console.log('cari vouchereee:', response);
 
-      console.log('cari voucher:', response);
       const newData = { ...response.data.result };
       setData(newData);
       if (role) {
@@ -104,14 +104,14 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
           setbought(0);
         }
 
-        console.log(maxTicket);
+        // console.log(maxTicket);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  console.log("ini transaction:", transaction)
+  // console.log('ini transaction:', transaction);
 
   const creteTransaction = async () => {
     try {
@@ -133,7 +133,6 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
         { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
       );
       // router.push("/event/Wedding-Expo")
-
     } catch (error) {
       console.log(error);
     }
