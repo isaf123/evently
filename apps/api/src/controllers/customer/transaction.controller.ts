@@ -1,5 +1,3 @@
-import { User } from './../../../../web/src/interfaces/User';
-'use client';
 import prisma from '@/prisma';
 import { NextFunction, Request, Response } from 'express';
 
@@ -33,8 +31,8 @@ export class TransactionUserController {
           },
         });
 
-        console.log("body :", req.body)
-        console.log("event exist :", existsEvent)
+        console.log('body :', req.body);
+        console.log('event exist :', existsEvent);
 
         if (!existsEvent) {
           throw 'Event not exists';
@@ -43,38 +41,38 @@ export class TransactionUserController {
         const existTrans = await tx.transaction.aggregate({
           _sum: {
             ticket_count: true,
-          }, where: { event_id: existsEvent.id }
+          },
+          where: { event_id: existsEvent.id },
         });
 
-        console.log("trans :", existTrans)
+        console.log('trans :', existTrans);
 
         if (existTrans._sum.ticket_count === existsEvent.available_seat) {
-          throw "ticket sold"
+          throw 'ticket sold';
         }
 
         /// maximal beli untuk User
 
         const findTrans = await tx.transaction.findMany({
-          where: { event_id: existsEvent.id, user_id: res.locals.decript.id }
-        })
+          where: { event_id: existsEvent.id, user_id: res.locals.decript.id },
+        });
 
         const maxTransaction = await tx.transaction.aggregate({
           _sum: {
             ticket_count: true,
-          }, where: {
+          },
+          where: {
             event_id: existsEvent.id,
-            user_id: res.locals.decript.id
-          }
-        })
+            user_id: res.locals.decript.id,
+          },
+        });
 
         if (maxTransaction._sum.ticket_count === existsEvent.max_ticket) {
-          throw "reach maximal purchase"
+          throw 'reach maximal purchase';
         }
 
-
-        console.log("max transaction :", maxTransaction)
-        console.log("jumlah :", existTrans);
-
+        console.log('max transaction :', maxTransaction);
+        console.log('jumlah :', existTrans);
 
         if (existTrans._sum.ticket_count === ticket_count) {
           console.log('dapat transaksi', existTrans);
@@ -88,6 +86,8 @@ export class TransactionUserController {
             },
           });
 
+          console.log(existVoucher);
+
           if (existVoucher?.user_id) {
             const findVoucherById = await tx.voucher.findFirst({
               where: {
@@ -95,12 +95,13 @@ export class TransactionUserController {
               },
             });
 
+            console.log('dapet find:', findVoucherById);
+
             const deleteVoucher = await tx.voucher.delete({
               where: {
-                id: findVoucherById?.id
-              }
-            })
-
+                id: findVoucherById?.id,
+              },
+            });
           }
         }
 
@@ -119,8 +120,6 @@ export class TransactionUserController {
           },
         });
 
-
-
         if (point_discount) {
           const findPoint = await tx.poin.findFirst({
             where: {
@@ -136,10 +135,6 @@ export class TransactionUserController {
             });
           }
         }
-        console.log('jlaaaaaaan');
-
-
-
       });
     } catch (error) {
       console.log(error);
@@ -171,8 +166,10 @@ export class TransactionUserController {
     try {
       const { page, pageSize } = req.query;
 
+      console.log(page, pageSize);
+
       const skip = (Number(page) - 1) * Number(pageSize);
-      const take = Number(page) * Number(pageSize);
+      const take = Number(pageSize);
 
       const transDetails = await prisma.transaction.findMany({
         orderBy: [{ id: 'desc' }],
@@ -186,8 +183,10 @@ export class TransactionUserController {
         },
       });
 
-      const totalEvent = await prisma.masterEvent.count();
-      const totalPage = Math.ceil(totalEvent / Number(pageSize));
+      const totalTransaction = await prisma.transaction.count({
+        where: { user_id: res.locals.decript.id },
+      });
+      const totalPage = Math.ceil(totalTransaction / Number(pageSize));
 
       return res
         .status(200)

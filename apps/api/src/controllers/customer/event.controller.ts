@@ -90,7 +90,6 @@ export class EventController {
       // console.log(allEvent);
       const totalEvent = await prisma.masterEvent.count();
       const totalPage = Math.ceil(totalEvent / Number(pageSize));
-      console.log(totalPage);
 
       return res
         .status(200)

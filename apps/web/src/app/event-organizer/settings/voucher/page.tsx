@@ -190,16 +190,12 @@ const DashboardEOPage = () => {
         <HeaderMobile />
         <div className="flex flex-col container px-[20px]  my-[10px] mx-auto md:py-20">
           <ToastContainer></ToastContainer>
-          {active ? (
-            <div className="bg-black h-full w-[1670px] fixed top-12 z-10 right-0 backdrop-blur-md opacity-50"></div>
-          ) : (
-            <></>
-          )}
+
           <h1 className="md:mx-[200px] text-xl md:text-3xl font-bold mb-6">
             Create Your Promo Here
           </h1>
 
-          <div className="w-full h-fit bg-white flex gap-8 flex-wrap relative md:mx-[200px]">
+          <div className="w-[1400px] h-fit bg-white flex gap-8 flex-wrap relative md:mx-[200px]">
             {mapping()}
             {active ? (
               <Card
@@ -218,7 +214,7 @@ const DashboardEOPage = () => {
                     </p>
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="shado-xl">
                   <Plus
                     className="absolute top-6 right-6 rotate-45 cursor-pointer"
                     onClick={() => {
