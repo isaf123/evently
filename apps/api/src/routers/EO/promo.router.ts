@@ -23,6 +23,13 @@ export class PromoEventRouter {
       validationPromo,
       this.promoEventController.createPromo,
     );
+
+    this.router.get(
+      '/:id',
+      verifyToken,
+      eventOrganizerMiddleware,
+      this.promoEventController.getPromo,
+    );
   }
   getRouter(): Router {
     return this.router;

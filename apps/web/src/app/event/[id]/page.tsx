@@ -139,15 +139,15 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
   };
 
   return (
-    <div className="md:w-[1220px] m-auto md:py-10 min-h-screen gap-6 flex flex-col md:flex-row px-3">
-      <div className=" min-h-screen md:w-[800px]]">
-        <div className="w-[800px] h-[376px] bg-gray-200 rounded-t-xl overflow-hidden">
+    <div className="md:w-[1220px] m-auto py-2 md:py-10 min-h-screen gap-6 flex flex-col md:flex-row px-3">
+      <div className="  md:w-[800px]]">
+        <div className="md:w-[800px] md:h-[376px] bg-gray-200 rounded-t-xl overflow-hidden">
           <Image
             src={`${process.env.NEXT_PUBLIC_BASE_API_URL}eventpic/${data.flyer_event}`}
             alt=""
             width={800}
             height={376}
-            className="h-[376px] w-[800px] "
+            className="md:h-[376px] w-[390px] md:w-[800px] "
           ></Image>
         </div>
 

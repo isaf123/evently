@@ -27,4 +27,16 @@ export class PromoEventController {
       console.log(error);
     }
   }
+  async getPromo(req: Request, res: Response) {
+    try {
+      const id = Number(req.params.id);
+      const findPromo = await prisma.masterEvent.findMany({
+        where: { id, usersId: res.locals.decript.id },
+        select: { Vouchers: true },
+      });
+      return res.status(200).send(findPromo);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

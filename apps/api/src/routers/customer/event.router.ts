@@ -25,6 +25,8 @@ export class EventCustRouter {
       this.eventController.getMaxBuy,
     );
 
+    this.router.get('/filter', this.eventController.filterEvent);
+
     this.router.get('/:title', this.eventController.debounceSearch);
   }
 
