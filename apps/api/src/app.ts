@@ -85,6 +85,7 @@ export default class App {
 
     // Transaction EO
     this.app.use('/event-organizer', transactionEORouter.getRouter())
+    this.app.use('/receipt', express.static('public/receipt'));
   }
 
   public start(): void {

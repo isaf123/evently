@@ -7,7 +7,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import Pagination from '@/components/Pagination';
 import { useRouter } from 'next/navigation';
-import { protectPageCust } from '@/utils/protectPage';
+import { protectPageCust, protectPageEO } from '@/utils/protectPage';
 import BarCustomerWeb from '@/components/BarCustomerWeb';
 import BarCustomerMobile from '@/components/BarCustomerMobile';
 interface ICheckoutPageProps { }
@@ -22,8 +22,8 @@ const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
   React.useEffect(() => {
     getDataTrans();
 
-    if (!protectPageCust()) {
-      router.replace('/event-organzer/dashboard')
+    if (protectPageEO()) {
+      router.replace('/event-organizer/dashboard')
     }
   }, [page]);
 
