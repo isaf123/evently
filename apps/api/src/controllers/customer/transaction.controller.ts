@@ -1,5 +1,3 @@
-import { User } from './../../../../web/src/interfaces/User';
-'use client';
 import prisma from '@/prisma';
 import { NextFunction, Request, Response } from 'express';
 
@@ -33,8 +31,8 @@ export class TransactionUserController {
           },
         });
 
-        console.log("body :", req.body)
-        console.log("event exist :", existsEvent)
+        console.log('body :', req.body);
+        console.log('event exist :', existsEvent);
 
         if (!existsEvent) {
           throw 'Event not exists';
@@ -88,12 +86,16 @@ export class TransactionUserController {
             },
           });
 
+          console.log(existVoucher);
+
           if (existVoucher?.user_id) {
             const findVoucherById = await tx.voucher.findFirst({
               where: {
                 user_id: user_id,
               },
             });
+
+            console.log('dapet find:', findVoucherById);
 
             const deleteVoucher = await tx.voucher.delete({
               where: {
@@ -119,8 +121,6 @@ export class TransactionUserController {
           },
         });
 
-
-
         if (point_discount) {
           const findPoint = await tx.poin.findFirst({
             where: {
@@ -136,11 +136,6 @@ export class TransactionUserController {
             });
           }
         }
-        console.log('jlaaaaaaan');
-
-        return res.status(201).send(trans)
-
-
       });
     } catch (error) {
       console.log(error);
@@ -172,8 +167,10 @@ export class TransactionUserController {
     try {
       const { page, pageSize } = req.query;
 
+      console.log(page, pageSize);
+
       const skip = (Number(page) - 1) * Number(pageSize);
-      const take = Number(page) * Number(pageSize);
+      const take = Number(pageSize);
 
       const transDetails = await prisma.transaction.findMany({
         orderBy: [{ id: 'desc' }],
@@ -187,8 +184,10 @@ export class TransactionUserController {
         },
       });
 
-      const totalEvent = await prisma.masterEvent.count();
-      const totalPage = Math.ceil(totalEvent / Number(pageSize));
+      const totalTransaction = await prisma.transaction.count({
+        where: { user_id: res.locals.decript.id },
+      });
+      const totalPage = Math.ceil(totalTransaction / Number(pageSize));
 
       return res
         .status(200)

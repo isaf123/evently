@@ -15,6 +15,7 @@ import { PromoEventRouter } from './routers/EO/promo.router';
 import { TransactionUserRouter } from './routers/customer/transaction.router';
 import { DashboardEORouter } from './routers/EO/dashboard/dashboard.router';
 import { TransactionEORouter } from './routers/EO/transaction/transaction.router';
+import { ReviewUserRouter } from './routers/customer/review.router';
 export default class App {
   readonly app: Express;
 
@@ -60,6 +61,7 @@ export default class App {
     const eventCustRouter = new EventCustRouter();
     const transactionUserRouter = new TransactionUserRouter();
     const promoEventRouter = new PromoEventRouter();
+    const reviewUserRouter = new ReviewUserRouter();
 
     // Dashboard EO
     const dashboardEORouter = new DashboardEORouter();
@@ -76,10 +78,9 @@ export default class App {
     this.app.use('/event', eventCustRouter.getRouter());
     this.app.use('/promo', promoEventRouter.getRouter());
     this.app.use('/transaction-user', transactionUserRouter.getRouter());
+    this.app.use('/review-ticket', reviewUserRouter.getRouter());
     this.app.use('/eventpic', express.static('public/eventpic'));
-
     // Dashboard EO
-
     this.app.use('/EO', dashboardEORouter.getRouter());
 
     // Transaction EO

@@ -54,7 +54,7 @@ const TableTransactionEOPage = () => {
 
     const handleInvoiceClick = (id: number) => {
         console.log('invoice id: ', id);
-        router.push(`/event-organizer/transactions/${id}`);
+        router.push(`/transaction/${invoiceCode}`);
     }
 
     return (

@@ -1,22 +1,15 @@
 'use client';
 import CartEvent from '@/components/Cart';
 import CategoryCart from '@/components/categoryCart';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { rupiah } from '@/lib/text';
 import { convertDate } from '@/lib/text';
 import DebounceSearch from '@/components/debounceSearch';
-import { Button } from '@/components/ui/button';
 import Pagination from '@/components/Pagination';
 import { protectPageCust } from '@/utils/protectPage';
 import { useRouter } from 'next/navigation';
+import FilterSection from './view/filter';
 
 export default function Home() {
   const [newEvent, setNewEvent] = useState<any[]>();
@@ -26,6 +19,7 @@ export default function Home() {
   const router = useRouter()
 
   console.log('ini page :', page1);
+
   useEffect(() => {
     newsEvent();
 
@@ -40,14 +34,12 @@ export default function Home() {
       );
 
       setNewEvent(response.data.result);
-      console.log(response.data);
       setTotalPage1(response.data.totalPage);
     } catch (error) {
       console.log(error);
     }
   };
 
-  console.log(newEvent);
   const mapNewEvent = () => {
     return newEvent?.map((val: any, idx: number) => {
       return (
@@ -57,6 +49,7 @@ export default function Home() {
             startdate={convertDate(val.start_date)}
             enddate={convertDate(val.end_date)}
             image={val.flyer_event}
+            organizer={val.user_id.name}
           >
             {val.title}
           </CartEvent>
@@ -66,11 +59,7 @@ export default function Home() {
   };
   return (
     <main className=" m-auto  md:px-0 bg-gray-50">
-      <div className="w-full h-[520px]  absolute overflow-hidden top-20 hidden md:block m-auto">
-        <img src="/landingphoto1.png" className="brightness-50" alt="" />
-      </div>
-
-      <div className="w-full md:w-[1190px] h-[260px] md:h-[300px] m-auto rounded-b-xl md:rounded-xl bg-red-100 overflow-hidden relative mb-5 top-0 md:mt-[320px]">
+      <div className="w-full md:w-[1190px] h-[260px] md:h-[300px] m-auto rounded-b-xl md:rounded-xl bg-red-100 overflow-hidden relative mb-5 top-0 md:mt-20">
         <img
           className="hidden md:block"
           src="/landingphoto2web.png
@@ -103,12 +92,12 @@ export default function Home() {
         </p>
         {newEvent ? (
           <div>
-            <div className="h-fit w-[370px] md:w-full  m-auto overflow-x-auto md:overflow-x-hidden ">
-              <div className="flex gap-[23px] mb-6 w-fit mx-3 md:mx-0">
+            <div className="h-[512px] md:h-fit w-[370px] md:w-full m-auto mb-4">
+              <div className="flex gap-3 md:gap-[23px] flex-wrap mb-6 w-fit  md:mx-0">
                 {mapNewEvent()}
               </div>
             </div>
-            <div className="flex w-full justify-end">
+            <div className="flex w-full justify-end pr-4 md:pr-0">
               <Pagination
                 page={page1}
                 setPage={setPage1}
@@ -149,30 +138,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* <div className="mb-5 w-[1120px] m-auto">
-        <p className=" font-medium text-[21px]">This Month&apos;s Event</p>
-        <Carousel>
-          <CarouselContent className="py-4 px-2">
-            <CarouselItem className="basis-1/4 mr-8">
-              <CartEvent price={0}></CartEvent>
-            </CarouselItem>
-            <CarouselItem className="basis-1/4 mr-8">
-              <CartEvent price={0}></CartEvent>
-            </CarouselItem>
-            <CarouselItem className="basis-1/4 mr-8">
-              <CartEvent price={0}></CartEvent>
-            </CarouselItem>
-            <CarouselItem className="basis-1/4 mr-8">
-              <CartEvent price={0}></CartEvent>
-            </CarouselItem>
-            <CarouselItem className="basis-1/4 mr-8">
-              <CartEvent price={0}></CartEvent>
-            </CarouselItem>
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
-      </div> */}
+      <FilterSection></FilterSection>
     </main>
   );
 }

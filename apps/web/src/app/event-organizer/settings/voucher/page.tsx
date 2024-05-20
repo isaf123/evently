@@ -29,14 +29,19 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+
 import { Input } from '@/components/ui/input';
-import { title } from 'process';
+import { useRouter } from 'next/navigation';
+
 const DashboardEOPage = () => {
   const [data, setData] = useState<any[]>([]);
   const [startDatePromo, setStartDatePromo] = useState<Date>();
   const [endDatePromo, setEndDatePromo] = useState<Date>();
   const [active, setActive] = useState<Boolean>(false);
+  const [activeInfo, setActiveInfo] = useState<Boolean>(false);
+  const [dataPromo, setDataPromo] = useState<any[]>([]);
+  const [eventId, setEventId] = useState<number>();
+  const router = useRouter();
   const [sendPromo, setSendPromo] = useState<{
     promo_name: string;
     discount: number;
@@ -56,11 +61,15 @@ const DashboardEOPage = () => {
     end_date: '',
   });
 
-  console.log(startDatePromo);
-  console.log(endDatePromo);
   useEffect(() => {
     getData();
   }, []);
+
+  useEffect(() => {
+    getPromo();
+  }, [eventId]);
+
+  // console.log(eventId);
   const getData = async () => {
     try {
       const cookies = Cookies.get('Token EO');
@@ -78,7 +87,9 @@ const DashboardEOPage = () => {
       console.log(error);
     }
   };
-  console.log(sendPromo);
+
+  // console.log(data);
+
   const mapping = () => {
     return data.map((val: any, idx: number) => {
       return (
@@ -101,6 +112,12 @@ const DashboardEOPage = () => {
             <Button
               className=" text-black mt-2 border border-gray-300"
               type="button"
+              onClick={() => {
+                setEventId(val.id);
+                setActiveInfo(true);
+                const newData = { ...modal, title: val.title };
+                setModal(newData);
+              }}
             >
               Check promo details
             </Button>
@@ -173,8 +190,12 @@ const DashboardEOPage = () => {
         },
         { headers: { Authorization: `Bearer ${Cookies.get('Token EO')}` } },
       );
-      console.log(response);
+
       showMessage('create promo success', 'success');
+
+      setTimeout(() => {
+        router.push('/event-organizer/dashboard');
+      }, 1200);
     } catch (error: any) {
       if (error.response) {
         showMessage(error.response.data, 'error');
@@ -182,25 +203,77 @@ const DashboardEOPage = () => {
       showMessage(error, 'error');
     }
   };
+
+  const getPromo = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}promo/${eventId}`,
+        { headers: { Authorization: `Bearer ${Cookies.get('Token EO')}` } },
+      );
+
+      setDataPromo(response.data[0].Vouchers);
+      console.log(response.data[0].Vouchers);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log('ini data promo :', dataPromo);
+
+  const promoMapping = () => {
+    return dataPromo.map((val: any, idx: number) => {
+      return (
+        <div
+          className="border-b-2 border-gray-100 py-2 flex items-center justify-between"
+          key={idx}
+        >
+          <div>
+            {val.name_voucher ? (
+              <p className="font-bold">{val.name_voucher}</p>
+            ) : (
+              <p className="font-bold">..</p>
+            )}
+            <div className=" flex items-center gap-2">
+              <p className="text-xs text-gray-600">
+                {convertDate(val.start_date)}
+              </p>
+              <p>-</p>
+              <p className="text-xs text-gray-600">
+                {convertDate(val.end_date)}
+              </p>
+            </div>
+          </div>
+          <p className="text-xl font-bold text-green-600">{val.discount}%</p>
+        </div>
+      );
+    });
+  };
   return (
     <div className="flex">
+      {active ? (
+        <div className="bg-black w-full h-full fixed z-10 opacity-50"></div>
+      ) : (
+        <></>
+      )}
+      {activeInfo ? (
+        <div className="bg-black w-full h-full fixed z-10 opacity-50"></div>
+      ) : (
+        <></>
+      )}
       <SideNav />
       <div className="flex-1">
         <Header />
         <HeaderMobile />
         <div className="flex flex-col container px-[20px]  my-[10px] mx-auto md:py-20">
           <ToastContainer></ToastContainer>
-          {active ? (
-            <div className="bg-black h-full w-[1670px] fixed top-12 z-10 right-0 backdrop-blur-md opacity-50"></div>
-          ) : (
-            <></>
-          )}
+
           <h1 className="md:mx-[200px] text-xl md:text-3xl font-bold mb-6">
             Create Your Promo Here
           </h1>
 
-          <div className="w-full h-fit bg-white flex gap-8 flex-wrap relative md:mx-[200px]">
+          <div className="md:w-[1400px] h-fit bg-white flex gap-8 flex-wrap relative md:mx-[200px]">
             {mapping()}
+
             {active ? (
               <Card
                 x-chunk="dashboard-07-chunk-0"
@@ -218,11 +291,12 @@ const DashboardEOPage = () => {
                     </p>
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="shado-xl">
                   <Plus
                     className="absolute top-6 right-6 rotate-45 cursor-pointer"
                     onClick={() => {
                       setActive(false);
+                      setSendPromo({ discount: 0, promo_name: '' });
                     }}
                   ></Plus>
                   <div className="grid gap-6 bg-white mb-6">
@@ -333,6 +407,36 @@ const DashboardEOPage = () => {
                   >
                     create voucher
                   </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <></>
+            )}
+            {activeInfo ? (
+              <Card
+                x-chunk="dashboard-07-chunk-0 "
+                className="w-[360px] md:w-[430px] mb-8 fixed md:top-40 md:right-[620px] bg-white py-4 z-20"
+              >
+                <CardHeader>
+                  <CardTitle>{modal.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-6">
+                    <Plus
+                      className="absolute top-6 right-6 rotate-45 cursor-pointer"
+                      onClick={() => {
+                        setActiveInfo(false);
+                      }}
+                    ></Plus>
+                    <div className="grid gap-3">
+                      <Label htmlFor="description">Your promo</Label>
+                      <div className="w-full h-[400px]  border border-gray-200 rounded-lg overflow-y-auto">
+                        <div className="w-full h-fit px-3 py-3">
+                          {promoMapping()}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             ) : (

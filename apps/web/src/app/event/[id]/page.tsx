@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/card';
 
 import Cookies from 'js-cookie';
-interface IEventPageProps { }
+interface IEventPageProps {}
 
 const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
   const [bought, setbought] = React.useState<number>(0);
@@ -57,9 +57,9 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
     return state.transactionEventSlice;
   });
 
-  console.log('transaksi', transaction.ticket_count);
+  // console.log('transaksi', transaction.ticket_count);
 
-  const router = useRouter()
+  const router = useRouter();
   const path = pathname.split('/')[2];
   const role = Cookies.get('Token Cust');
 
@@ -87,8 +87,8 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event/detail/${path}`,
         // { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
       );
+      console.log('cari vouchereee:', response);
 
-      console.log('cari voucher:', response);
       const newData = { ...response.data.result };
       setData(newData);
       if (role) {
@@ -104,14 +104,14 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
           setbought(0);
         }
 
-        console.log(maxTicket);
+        // console.log(maxTicket);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  console.log("ini transaction:", transaction)
+  // console.log('ini transaction:', transaction);
 
   const creteTransaction = async () => {
     try {
@@ -133,22 +133,21 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
         { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
       );
       // router.push("/event/Wedding-Expo")
-
     } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <div className="md:w-[1220px] m-auto md:py-10 min-h-screen gap-6 flex flex-col md:flex-row px-3">
-      <div className=" min-h-screen md:w-[800px]]">
-        <div className="w-[800px] h-[376px] bg-gray-200 rounded-t-xl overflow-hidden">
+    <div className="md:w-[1220px] m-auto py-2 md:py-10 min-h-screen gap-6 flex flex-col md:flex-row px-3">
+      <div className="  md:w-[800px]]">
+        <div className="md:w-[800px] md:h-[376px] bg-gray-200 rounded-t-xl overflow-hidden">
           <Image
             src={`${process.env.NEXT_PUBLIC_BASE_API_URL}eventpic/${data.flyer_event}`}
             alt=""
             width={800}
             height={376}
-            className="h-[376px] w-[800px] "
+            className="md:h-[376px] w-[390px] md:w-[800px] "
           ></Image>
         </div>
 

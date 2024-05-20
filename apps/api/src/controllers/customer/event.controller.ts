@@ -69,15 +69,14 @@ export class EventController {
   async getAllEvent(req: Request, res: Response, next: NextFunction) {
     try {
       const { page, pageSize } = req.query;
-
       const skip = (Number(page) - 1) * Number(pageSize);
-      const take = Number(page) * Number(pageSize);
+      const take = Number(pageSize);
       const allEvent = await prisma.masterEvent.findMany({
         orderBy: [{ id: 'desc' }],
         skip,
         take,
         where: {
-          end_date: { gt: new Date() },
+          end_date: { gt: new Date().toISOString() },
         },
         select: {
           title: true,
@@ -85,13 +84,17 @@ export class EventController {
           end_date: true,
           price: true,
           flyer_event: true,
+          location: true,
+          user_id: {
+            select: {
+              name: true,
+            },
+          },
         },
       });
       // console.log(allEvent);
       const totalEvent = await prisma.masterEvent.count();
       const totalPage = Math.ceil(totalEvent / Number(pageSize));
-      console.log(totalPage);
-
       return res
         .status(200)
         .send({ rc: 200, success: true, result: allEvent, totalPage });
@@ -100,11 +103,78 @@ export class EventController {
     }
   }
 
+  async filterEvent(req: Request, res: Response) {
+    try {
+      const { category, location, start_date, end_date, page, pageSize } =
+        req.query;
+      const filters: any = {};
+      if (category) {
+        filters.category = category;
+      }
+
+      if (location) {
+        filters.location = decodeURIComponent(location as string);
+      }
+
+      if (start_date || end_date) {
+        filters.start_date = {};
+        if (start_date) {
+          filters.start_date.gte = new Date(start_date as string);
+        }
+        if (end_date) {
+          filters.end_date = { lte: new Date(end_date as string) };
+        }
+      }
+
+      const skip = (Number(page) - 1) * Number(pageSize);
+      const take = Number(pageSize);
+
+      const getFilterEvent = await prisma.masterEvent.findMany({
+        skip,
+        take,
+        where: filters,
+        select: {
+          title: true,
+          start_date: true,
+          end_date: true,
+          price: true,
+          flyer_event: true,
+          location: true,
+          user_id: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+
+      const getLength = await prisma.masterEvent.findMany({
+        where: filters,
+        select: {
+          title: true,
+        },
+      });
+      const totalPage = Math.ceil(getLength.length / Number(pageSize));
+
+      return res.status(200).send({
+        rc: 200,
+        success: true,
+        result: getFilterEvent,
+        totalPage: totalPage,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async debounceSearch(req: Request, res: Response, next: NextFunction) {
     try {
       const search = req.params.title;
       const getdata = await prisma.masterEvent.findMany({
-        where: { title: { contains: search } },
+        where: {
+          title: { contains: search },
+          end_date: { gt: new Date().toISOString() },
+        },
 
         select: {
           title: true,
