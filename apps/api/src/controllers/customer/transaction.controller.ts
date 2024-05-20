@@ -75,7 +75,7 @@ export class TransactionUserController {
 
 
         if (existTrans._sum.ticket_count === ticket_count) {
-          console.log('dapat transaksi', existTrans);
+          // console.log('dapat transaksi', existTrans);
           throw 'Reach Max Transaction';
         }
 
@@ -95,7 +95,7 @@ export class TransactionUserController {
               },
             });
 
-            console.log('dapet find:', findVoucherById);
+            // console.log('dapet find:', findVoucherById);
 
             const deleteVoucher = await tx.voucher.delete({
               where: {

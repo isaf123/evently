@@ -40,13 +40,18 @@ export class EventEOController {
 
   async deleteEvent(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = res.locals.decript.id;
-      if (!id) {
-        return res.status(404).send('Event not found!');
-      }
-      await deleteEvent(id);
+      const eventId = Number(req.params.id);
 
+      // Hapus data utama di masterEvent
+      const deleteEvent = await prisma.masterEvent.delete({
+        where: {
+          id: eventId,
+        },
+      });
+
+      console.log('data event yang dihapus: ', deleteEvent);
       return res.status(200).send('Event Deleted Successfully!');
+
     } catch (error) {
       return res.status(500).send({ error });
     }

@@ -1,33 +1,50 @@
 'use client'
-import Image from 'next/image'
-import React from 'react'
-import { usePathname } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import axios from 'axios';
+import { useRouter, usePathname } from 'next/navigation';
+import Cookies from 'js-cookie';
+import { showMessage } from '@/components/Alert/Toast';
 
 const DetailTrans = () => {
+    const [imgPayment, setImgPayment] = useState<string | null>(null);
+
     const path = usePathname()
-    console.log('ini path;', path);
 
-    // /event-organizer/transactions/RECEIPT1716171727152.png
+    console.log('ini path sekarang', path);
 
-    const pathName = path.split('/')[3]
+    const newPath = path.split('/')[3].split('-')[1]
+    console.log('ini path baru', newPath);
 
-    const getImage = async () => {
-        try {
-            const response = await axios.get
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
-    // console.log('path baru,', pathName);
+    useEffect(() => {
+        const fetchData = async () => {
+            const tokenEO = Cookies.get('Token EO');
 
+            try {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}event-organizer/transaction`, {
+                    headers: {
+                        Authorization: `Bearer ${tokenEO}`
+                    }
+                });
+
+                console.log('data transaction:', response.data.result);
+
+
+            } catch (error: any) {
+                showMessage(error.message, 'error');
+            }
+        };
+
+        fetchData()
+    }, []);
 
     return (
         <div>
-            <Image src={`${process.env.NEXT_PUBLIC_BASE_API_URL}receipt/${pathName}`} alt="alt" width={200} height={200} />
-        </div>
-    )
-}
+            <div></div>
+            <Image src={`${process.env.NEXT_PUBLIC_BASE_API_URL}receipt/${newPath}`} alt="Receipt Image" width={200} height={200} />
+        </div >
+    );
+};
 
-export default DetailTrans
+export default DetailTrans;

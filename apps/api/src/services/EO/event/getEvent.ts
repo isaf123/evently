@@ -19,7 +19,7 @@ export const getEvents = async (data: any, query: string) => {
                 }
             },
         })
-        console.log('data events', events);
+        // console.log('data events', events);
         return events
     } catch (error) {
         throw error

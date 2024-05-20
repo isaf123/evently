@@ -20,11 +20,12 @@ export const deleteEvent = async (eventId: number) => {
     try {
         const cookies = Cookies.get('Token EO');
 
-        await axios.delete(`${process.env.NEXT_PUBLIC_BASE_API_URL}event-organizer/event/${eventId}`, {
+        await axios.delete(`${process.env.NEXT_PUBLIC_BASE_API_URL}event-organizer/deleteEvent/${eventId}`, {
             headers: {
                 Authorization: `Bearer ${cookies}`
             }
         });
+
 
         showMessage('Event deleted successfully', 'success');
     } catch (error: any) {

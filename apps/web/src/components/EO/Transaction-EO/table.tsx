@@ -27,7 +27,7 @@ const TableTransactionEOPage = () => {
 
                 if (Array.isArray(transaction.result)) {
                     setDataTransaction(transaction.result);
-                    const totalItems = transaction.totalPage; // Ensure your API returns the total count of items
+                    const totalItems = transaction.totalTransactions; // Ensure your API returns the total count of items
                     const totalPagesCount = Math.ceil(totalItems / pageSize);
                     setTotalPages(totalPagesCount);
                 } else {
@@ -52,10 +52,10 @@ const TableTransactionEOPage = () => {
         }
     };
 
-    const handleInvoiceClick = (id: number) => {
+    const handleInvoiceClick = (id: number, img_payment: string) => {
         console.log('invoice id: ', id);
         // router.push(`/transaction/${id}`);
-        router.push(`/event-organizer/transactions/${id}`)
+        router.push(`/event-organizer/transactions/${id}-${img_payment}`)
     }
 
     return (
@@ -76,12 +76,12 @@ const TableTransactionEOPage = () => {
                         <TableRow key={transaction.id} className='bg-white border-b'>
                             <TableCell className='px-6 py-3 hidden md:table-cell'>{index + 1}.</TableCell>
                             <TableCell className='px-6 py-3'>
-                                <Button className='text-blue-500 hover:underline' onClick={() => { handleInvoiceClick(transaction.id) }}>
+                                <Button className='text-blue-500 hover:underline' onClick={() => { handleInvoiceClick(transaction.id, transaction.img_payment) }}>
                                     {transaction.invoice_code.replace(/^TRANS/, '')}
                                 </Button>
                             </TableCell>
-                            <TableCell className='px-6 py-3 hidden md:table-cell'>{transaction.event?.title}</TableCell>
-                            <TableCell className='px-6 py-3 hidden md:table-cell'>{transaction.user?.name}</TableCell>
+                            <TableCell className='px-6 py-3 hidden md:table-cell'>{transaction.event_title}</TableCell>
+                            <TableCell className='px-6 py-3 hidden md:table-cell'>{transaction.user_name}</TableCell>
                             <TableCell className='px-6 py-3 hidden md:table-cell'>{formatDate(transaction.date_transaction)}</TableCell>
                             <TableCell className={`px-6 py-3  ${getStatusStyles(transaction?.status_transaction)}`}>
                                 {transaction.status_transaction}
