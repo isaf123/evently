@@ -57,7 +57,7 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
     return state.transactionEventSlice;
   });
 
-  // console.log('transaksi', transaction.ticket_count);
+  console.log('ini transaction', transaction);
 
   const router = useRouter();
   const path = pathname.split('/')[2];
@@ -87,7 +87,6 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event/detail/${path}`,
         // { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
       );
-      console.log('cari vouchereee:', response);
 
       const newData = { ...response.data.result };
       setData(newData);
@@ -103,15 +102,11 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
         } else {
           setbought(0);
         }
-
-        // console.log(maxTicket);
       }
     } catch (error) {
       console.log(error);
     }
   };
-
-  // console.log('ini transaction:', transaction);
 
   const creteTransaction = async () => {
     try {
@@ -132,73 +127,83 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
         },
         { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
       );
-      // router.push("/event/Wedding-Expo")
+      router.push('/event/Wedding-Expo');
     } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <div className="md:w-[1220px] m-auto py-2 md:py-10 min-h-screen gap-6 flex flex-col md:flex-row px-3">
-      <div className="  md:w-[800px]]">
-        <div className="md:w-[800px] md:h-[376px] bg-gray-200 rounded-t-xl overflow-hidden">
-          <Image
-            src={`${process.env.NEXT_PUBLIC_BASE_API_URL}eventpic/${data.flyer_event}`}
-            alt=""
-            width={800}
-            height={376}
-            className="md:h-[376px] w-[390px] md:w-[800px] "
-          ></Image>
-        </div>
-
-        <div className="md:w-[800px] m-auto h-fit mt-6">
-          <p className=" font-bold text-2xl text-gray-700 tracking-wide break-words">
-            {data.title}
-          </p>
-        </div>
-        <div className="md:w-[800px] h-fit m-auto  mt-2 ">
-          <h2 className="text-color1 font bold text-lg font-bold mb-4">
-            Description :
-          </h2>
-          <p className="mb-8 tracking-wide text-gray-600">{data.description}</p>
-        </div>
-      </div>
-      {/* ////////////////////////      KANAN          //////////////////////////////// */}
-      <div className=" min-h-screen md:w-[30%]">
-        <EventDetails
-          date={`${convertDate(new Date(data.start_date))} - ${convertDate(new Date(data.end_date))}`}
-        >{`${data.address}, ${data.location}`}</EventDetails>
-        {bought == data.max_ticket ? (
-          <Card x-chunk="dashboard-07-chunk-0 " className="w-full mb-6">
-            <CardHeader>
-              <CardTitle className="text-xl">..</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="w-full h-[62px] bg-gray-100 rounded-md flex items-center justify-center">
-                <p className="fonr-medium text-gray-400 text-sm">
-                  Reach Max Transaction
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <div>
-            {data.price ? <PromoPoin data={data.Vouchers}></PromoPoin> : <></>}
-            <TicketBuy
-              buyTicket={bought}
-              price={data.price}
-              maxTicket={data.max_ticket}
-            ></TicketBuy>
-            <Button
-              className="bg-color2 text-white w-full"
-              onClick={() => {
-                creteTransaction();
-              }}
-            >
-              Get Ticket
-            </Button>
+    <div>
+      {/* <div className="bg-black w-full h-full top-0 fixed opacity-35"></div>
+      <div className="w-[600px] h-[400px] bg-white fixed rounded-lg m-auto z-20 mt-40"></div> */}
+      <div className="md:w-[1220px] m-auto py-2 md:py-10 min-h-screen gap-6 flex flex-col md:flex-row px-3 ">
+        <div className="  md:w-[800px]]">
+          <div className="md:w-[800px] md:h-[376px] bg-gray-200 rounded-t-xl overflow-hidden">
+            <Image
+              src={`${process.env.NEXT_PUBLIC_BASE_API_URL}eventpic/${data.flyer_event}`}
+              alt=""
+              width={800}
+              height={376}
+              className="md:h-[376px] w-[390px] md:w-[800px] "
+            ></Image>
           </div>
-        )}
+
+          <div className="md:w-[800px] m-auto h-fit mt-6">
+            <p className=" font-bold text-2xl text-gray-700 tracking-wide break-words">
+              {data.title}
+            </p>
+          </div>
+          <div className="md:w-[800px] h-fit m-auto  mt-2 ">
+            <h2 className="text-color1 font bold text-lg font-bold mb-4">
+              Description :
+            </h2>
+            <p className="mb-8 tracking-wide text-gray-600">
+              {data.description}
+            </p>
+          </div>
+        </div>
+        {/* ////////////////////////      KANAN          //////////////////////////////// */}
+        <div className=" min-h-screen md:w-[30%]">
+          <EventDetails
+            date={`${convertDate(new Date(data.start_date))} - ${convertDate(new Date(data.end_date))}`}
+          >{`${data.address}, ${data.location}`}</EventDetails>
+          {bought == data.max_ticket ? (
+            <Card x-chunk="dashboard-07-chunk-0 " className="w-full mb-6">
+              <CardHeader>
+                <CardTitle className="text-xl">..</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="w-full h-[62px] bg-gray-100 rounded-md flex items-center justify-center">
+                  <p className="fonr-medium text-gray-400 text-sm">
+                    Reach Max Transaction
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div>
+              {data.price ? (
+                <PromoPoin data={data.Vouchers}></PromoPoin>
+              ) : (
+                <></>
+              )}
+              <TicketBuy
+                buyTicket={bought}
+                price={data.price}
+                maxTicket={data.max_ticket}
+              ></TicketBuy>
+              <Button
+                className="bg-color2 text-white w-full"
+                onClick={() => {
+                  creteTransaction();
+                }}
+              >
+                Get Ticket
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

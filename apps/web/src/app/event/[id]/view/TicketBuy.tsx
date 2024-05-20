@@ -23,7 +23,7 @@ const TicketBuy: React.FunctionComponent<IEventDetailsProps> = (props) => {
   const [price, setPrice] = React.useState<number>(0);
 
   const dispatch = useAppDispatch();
-  console.log('props', props.buyTicket);
+
   return (
     <div>
       <Card x-chunk="dashboard-07-chunk-0 " className="w-full mb-8">

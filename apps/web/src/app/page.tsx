@@ -16,17 +16,20 @@ export default function Home() {
   const [page1, setPage1] = useState<number>(1);
   const [totalPage1, setTotalPage1] = useState<number>(1);
 
-  const router = useRouter()
+  const router = useRouter();
 
   console.log('ini page :', page1);
 
   useEffect(() => {
     newsEvent();
-
-    if (!protectPageCust()) {
-      router.replace('/')
-    }
   }, [page1]);
+
+  useEffect(() => {
+    if (!protectPageCust()) {
+      router.replace('/');
+    }
+  }, []);
+
   const newsEvent = async () => {
     try {
       const response = await axios.get(

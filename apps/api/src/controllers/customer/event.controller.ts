@@ -69,8 +69,10 @@ export class EventController {
   async getAllEvent(req: Request, res: Response, next: NextFunction) {
     try {
       const { page, pageSize } = req.query;
+      console.log('query:::::::::::::::::::::', req.query);
       const skip = (Number(page) - 1) * Number(pageSize);
       const take = Number(pageSize);
+
       const allEvent = await prisma.masterEvent.findMany({
         orderBy: [{ id: 'desc' }],
         skip,
@@ -92,9 +94,18 @@ export class EventController {
           },
         },
       });
-      // console.log(allEvent);
+
+      const getLength = await prisma.masterEvent.findMany({
+        where: {
+          end_date: { gt: new Date().toISOString() },
+        },
+      });
+
+      console.log('ini alll event :::::::', allEvent);
+
       const totalEvent = await prisma.masterEvent.count();
       const totalPage = Math.ceil(totalEvent / Number(pageSize));
+      console.log('total :', totalPage);
       return res
         .status(200)
         .send({ rc: 200, success: true, result: allEvent, totalPage });

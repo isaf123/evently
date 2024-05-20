@@ -115,7 +115,7 @@ const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
                   {trimText(val.event.title, 15)}
                 </p>
                 <p className="font-medium text-sm md:text-md block md:hidden">
-                  {trimText('aaaaaaaaaaaaaaaaaaa', 11)}
+                  {trimText(val.event.title, 11)}
                 </p>
               </div>
               <p className="text-xs  text-green-500 w-fit h-[16px] font-bold ">
