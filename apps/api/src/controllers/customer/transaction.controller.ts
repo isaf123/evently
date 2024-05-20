@@ -41,38 +41,38 @@ export class TransactionUserController {
         const existTrans = await tx.transaction.aggregate({
           _sum: {
             ticket_count: true,
-          },
-          where: { event_id: existsEvent.id },
+          }, where: { event_id: existsEvent.id }
         });
 
-        console.log('trans :', existTrans);
+        console.log("trans :", existTrans)
 
         if (existTrans._sum.ticket_count === existsEvent.available_seat) {
-          throw 'ticket sold';
+          throw "ticket sold"
         }
 
         /// maximal beli untuk User
 
         const findTrans = await tx.transaction.findMany({
-          where: { event_id: existsEvent.id, user_id: res.locals.decript.id },
-        });
+          where: { event_id: existsEvent.id, user_id: res.locals.decript.id }
+        })
 
         const maxTransaction = await tx.transaction.aggregate({
           _sum: {
             ticket_count: true,
-          },
-          where: {
+          }, where: {
             event_id: existsEvent.id,
-            user_id: res.locals.decript.id,
-          },
-        });
+            user_id: res.locals.decript.id
+          }
+        })
 
         if (maxTransaction._sum.ticket_count === existsEvent.max_ticket) {
-          throw 'reach maximal purchase';
+          throw "reach maximal purchase"
         }
 
-        console.log('max transaction :', maxTransaction);
-        console.log('jumlah :', existTrans);
+
+        console.log("max transaction :", maxTransaction)
+        console.log("jumlah :", existTrans);
+
 
         if (existTrans._sum.ticket_count === ticket_count) {
           console.log('dapat transaksi', existTrans);
@@ -99,9 +99,10 @@ export class TransactionUserController {
 
             const deleteVoucher = await tx.voucher.delete({
               where: {
-                id: findVoucherById?.id,
-              },
-            });
+                id: findVoucherById?.id
+              }
+            })
+
           }
         }
 
@@ -129,7 +130,7 @@ export class TransactionUserController {
 
           console.log('dapat point :', findPoint?.usersId);
           if (findPoint) {
-            const deletePoint = await tx.poin.update({
+            const updatePoint = await tx.poin.update({
               where: { id: findPoint.id },
               data: { amount: findPoint.amount - point_discount },
             });

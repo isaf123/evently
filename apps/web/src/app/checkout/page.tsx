@@ -2,24 +2,29 @@
 import * as React from 'react';
 import Link from 'next/link';
 import TableCheckout from './view/TableCheckout';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Pagination from '@/components/Pagination';
-import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { protectPageCust, protectPageEO } from '@/utils/protectPage';
 import BarCustomerWeb from '@/components/BarCustomerWeb';
 import BarCustomerMobile from '@/components/BarCustomerMobile';
-
-interface ICheckoutPageProps {}
+interface ICheckoutPageProps { }
 
 const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
   const [data, setData] = React.useState<any[]>([]);
   const [page, SetPage] = React.useState<number>(1);
   const [totalPage, setTotalPage] = React.useState<number>(1);
-  const path = usePathname();
+
+  const router = useRouter()
+
   React.useEffect(() => {
     getDataTrans();
+
+    if (protectPageEO()) {
+      router.replace('/event-organizer/dashboard')
+    }
   }, [page]);
 
   const getDataTrans = async () => {

@@ -8,27 +8,8 @@ import { EditButton } from '../Button/ButtonEditEvent/button';
 import { DeleteButton } from '../Button/ButtonDeleteEvent/button';
 import { deleteEvent } from '@/api/EO/eo';
 import { getEvent } from '@/lib/data';
-import { event } from '../../../lib/text';
-interface EventData {
-    id: number;
-    flyer_event: string | null;
-    title: string;
-    start_date: string;
-    end_date: string;
-    description: string;
-    category: string;
-    available_seat: number;
-    event_type: string;
-    price: number;
-    location: string;
-    usersId: number;
-    address: string;
-    user_id: {
-        name: string;
-    };
-    eventCode: any
-}
-
+import { capitalizeFirstLetter } from '@/utils/capitalizeFiestLetter';
+import { EventData } from '@/interfaces/event';
 const TableEventEO = ({ query, currentPage }: {
     query: string
     currentPage: number
@@ -36,7 +17,7 @@ const TableEventEO = ({ query, currentPage }: {
     const [dataEvent, setDataEvent] = React.useState<EventData[]>([])
     const getEvents = async () => {
         try {
-            const events = await getEvent()
+            const events = await getEvent(query, currentPage)
             const event = events.map((event: EventData, index: number) => ({
                 ...event,
                 eventCode: generateEventCode(index + 1)
@@ -49,9 +30,6 @@ const TableEventEO = ({ query, currentPage }: {
             showMessage(error, 'error');
         }
     }
-    const capitalizeFirstLetter = (string: string) => {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    };
 
     React.useEffect(() => {
         getEvents()

@@ -1,13 +1,15 @@
 export interface ITransaction {
+    id: number,
     invoice_code: string,
-    event_id: {
-        event_name: string
+    event: {
+        title: string
     },
-    user_id: {
+    user: {
         name: string
-    }
-    status_transaction: status_transaction,
-    date_transaction: Date
+    },
+    img_payment: string
+    status_transaction: string,
+    date_transaction: string
 }
 
 export enum status_transaction {
