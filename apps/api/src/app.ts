@@ -14,6 +14,7 @@ import { EventCustRouter } from './routers/customer/event.router';
 import { PromoEventRouter } from './routers/EO/promo.router';
 import { TransactionUserRouter } from './routers/customer/transaction.router';
 import { DashboardEORouter } from './routers/EO/dashboard/dashboard.router';
+import { TransactionEORouter } from './routers/EO/transaction/transaction.router';
 export default class App {
   readonly app: Express;
 
@@ -63,6 +64,9 @@ export default class App {
     // Dashboard EO
     const dashboardEORouter = new DashboardEORouter();
 
+    // Transaction EO
+    const transactionEORouter = new TransactionEORouter()
+
     this.app.get('/', (req: Request, res: Response) => {
       res.send(`Hello, Purwadhika Student !`);
     });
@@ -77,6 +81,9 @@ export default class App {
     // Dashboard EO
 
     this.app.use('/EO', dashboardEORouter.getRouter());
+
+    // Transaction EO
+    this.app.use('/event-organizer', transactionEORouter.getRouter())
   }
 
   public start(): void {

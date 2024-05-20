@@ -111,9 +111,9 @@ model Voucher {
   end_date     DateTime
   event_id     Int?
   user_id      Int?
-  Transaction  Transaction[]
   event        MasterEvent?  @relation(fields: [event_id], references: [id])
   user         Users?        @relation(fields: [user_id], references: [id])
+  Transaction  Transaction[]
 
   @@index([event_id], map: "voucher_event_id_fkey")
   @@index([user_id], map: "voucher_user_id_fkey")

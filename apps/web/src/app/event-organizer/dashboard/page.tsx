@@ -7,12 +7,16 @@ import SideNav from '@/components/EO/SidebarEO/side-nav';
 import { useAppSelector } from '@/lib/hooks';
 import React from 'react';
 import EORouter from '../../../components/Router/EORouter';
+import Cookies from 'js-cookie';
+import { notFound, redirect, useRouter } from 'next/navigation';
+import { protectPageEO } from '@/utils/protectPage';
 
 const DashboardEOPage = () => {
   const username = useAppSelector((state) => state?.userSlice?.username)
   const capitalizeFirstLetter = (string: string) => {
     return string?.charAt(0).toUpperCase() + string?.slice(1);
   };
+  const router = useRouter()
   const profileName = capitalizeFirstLetter(username)
   const [numEvent, setNumEvent] = React.useState<number>(0)
   const getUpcomingEvents = async () => {
@@ -26,6 +30,10 @@ const DashboardEOPage = () => {
 
   React.useEffect(() => {
     getUpcomingEvents()
+
+    if (!protectPageEO()) {
+      router.replace('/')
+    }
   }, []);
   return (
     <EORouter>

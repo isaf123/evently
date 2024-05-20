@@ -15,15 +15,23 @@ import { convertDate } from '@/lib/text';
 import DebounceSearch from '@/components/debounceSearch';
 import { Button } from '@/components/ui/button';
 import Pagination from '@/components/Pagination';
+import { protectPageCust } from '@/utils/protectPage';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const [newEvent, setNewEvent] = useState<any[]>();
   const [page1, setPage1] = useState<number>(1);
   const [totalPage1, setTotalPage1] = useState<number>(1);
 
+  const router = useRouter()
+
   console.log('ini page :', page1);
   useEffect(() => {
     newsEvent();
+
+    if (!protectPageCust()) {
+      router.replace('/')
+    }
   }, [page1]);
   const newsEvent = async () => {
     try {

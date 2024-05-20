@@ -130,7 +130,7 @@ export class TransactionUserController {
 
           console.log('dapat point :', findPoint?.usersId);
           if (findPoint) {
-            const deletePoint = await tx.poin.update({
+            const updatePoint = await tx.poin.update({
               where: { id: findPoint.id },
               data: { amount: findPoint.amount - point_discount },
             });
@@ -138,6 +138,7 @@ export class TransactionUserController {
         }
         console.log('jlaaaaaaan');
 
+        return res.status(201).send(trans)
 
 
       });

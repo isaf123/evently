@@ -30,16 +30,32 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Pagination from '@/components/Pagination';
-import { usePathname } from 'next/navigation';
+import { usePathname, redirect, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { protectPageCust } from '@/utils/protectPage';
 
-interface ICheckoutPageProps {}
+interface ICheckoutPageProps { }
 
 const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
   const [data, setData] = React.useState<any[]>([]);
   const [page, SetPage] = React.useState<number>(1);
   const [totalPage, setTotalPage] = React.useState<number>(1);
+
+  const router = useRouter()
+
+  const protectPage = () => {
+    const tokenEO = Cookies.get('Token EO')
+    if (tokenEO) {
+      redirect('/event-organizer/dashboard')
+    }
+  }
   React.useEffect(() => {
     getDataTrans();
+    protectPage()
+
+    if (!protectPageCust()) {
+      router.replace('/event-organzer/dashboard')
+    }
   }, [page]);
 
   const getDataTrans = async () => {
