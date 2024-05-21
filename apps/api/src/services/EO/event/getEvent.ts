@@ -1,27 +1,47 @@
-import prisma from "@/prisma"
+import prisma from "@/prisma";
 
-export const getEvents = async (data: any, query: string) => {
+export const getEvents = async (userId: number, query: string, page: number, pageSize: number) => {
     try {
+        const skip = (page - 1) * pageSize;
+        const take = pageSize;
+
         const events = await prisma.masterEvent.findMany({
             where: {
-                usersId: data,
+                usersId: userId,
                 OR: [
                     { title: { contains: query } },
                     { description: { contains: query } },
                 ],
             },
-
             include: {
                 user_id: {
                     select: {
-                        name: true
-                    }
-                }
+                        name: true,
+                    },
+                },
             },
-        })
-        // console.log('data events', events);
-        return events
+            skip,
+            take,
+        });
+
+        const totalEvents = await prisma.masterEvent.count({
+            where: {
+                usersId: userId,
+                OR: [
+                    { title: { contains: query } },
+                    { description: { contains: query } },
+                ],
+            },
+        });
+
+        const totalPages = Math.ceil(totalEvents / pageSize);
+
+        return {
+            result: events,
+            totalPages,
+            totalEvents,
+        };
     } catch (error) {
-        throw error
+        throw error;
     }
-}
+};

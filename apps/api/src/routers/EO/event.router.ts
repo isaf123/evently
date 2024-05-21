@@ -32,7 +32,7 @@ export class EventEORouter {
       this.eventController.createEvent,
     );
 
-    this.router.delete('/deleteEvent/:id', verifyToken, eventOrganizerMiddleware, this.eventController.deleteEvent)
+    this.router.delete('/event/:id', verifyToken, eventOrganizerMiddleware, this.eventController.deleteEvent)
   }
 
   getRouter(): Router {
