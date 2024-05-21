@@ -5,19 +5,8 @@ import Header from '@/components/EO/SidebarEO/header'
 import HeaderMobile from '@/components/EO/SidebarEO/header-mobile'
 import SideNav from '@/components/EO/SidebarEO/side-nav'
 import React from 'react'
-import { CreateEventButton } from '../../../components/EO/Button/ButtonCreateEvent/button';
-import SearchEventEO from '@/components/EO/Event-Search-EO/search'
 
-const EventEOPage = ({ searchParams }: {
-    searchParams?: {
-        query: string
-        page: string
-    }
-}) => {
-
-    const query = searchParams?.query || ''
-    const currentPage = Number(searchParams?.page) || 1
-
+const EventEOPage = () => {
 
     return (
         <div className='flex'>
@@ -29,11 +18,7 @@ const EventEOPage = ({ searchParams }: {
                     List Event from EO
                 </div>
                 <div className="max-w-screen-md mx-auto mt-10">
-                    <div className="flex items-center justify-between gap-1 mb-5">
-                        <SearchEventEO />
-                        <CreateEventButton />
-                    </div>
-                    <TableEventEO query={query} currentPage={currentPage} />
+                    <TableEventEO />
                 </div >
             </div >
         </div >

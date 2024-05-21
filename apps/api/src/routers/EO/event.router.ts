@@ -31,6 +31,8 @@ export class EventEORouter {
       validationEvent,
       this.eventController.createEvent,
     );
+
+    this.router.delete('/event/:id', verifyToken, eventOrganizerMiddleware, this.eventController.deleteEvent)
   }
 
   getRouter(): Router {

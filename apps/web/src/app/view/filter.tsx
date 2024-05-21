@@ -41,7 +41,7 @@ import axios from 'axios';
 import { title } from 'process';
 import Pagination from '@/components/Pagination';
 
-interface IFilterSectionProps {}
+interface IFilterSectionProps { }
 
 const FilterSection: React.FunctionComponent<IFilterSectionProps> = (props) => {
   const [open, setOpen] = React.useState(false);
@@ -87,19 +87,23 @@ const FilterSection: React.FunctionComponent<IFilterSectionProps> = (props) => {
       if (startDate) query.push(`start_date=${startDate.toISOString()}`);
       if (endDate) query.push(`end_date=${endDate.toISOString()}`);
       query.push(`page=${page}`);
-      query.push(`pageSize=8`);
+      query.push(`pageSize=4`);
 
       const queryString = query.length ? `?${query.join('&')}` : '';
       const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}event/filter${queryString}`;
 
-      const response = await axios.get(url);
+      console.log('ini  url:', url);
 
+      const response = await axios.get(url);
+      console.log(response.data.totalPage);
       setTotalPage(response.data.totalPage);
       setSaveData(response.data.result);
     } catch (error) {
       console.log(error);
     }
   };
+
+  console.log('total:', totalPage);
 
   const mapping = () => {
     return saveData.map((val: any, idx: any) => {
@@ -157,8 +161,8 @@ const FilterSection: React.FunctionComponent<IFilterSectionProps> = (props) => {
                     >
                       {value
                         ? getLocations?.find(
-                            (framework) => framework.value === value,
-                          )?.label
+                          (framework) => framework.value === value,
+                        )?.label
                         : 'Select location...'}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
@@ -260,7 +264,7 @@ const FilterSection: React.FunctionComponent<IFilterSectionProps> = (props) => {
       </Card>
       {totalPage ? (
         <div>
-          <div className="h-[970px] md:h-[680px] w-[370px] md:w-full m-auto mb-4">
+          <div className="h-[512px] md:h-fit w-[370px] md:w-full m-auto mb-4">
             <div className="flex gap-3 md:gap-[23px] flex-wrap mb-6 w-fit  md:mx-0">
               {/* ////// */}
               {mapping()}

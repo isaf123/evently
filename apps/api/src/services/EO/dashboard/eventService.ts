@@ -7,7 +7,7 @@ export const countUpcomingEvents = async () => {
             where: {
                 start_date: {
                     gt: today
-                }
+                },
             }
         })
         return countEvents

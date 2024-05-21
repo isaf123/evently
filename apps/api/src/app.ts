@@ -74,7 +74,9 @@ export default class App {
     });
 
     this.app.use('/auth', authRouter.getRouter());
+
     this.app.use('/event-organizer', eventEORouter.getRouter());
+
     this.app.use('/event', eventCustRouter.getRouter());
     this.app.use('/promo', promoEventRouter.getRouter());
     this.app.use('/transaction-user', transactionUserRouter.getRouter());

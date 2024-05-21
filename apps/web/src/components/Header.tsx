@@ -77,10 +77,7 @@ export const Header = () => {
 
   return (
     <CustRouter>
-      {path == '/your-ticket' ||
-      path == '/checkout' ||
-      path == '/review' ||
-      path == '/profile-cust' ? (
+      {path == '/your-ticket' || path == '/checkout' || path == '/review' ? (
         <></>
       ) : (
         <div className="text-white bg-[#333A73] w-full h-[80px] px-4 md:px-28">
@@ -104,6 +101,7 @@ export const Header = () => {
 
                     <DropdownMenuItem>
                       <Users className="mr-2 h-4 w-4" />
+
                       <span
                         className="cursor-pointer"
                         onClick={() => {
@@ -136,7 +134,7 @@ export const Header = () => {
                       >
                         Your ticket
                       </span>
-                    </DropdownMenuItem>
+                    </DropdownMenuItem >
 
                     <DropdownMenuItem>
                       <MessageSquareDiff className="mr-2 h-4 w-4 " />
@@ -163,13 +161,13 @@ export const Header = () => {
                         Log out
                       </span>
                     </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  </DropdownMenuContent >
+                </DropdownMenu >
                 <div className="  ">
                   <p className="text-xl font-bold">{username}</p>
                   <p className="text-xs">customer</p>
                 </div>
-              </div>
+              </div >
             ) : (
               <div>
                 <div className="hidden md:block">
@@ -227,10 +225,10 @@ export const Header = () => {
                 </DropdownMenu>
               </div>
             )}
-          </div>
-        </div>
+          </div >
+        </div >
       )}
-    </CustRouter>
+    </CustRouter >
   );
 };
 

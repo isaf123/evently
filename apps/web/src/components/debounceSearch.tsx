@@ -20,7 +20,7 @@ import { Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-interface IDebounceSearchProps {}
+interface IDebounceSearchProps { }
 
 const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
   props,
@@ -77,6 +77,11 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
                 <p>Free</p>
               )}
             </div>
+            {val.price ? (
+              <p className="text-sm">{rupiah(val?.price)}</p>
+            ) : (
+              <p>Free</p>
+            )}
           </div>
         </Link>
       );
