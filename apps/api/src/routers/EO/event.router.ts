@@ -17,12 +17,7 @@ export class EventEORouter {
   }
 
   private initializeRoutes(): void {
-    this.router.get(
-      '/event',
-      verifyToken,
-      eventOrganizerMiddleware,
-      this.eventController.getEvents,
-    );
+    this.router.get('/event', verifyToken, this.eventController.getEvents);
     this.router.post(
       '/',
       verifyToken,
@@ -32,7 +27,12 @@ export class EventEORouter {
       this.eventController.createEvent,
     );
 
-    this.router.delete('/event/:id', verifyToken, eventOrganizerMiddleware, this.eventController.deleteEvent)
+    this.router.delete(
+      '/event/:id',
+      verifyToken,
+      eventOrganizerMiddleware,
+      this.eventController.deleteEvent,
+    );
   }
 
   getRouter(): Router {

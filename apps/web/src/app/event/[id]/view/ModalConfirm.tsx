@@ -54,6 +54,7 @@ const ModalConfirm: React.FunctionComponent<IModalConfirmProps> = (props) => {
       );
 
       console.log(makeTransaction);
+      console.log('ini transaksi', makeTransaction);
       showMessage(makeTransaction.data, 'success');
 
       setTimeout(() => {

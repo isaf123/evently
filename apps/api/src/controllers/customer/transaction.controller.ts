@@ -128,6 +128,8 @@ export class TransactionUserController {
           },
         });
       });
+
+      return res.status(200).send('order success');
     } catch (error) {
       console.log(error);
     }

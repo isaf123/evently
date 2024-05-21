@@ -17,16 +17,12 @@ export default function Home() {
   const [page1, setPage1] = useState<number>(1);
   const [totalPage1, setTotalPage1] = useState<number>(1);
 
-  const router = useRouter()
+  const router = useRouter();
 
   console.log('ini page :', page1);
 
   useEffect(() => {
     newsEvent();
-
-    if (!protectPageCust()) {
-      router.replace('/')
-    }
   }, [page1]);
 
   useEffect(() => {
@@ -82,20 +78,23 @@ export default function Home() {
     });
   };
 
-  console.log("ini top event", topEvent)
+  console.log('ini top event', topEvent);
   const mapTopEvent = () => {
-    return (topEvent && topEvent.map((val: any, idx: number) => {
-      return (
-        <div key={idx}>
-          <CategoryCart
-            image={`${process.env.NEXT_PUBLIC_BASE_API_URL}eventpic/${val.flyer_event}`}
-            number={idx + 1}
-          >
-            {val.title}
-          </CategoryCart>
-        </div>
-      );
-    }));
+    return (
+      topEvent &&
+      topEvent.map((val: any, idx: number) => {
+        return (
+          <div key={idx}>
+            <CategoryCart
+              image={`${process.env.NEXT_PUBLIC_BASE_API_URL}eventpic/${val.flyer_event}`}
+              number={idx + 1}
+            >
+              {val.title}
+            </CategoryCart>
+          </div>
+        );
+      })
+    );
   };
 
   return (
@@ -158,8 +157,7 @@ export default function Home() {
           Top event this Month
         </h1>
         <div className="w-full md:w-[1230px] m-auto flex flex-wrap justify-between px-12  gap-y-14 ">
-          {/* {topEv}
-          {mapTopEvent()} */}
+          {mapTopEvent()}
         </div>
       </div>
 

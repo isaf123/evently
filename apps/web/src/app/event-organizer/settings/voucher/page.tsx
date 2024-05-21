@@ -91,7 +91,7 @@ const DashboardEOPage = () => {
   // console.log(data);
 
   const mapping = () => {
-    return data.map((val: any, idx: number) => {
+    return data?.map((val: any, idx: number) => {
       return (
         <div
           className=" w-full md:w-[260px] h-[120px] rounded-lg px-3 py-2 border border-gray-400"
