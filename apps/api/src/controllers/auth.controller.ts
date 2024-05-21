@@ -19,7 +19,14 @@ export class AuthController {
   // Task 1: Doing Register
   async registerUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, email, password, role, referral_code, referral_code_other } = req.body;
+      const {
+        name,
+        email,
+        password,
+        role,
+        referral_code,
+        referral_code_other,
+      } = req.body;
       console.log('referral code', referral_code_other);
 
       if (!validateEmail(email))
@@ -37,25 +44,24 @@ export class AuthController {
             email,
             password: hashedPassword,
             role,
-            referral_code
-          }
-        })
+            referral_code,
+          },
+        });
 
         const findReferralCode = await tx.users.findUnique({
           where: {
-            referral_code: referral_code_other
-          }
-        })
-
+            referral_code: referral_code_other,
+          },
+        });
 
         if (newUsers.role === 'eo') {
-          return res.status(201).send(newUsers)
+          return res.status(201).send(newUsers);
         }
 
         if (referral_code_other) {
           console.log('data referral code terakhir', findReferralCode);
           if (!findReferralCode || findReferralCode.role !== 'customers') {
-            throw res.status(401).send('Invalid Referral Code')
+            throw res.status(401).send('Invalid Referral Code');
           }
           await tx.voucher.create({
             data: {
@@ -63,38 +69,38 @@ export class AuthController {
               start_date: new Date(),
               end_date: addMonth(new Date(), 3),
               event_id: null,
-              user_id: newUsers.id
-            }
-          })
+              user_id: newUsers.id,
+            },
+          });
           const findUserId = await tx.users.findFirst({
             where: {
-              referral_code: referral_code_other
-            }
-          })
+              referral_code: referral_code_other,
+            },
+          });
           if (!findUserId) {
-            throw res.status(404).send('No Referral Code Exists')
+            throw res.status(404).send('No Referral Code Exists');
           }
           const findPointUser = await tx.poin.findFirst({
             where: {
-              usersId: findUserId.id
-            }
-          })
+              usersId: findUserId.id,
+            },
+          });
 
           if (findPointUser) {
             const findByReferralCode = await tx.poin.findUnique({
               where: {
-                referral_code: referral_code_other
-              }
-            })
+                referral_code: referral_code_other,
+              },
+            });
             await tx.poin.update({
               where: {
-                id: findByReferralCode?.id
+                id: findByReferralCode?.id,
               },
               data: {
                 amount: findPointUser.amount + 10000,
-                usersId: findPointUser.usersId
-              }
-            })
+                usersId: findPointUser.usersId,
+              },
+            });
           } else {
             await tx.poin.create({
               data: {
@@ -102,20 +108,20 @@ export class AuthController {
                 createdAt: new Date(),
                 expiredAt: addMonth(new Date(), 3),
                 amount: 10000,
-                usersId: findUserId.id
-              }
-            })
+                usersId: findUserId.id,
+              },
+            });
           }
         }
 
-        return res.status(201).send(newUsers)
-      })
+        return res.status(201).send(newUsers);
+      });
     } catch (error) {
       next(error);
     } finally {
       async () => {
-        await prisma.$disconnect()
-      }
+        await prisma.$disconnect();
+      };
     }
   }
 
@@ -257,6 +263,25 @@ export class AuthController {
     try {
     } catch (error) {
       next(error);
+    }
+  }
+
+  // Task 6: Profile Customer
+  async profileCust(req: Request, res: Response) {
+    try {
+      const id = res.locals.decript.id;
+
+      const findUser = await prisma.users.findUnique({
+        where: { id },
+        include: {
+          vouchers: true,
+          Poin: true,
+        },
+      });
+
+      return res.status(200).send(findUser);
+    } catch (error) {
+      return res.status(400).send(error);
     }
   }
 }

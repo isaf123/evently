@@ -41,6 +41,49 @@ export class EventController {
     }
   }
 
+  async getTopEvent(req: Request, res: Response) {
+    try {
+      const twoMonth = new Date();
+      twoMonth.setMonth(twoMonth.getMonth() - 2);
+
+      const topEvent = await prisma.masterEvent.findMany({
+        skip: 0,
+        take: 6,
+        select: {
+          title: true,
+          id: true,
+          flyer_event: true,
+          _count: {
+            select: {
+              transactions: true,
+            },
+          },
+        },
+        where: {
+          end_date: {
+            gte: new Date(),
+          },
+          transactions: {
+            some: {
+              date_transaction: {
+                gte: twoMonth,
+              },
+            },
+          },
+        },
+        orderBy: {
+          transactions: {
+            _count: 'desc',
+          },
+        },
+      });
+
+      return res.status(200).send(topEvent);
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  }
+
   async getMaxBuy(req: Request, res: Response) {
     try {
       const title = req.params.title.split('-').join(' ');
@@ -69,7 +112,7 @@ export class EventController {
   async getAllEvent(req: Request, res: Response, next: NextFunction) {
     try {
       const { page, pageSize } = req.query;
-      console.log('query:::::::::::::::::::::', req.query);
+
       const skip = (Number(page) - 1) * Number(pageSize);
       const take = Number(pageSize);
 
@@ -101,11 +144,8 @@ export class EventController {
         },
       });
 
-      console.log('ini alll event :::::::', allEvent);
+      const totalPage = Math.ceil(getLength.length / Number(pageSize));
 
-      const totalEvent = await prisma.masterEvent.count();
-      const totalPage = Math.ceil(totalEvent / Number(pageSize));
-      console.log('total :', totalPage);
       return res
         .status(200)
         .send({ rc: 200, success: true, result: allEvent, totalPage });

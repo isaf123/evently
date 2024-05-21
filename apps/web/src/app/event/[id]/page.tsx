@@ -1,6 +1,6 @@
 'use client';
 import * as React from 'react';
-import { event } from '@/lib/text';
+import { event, rupiah } from '@/lib/text';
 import EventDetails from './view/EventDetails';
 import TicketBuy from './view/TicketBuy';
 import PromoPoin from './view/PromoPoin';
@@ -13,7 +13,8 @@ import { keepLogin } from '@/services/authService';
 import { useAppDispatch } from '@/lib/hooks';
 import { setSuccessLoginAction } from '@/lib/features/userSlice';
 import { useAppSelector } from '@/lib/hooks';
-
+import ModalCOnfirm from './view/ModalConfirm';
+import { trimText } from '@/lib/text';
 import {
   Card,
   CardContent,
@@ -21,12 +22,17 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-
+import ModalConfirm from './view/ModalConfirm';
+import { Plus } from 'lucide-react';
 import Cookies from 'js-cookie';
+import { showMessage } from '@/components/Alert/Toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 interface IEventPageProps {}
 
 const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
   const [bought, setbought] = React.useState<number>(0);
+  const [activeModal1, setActiveModal1] = React.useState<Boolean>(false);
   const [data, setData] = React.useState<{
     description: string;
     title: string;
@@ -34,6 +40,7 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
     address: string;
     location: string;
     end_date: string;
+    event_type: string;
     id?: number;
     price: number;
     flyer_event: string;
@@ -43,6 +50,7 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
     description: '',
     title: '',
     start_date: '',
+    event_type: '',
     address: '',
     location: '',
     end_date: '',
@@ -57,12 +65,13 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
     return state.transactionEventSlice;
   });
 
-  console.log('ini transaction', transaction);
+  // console.log('ini transaction', transaction);
 
   const router = useRouter();
   const path = pathname.split('/')[2];
   const role = Cookies.get('Token Cust');
 
+  console.log('ini role:', role);
   React.useEffect(() => {
     getDataTicket();
     searchToken;
@@ -77,6 +86,27 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
         // Jika tidak ada token, arahkan ke halaman sign-in
       }
     } catch (error: any) {
+      console.log(error);
+    }
+  };
+
+  const handleGetTicket = async () => {
+    try {
+      if (!role) {
+        throw 'please login to make order';
+      }
+
+      if (role == 'eo') {
+        throw 'invalid user';
+      }
+
+      if (!transaction.total_price) {
+        throw 'please pick your ticket';
+      }
+
+      setActiveModal1(true);
+    } catch (error: any) {
+      showMessage(error, 'error');
       console.log(error);
     }
   };
@@ -107,36 +137,26 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
       console.log(error);
     }
   };
-
-  const creteTransaction = async () => {
-    try {
-      const makeTransaction = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}transaction-user`,
-        {
-          date_transaction: new Date().toISOString(),
-          invoice_code: `TRANS${new Date().getTime()}`,
-          event_id: data.id,
-          total_price: transaction.total_price,
-          status_transaction: 'submitted',
-          voucher_id: transaction.voucher_id,
-          ticket_count: transaction.ticket_count,
-          point_discount: transaction.point,
-          voucher_discount: transaction.discount,
-          price_after_discount:
-            transaction.total_price - transaction.discount - transaction.point,
-        },
-        { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
-      );
-      router.push('/event/Wedding-Expo');
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  console.log(data);
+  console.log(transaction);
 
   return (
     <div>
-      {/* <div className="bg-black w-full h-full top-0 fixed opacity-35"></div>
-      <div className="w-[600px] h-[400px] bg-white fixed rounded-lg m-auto z-20 mt-40"></div> */}
+      <ToastContainer></ToastContainer>
+      {activeModal1 ? (
+        <div>
+          <div className="w-full h-full bg-black fixed top-0 opacity-35 z-40"></div>
+          <div className=" w-[390px] min-h-[600px] h-fit fixed z-50 m-auto -inset-0 rounded-xl">
+            <ModalConfirm
+              active={setActiveModal1}
+              information={data}
+            ></ModalConfirm>
+          </div>
+        </div>
+      ) : (
+        <></>
+      )}
+
       <div className="md:w-[1220px] m-auto py-2 md:py-10 min-h-screen gap-6 flex flex-col md:flex-row px-3 ">
         <div className="  md:w-[800px]]">
           <div className="md:w-[800px] md:h-[376px] bg-gray-200 rounded-t-xl overflow-hidden">
@@ -196,7 +216,13 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
               <Button
                 className="bg-color2 text-white w-full"
                 onClick={() => {
-                  creteTransaction();
+                  if (!role) {
+                    showMessage('Login to make order', 'error');
+                  } else if (!transaction.ticket_count) {
+                    showMessage('Pick your ticket first', 'error');
+                  } else {
+                    setActiveModal1(true);
+                  }
                 }}
               >
                 Get Ticket

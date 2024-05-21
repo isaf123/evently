@@ -18,6 +18,7 @@ import { useDebounce } from 'use-debounce';
 import { trimText } from '@/lib/text';
 import { Search } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface IDebounceSearchProps {}
 
@@ -26,7 +27,7 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
 ) => {
   const [search, setSearch] = React.useState<string>('');
   const [dataSearch, setDataSearch] = React.useState<any[] | null>([]);
-
+  const [link, setLink] = React.useState<string>('');
   const [debounceValue] = useDebounce(search, 1200);
 
   React.useEffect(() => {
@@ -36,7 +37,7 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
   const getDataSearch = async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}event/${debounceValue}`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}event/debounce/${debounceValue}`,
       );
 
       setDataSearch(response.data.result);
@@ -48,35 +49,36 @@ const DebounceSearch: React.FunctionComponent<IDebounceSearchProps> = (
   const mappingDataSearch = () => {
     return dataSearch?.map((val: any, idx: number) => {
       return (
-        <div
-          className="w-full h-[100px] flex border-t-1 border-b-1 border-t border-b items-center gap-3"
-          key={idx}
-        >
-          {val.flyer_event ? (
-            <Image
-              src={`${process.env.NEXT_PUBLIC_BASE_API_URL}eventpic/${val.flyer_event}`}
-              alt=""
-              width={170}
-              height={80}
-              className="h-[80px] w-[170px] rounded-md hidden md:block "
-            ></Image>
-          ) : (
-            <div className="w-[170px] h-[80px] bg-gray-400 rounded-md hidden md:block"></div>
-          )}
-          <div>
-            <p className="md:text-lg font-medium">{trimText(val?.title, 40)}</p>
-            <div className="flex items-center gap-1 text-xs text-gray-400">
-              <p>{convertDate(val?.start_date)}</p>
-              <p>-</p>
-              <p>{convertDate(val?.end_date)}</p>
-            </div>
-            {val.price ? (
-              <p className="text-sm">{rupiah(val?.price)}</p>
+        <Link key={idx} href={`event/${val?.title.split(' ').join('-')}`}>
+          <div className="w-full h-[100px] flex border-t-1 border-b-1 border-t border-b items-center gap-3">
+            {val.flyer_event ? (
+              <Image
+                src={`${process.env.NEXT_PUBLIC_BASE_API_URL}eventpic/${val.flyer_event}`}
+                alt=""
+                width={170}
+                height={80}
+                className="h-[80px] w-[170px] rounded-md hidden md:block "
+              ></Image>
             ) : (
-              <p>Free</p>
+              <div className="w-[170px] h-[80px] bg-gray-400 rounded-md hidden md:block"></div>
             )}
+            <div>
+              <p className="md:text-lg font-medium">
+                {trimText(val?.title, 40)}
+              </p>
+              <div className="flex items-center gap-1 text-xs text-gray-400">
+                <p>{convertDate(val?.start_date)}</p>
+                <p>-</p>
+                <p>{convertDate(val?.end_date)}</p>
+              </div>
+              {val.price ? (
+                <p className="text-sm">{rupiah(val?.price)}</p>
+              ) : (
+                <p>Free</p>
+              )}
+            </div>
           </div>
-        </div>
+        </Link>
       );
     });
   };

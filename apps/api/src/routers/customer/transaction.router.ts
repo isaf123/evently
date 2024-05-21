@@ -43,6 +43,7 @@ export class TransactionUserRouter {
     this.router.post(
       '/',
       verifyToken,
+      customerMiddleware,
       this.transactionUserController.createTransaction,
     );
   }

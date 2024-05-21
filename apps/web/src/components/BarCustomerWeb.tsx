@@ -34,8 +34,12 @@ const BarCustomerWeb: React.FunctionComponent<IBarCustomerProps> = (props) => {
       <div className="flex-1">
         <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
           <Link
-            href="#"
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+            href="/profile-cust"
+            className={
+              path == '/profile-cust'
+                ? 'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary bg-gray-100'
+                : 'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary'
+            }
           >
             <User className="h-4 w-4" />
             Profile

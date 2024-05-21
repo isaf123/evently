@@ -9,7 +9,6 @@ interface IPaginationProps {
 }
 
 const Pagination: React.FunctionComponent<IPaginationProps> = (props) => {
-  console.log(props.maxPage);
   return (
     <div className=" flex gap-4 text-2xl">
       <Button
