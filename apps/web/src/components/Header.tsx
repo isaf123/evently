@@ -104,7 +104,14 @@ export const Header = () => {
 
                     <DropdownMenuItem>
                       <Users className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
+                      <span
+                        className="cursor-pointer"
+                        onClick={() => {
+                          router.push('/profile-cust');
+                        }}
+                      >
+                        Profile
+                      </span>
                     </DropdownMenuItem>
 
                     <DropdownMenuItem>
