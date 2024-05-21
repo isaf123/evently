@@ -20,6 +20,15 @@ export class TransactionEORouter {
             eventOrganizerMiddleware,
             this.transactionEOController.getTransactionEO,
         );
+        this.router.get(
+            '/transaction-img',
+            verifyToken,
+            eventOrganizerMiddleware,
+            this.transactionEOController.getImgTransaction,
+        );
+
+        // Update Transaction for Paid
+        this.router.patch('/transaction/:id', verifyToken, eventOrganizerMiddleware, this.transactionEOController.updateTransactionStatus)
     }
 
     getRouter(): Router {

@@ -17,10 +17,16 @@ export default function Home() {
   const [page1, setPage1] = useState<number>(1);
   const [totalPage1, setTotalPage1] = useState<number>(1);
 
-  const router = useRouter();
+  const router = useRouter()
+
+  console.log('ini page :', page1);
 
   useEffect(() => {
     newsEvent();
+
+    if (!protectPageCust()) {
+      router.replace('/')
+    }
   }, [page1]);
 
   useEffect(() => {
@@ -76,8 +82,9 @@ export default function Home() {
     });
   };
 
+  console.log("ini top event", topEvent)
   const mapTopEvent = () => {
-    return topEvent?.map((val: any, idx: number) => {
+    return (topEvent && topEvent.map((val: any, idx: number) => {
       return (
         <div key={idx}>
           <CategoryCart
@@ -88,8 +95,9 @@ export default function Home() {
           </CategoryCart>
         </div>
       );
-    });
+    }));
   };
+
   return (
     <main className=" m-auto  md:px-0 bg-gray-50">
       <div className="w-full md:w-[1190px] h-[260px] md:h-[300px] m-auto rounded-b-xl md:rounded-xl bg-red-100 overflow-hidden relative mb-5 top-0 md:mt-20">
@@ -150,7 +158,8 @@ export default function Home() {
           Top event this Month
         </h1>
         <div className="w-full md:w-[1230px] m-auto flex flex-wrap justify-between px-12  gap-y-14 ">
-          {mapTopEvent()}
+          {/* {topEv}
+          {mapTopEvent()} */}
         </div>
       </div>
 

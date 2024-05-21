@@ -28,7 +28,7 @@ import Cookies from 'js-cookie';
 import { showMessage } from '@/components/Alert/Toast';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-interface IEventPageProps {}
+interface IEventPageProps { }
 
 const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
   const [bought, setbought] = React.useState<number>(0);

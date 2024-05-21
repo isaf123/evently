@@ -62,19 +62,12 @@ export class TransactionUserController {
             ticket_count: true,
           },
           where: {
-            event_id: existsEvent.id,
+            event_id: event_id,
             user_id: res.locals.decript.id,
           },
         });
 
-        if (maxTransaction._sum.ticket_count === existsEvent.max_ticket) {
-          throw 'reach maximal purchase';
-        }
-
-        console.log('max transaction :', maxTransaction);
-        console.log('jumlah :', existTrans);
-
-        if (existTrans._sum.ticket_count === ticket_count) {
+        if (existTrans === ticket_count) {
           console.log('dapat transaksi', existTrans);
           throw 'Reach Max Transaction';
         }
@@ -95,8 +88,6 @@ export class TransactionUserController {
               },
             });
 
-            console.log('dapet find:', findVoucherById);
-
             const deleteVoucher = await tx.voucher.delete({
               where: {
                 id: findVoucherById?.id,
@@ -104,6 +95,23 @@ export class TransactionUserController {
             });
           }
         }
+
+        if (point_discount) {
+          const findPoint = await tx.poin.findFirst({
+            where: {
+              usersId: user_id,
+            },
+          });
+
+          console.log('dapat point :', findPoint?.usersId);
+          if (findPoint) {
+            const deletePoint = await tx.poin.update({
+              where: { id: findPoint.id },
+              data: { amount: findPoint.amount - point_discount },
+            });
+          }
+        }
+        console.log('jlaaaaaaan');
 
         const trans = await tx.transaction.create({
           data: {
@@ -119,23 +127,6 @@ export class TransactionUserController {
             voucher_discount,
           },
         });
-
-        if (point_discount) {
-          const findPoint = await tx.poin.findFirst({
-            where: {
-              usersId: user_id,
-            },
-          });
-
-          console.log('dapat point :', findPoint?.usersId);
-          if (findPoint) {
-            const updatePoint = await tx.poin.update({
-              where: { id: findPoint.id },
-              data: { amount: findPoint.amount - point_discount },
-            });
-          }
-        }
-        return res.status(201).send('Success, order submitted');
       });
     } catch (error) {
       console.log(error);

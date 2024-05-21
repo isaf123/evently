@@ -26,6 +26,7 @@ export const deleteEvent = async (eventId: number) => {
             }
         });
 
+
         showMessage('Event deleted successfully', 'success');
     } catch (error: any) {
         if (error.response) {

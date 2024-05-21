@@ -5,7 +5,7 @@ import HeaderMobile from '@/components/EO/SidebarEO/header-mobile'
 import SideNav from '@/components/EO/SidebarEO/side-nav'
 import React from 'react'
 
-const DashboardEOPage = () => {
+const ReportEOPage = () => {
     return (
         <div className='flex'>
             <SideNav />
@@ -20,4 +20,4 @@ const DashboardEOPage = () => {
     )
 }
 
-export default DashboardEOPage
+export default ReportEOPage

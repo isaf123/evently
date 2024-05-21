@@ -30,7 +30,7 @@ export class ReviewUserController {
   async getReview(req: Request, res: Response) {
     try {
       const allReviews = await prisma.transaction.findMany({
-        orderBy: [{ id: 'desc' }],
+        orderBy: [{ date_transaction: 'asc' }],
         where: {
           user_id: res.locals.decript.id,
           status_transaction: 'paid',
