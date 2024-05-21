@@ -21,6 +21,12 @@ export class AuthRouter {
 
     // Untuk Forgot Password
     this.router.post('/forgotPassword', this.authController.forgotPassword);
+
+    this.router.get(
+      '/profile-cust',
+      verifyToken,
+      this.authController.profileCust,
+    );
   }
 
   getRouter(): Router {

@@ -77,7 +77,10 @@ export const Header = () => {
 
   return (
     <CustRouter>
-      {path == '/your-ticket' || path == '/checkout' || path == '/review' ? (
+      {path == '/your-ticket' ||
+      path == '/checkout' ||
+      path == '/review' ||
+      path == '/profile-cust' ? (
         <></>
       ) : (
         <div className="text-white bg-[#333A73] w-full h-[80px] px-4 md:px-28">

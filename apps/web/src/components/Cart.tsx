@@ -41,7 +41,9 @@ const CartEvent: React.FunctionComponent<ICartEventProps> = (props) => {
               {props.startdate}
             </p>
             <p>-</p>
-            <p className="text-[10px] text-gray-600">{props.enddate}</p>
+            <p className="text-[10px] md:text-xs text-gray-600">
+              {props.enddate}
+            </p>
           </div>
           {props.price == 0 ? (
             <p className="md:mt-2 text-sm md:text-md">free</p>

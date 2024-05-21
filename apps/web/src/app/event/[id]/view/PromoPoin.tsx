@@ -41,7 +41,7 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
   });
 
   // point:
-  const [activePoint, setActivePoint] = React.useState<Boolean>(true);
+  const [activePoint, setActivePoint] = React.useState<Boolean>(false);
   const [pointUser, setPointUser] = React.useState<{
     amount: number;
     expiredAt: Date;
@@ -275,6 +275,8 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
       </div>
     );
   };
+
+  console.log(activePoint);
 
   return (
     <Tabs defaultValue="voucher" className="w-full mb-6">

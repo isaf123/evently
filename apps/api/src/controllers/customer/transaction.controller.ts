@@ -135,6 +135,7 @@ export class TransactionUserController {
             });
           }
         }
+        return res.status(201).send('Success, order submitted');
       });
     } catch (error) {
       console.log(error);
