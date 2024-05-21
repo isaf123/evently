@@ -16,7 +16,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { setLogoutAction } from '@/lib/features/userSlice';
 import { useAppDispatch } from '@/lib/hooks';
 
-interface IBarCustomerMobileProps {}
+interface IBarCustomerMobileProps { }
 
 const BarCustomerMobile: React.FunctionComponent<IBarCustomerMobileProps> = (
   props,

@@ -81,30 +81,32 @@ const TableTransactionEOPage = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {dataTransaction.length > 0 ? (
-                        dataTransaction.map((transaction, index) => (
-                            <TableRow key={transaction.id} className='bg-white border-b'>
-                                <TableCell className='px-6 py-3 hidden md:table-cell'>{index + 1}.</TableCell>
-                                <TableCell className='px-6 py-3'>
-                                    <Button className='text-blue-500 hover:underline' onClick={() => handleInvoiceClick(transaction.id, transaction.img_payment)}>
-                                        {transaction.invoice_code.replace(/^TRANS/, '')}
-                                    </Button>
-                                </TableCell>
-                                <TableCell className='px-6 py-3 hidden md:table-cell'>{transaction.event_title}</TableCell>
-                                <TableCell className='px-6 py-3 hidden md:table-cell'>{transaction.user_name}</TableCell>
-                                <TableCell className='px-6 py-3 hidden md:table-cell'>{formatDate(transaction.date_transaction)}</TableCell>
-                                <TableCell className={`px-6 py-3 ${getStatusStyles(transaction.status_transaction)}`}>
-                                    {transaction.status_transaction}
-                                </TableCell>
+                    {
+                        dataTransaction.length > 0 ? (
+                            dataTransaction.map((transaction, index) => (
+                                <TableRow key={transaction.id} className='bg-white border-b'>
+                                    <TableCell className='px-6 py-3 hidden md:table-cell'>{index + 1}.</TableCell>
+                                    <TableCell className='px-6 py-3'>
+                                        <Button className='text-blue-500 hover:underline' onClick={() => handleInvoiceClick(transaction.id, transaction.img_payment)}>
+                                            {transaction.invoice_code.replace(/^TRANS/, '')}
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell className='px-6 py-3 hidden md:table-cell'>{transaction.event_title}</TableCell>
+                                    <TableCell className='px-6 py-3 hidden md:table-cell'>{transaction.user_name}</TableCell>
+                                    <TableCell className='px-6 py-3 hidden md:table-cell'>{formatDate(transaction.date_transaction)}</TableCell>
+                                    <TableCell className={`px-6 py-3 ${getStatusStyles(transaction.status_transaction)}`}>
+                                        {transaction.status_transaction}
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={6} className='text-center py-3'>No transactions found</TableCell>
                             </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                            <TableCell colSpan={6} className='text-center py-3'>No transactions found</TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
+                        )
+                    }
+                </TableBody >
+            </Table >
             <div className="flex justify-between items-center mt-4">
                 <button
                     onClick={handlePreviousPage}
@@ -115,7 +117,7 @@ const TableTransactionEOPage = () => {
                 </button>
                 <span>
                     Page {totalPages > 0 ? currentPage : 0} of {totalPages}
-                </span>
+                </span >
                 <button
                     onClick={handleNextPage}
                     disabled={currentPage === totalPages || totalPages === 0}
@@ -123,8 +125,8 @@ const TableTransactionEOPage = () => {
                 >
                     Next
                 </button>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

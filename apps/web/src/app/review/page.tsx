@@ -28,7 +28,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
 
-interface ICheckoutPageProps {}
+interface ICheckoutPageProps { }
 
 const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
   const [data, setData] = React.useState<[]>([]);

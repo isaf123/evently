@@ -13,6 +13,7 @@ import FilterSection from './view/filter';
 
 export default function Home() {
   const [newEvent, setNewEvent] = useState<any[]>();
+  const [topEvent, setTopEvent] = useState<any[]>([]);
   const [page1, setPage1] = useState<number>(1);
   const [totalPage1, setTotalPage1] = useState<number>(1);
 
@@ -27,6 +28,29 @@ export default function Home() {
       router.replace('/')
     }
   }, [page1]);
+
+  useEffect(() => {
+    if (!protectPageCust()) {
+      router.replace('/');
+    }
+  }, []);
+
+  useEffect(() => {
+    getTop();
+  }, []);
+
+  const getTop = async () => {
+    try {
+      const response2 = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}event/event-top`,
+      );
+      console.log('ini cobaaaaaaaaaa :', response2.data);
+      setTopEvent(response2.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const newsEvent = async () => {
     try {
       const response = await axios.get(
@@ -57,6 +81,23 @@ export default function Home() {
       );
     });
   };
+
+  console.log("ini top event", topEvent)
+  const mapTopEvent = () => {
+    return (topEvent && topEvent.map((val: any, idx: number) => {
+      return (
+        <div key={idx}>
+          <CategoryCart
+            image={`${process.env.NEXT_PUBLIC_BASE_API_URL}eventpic/${val.flyer_event}`}
+            number={idx + 1}
+          >
+            {val.title}
+          </CategoryCart>
+        </div>
+      );
+    }));
+  };
+
   return (
     <main className=" m-auto  md:px-0 bg-gray-50">
       <div className="w-full md:w-[1190px] h-[260px] md:h-[300px] m-auto rounded-b-xl md:rounded-xl bg-red-100 overflow-hidden relative mb-5 top-0 md:mt-20">
@@ -112,29 +153,13 @@ export default function Home() {
         )}
       </div>
 
-      <div className="w-full h-[fit] bg-[#333A73] mb-10 pb-10 pt-8">
-        <h1 className=" text-white text-[24px] md:text-[30px] font-semibold  md:w-[1120px] m-auto px-12 mb-5">
-          Find your interest
+      <div className="w-full  h-fit min-h-[590px] bg-[#333A73] mb-10 pt-10 pb-20">
+        <h1 className=" text-white text-[24px] md:text-[30px] font-semibold  md:w-[1230px] m-auto px-12 mb-5">
+          Top event this Month
         </h1>
-        <div className="w-full md:w-[1120px] m-auto flex flex-wrap justify-between px-12   gap-y-7">
-          <CategoryCart image="https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-            Music
-          </CategoryCart>
-          <CategoryCart image="https://images.unsplash.com/photo-1504680177321-2e6a879aac86?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-            Nightlife
-          </CategoryCart>
-          <CategoryCart image="https://images.unsplash.com/photo-1630522791492-05f373da5543?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-            Holidays
-          </CategoryCart>
-          <CategoryCart image="https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-            Hobby
-          </CategoryCart>
-          <CategoryCart image="https://images.unsplash.com/photo-1532634922-8fe0b757fb13?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-            Food & Drink
-          </CategoryCart>
-          <CategoryCart image="https://images.unsplash.com/photo-1498673394965-85cb14905c89?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-            Other
-          </CategoryCart>
+        <div className="w-full md:w-[1230px] m-auto flex flex-wrap justify-between px-12  gap-y-14 ">
+          {/* {topEv}
+          {mapTopEvent()} */}
         </div>
       </div>
 

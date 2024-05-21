@@ -41,7 +41,7 @@ import axios from 'axios';
 import { title } from 'process';
 import Pagination from '@/components/Pagination';
 
-interface IFilterSectionProps {}
+interface IFilterSectionProps { }
 
 const FilterSection: React.FunctionComponent<IFilterSectionProps> = (props) => {
   const [open, setOpen] = React.useState(false);
@@ -161,8 +161,8 @@ const FilterSection: React.FunctionComponent<IFilterSectionProps> = (props) => {
                     >
                       {value
                         ? getLocations?.find(
-                            (framework) => framework.value === value,
-                          )?.label
+                          (framework) => framework.value === value,
+                        )?.label
                         : 'Select location...'}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>

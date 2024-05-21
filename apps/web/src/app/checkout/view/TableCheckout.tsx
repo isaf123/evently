@@ -92,7 +92,8 @@ const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
     }
   };
 
-  console.log('ini file:', file);
+  console.log(props.dataTrans);
+
   const mapping = () => {
     return props.dataTrans.map((val: any, idx: number) => {
       return (
@@ -106,10 +107,12 @@ const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
               width="136"
             />
           </TableCell>
+
           <TableCell className="font-medium">
             <p className="hidden md:block">{trimText(val.event.title, 45)}</p>
             <p className="block md:hidden">{trimText(val.event.title, 8)}</p>
           </TableCell>
+
           <TableCell className="w-[172px]">
             <div className="flex w-full">
               {val.status_transaction == 'paid' ? (
@@ -145,10 +148,17 @@ const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
               )}
             </div>
           </TableCell>
+
+          <TableCell className="hidden md:table-cell">
+            {val.price_after_discount ? rupiah(val.total_price) : 'free'}
+          </TableCell>
           <TableCell className="hidden md:table-cell">
             {val.price_after_discount
-              ? rupiah(val.price_after_discount)
-              : 'free'}
+              ? rupiah(val.total_price - val.price_after_discount)
+              : '-'}
+          </TableCell>
+          <TableCell className="hidden md:table-cell">
+            {val.price_after_discount ? rupiah(val.price_after_discount) : '-'}
           </TableCell>
           <TableCell className="hidden md:table-cell ">
             <p className="pl-7">{val.ticket_count}</p>
@@ -223,10 +233,16 @@ const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
                     <TableHead className="hidden w-[200px] sm:table-cell">
                       <span className="sr-only">Image</span>
                     </TableHead>
-                    <TableHead className="md:w-[400px]">Name</TableHead>
+                    <TableHead className="md:w-[250px]">Name</TableHead>
                     <TableHead className="text-center">Status</TableHead>
                     <TableHead className="hidden md:table-cell">
                       Price
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Discount
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Total Price
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
                       Total Ticket

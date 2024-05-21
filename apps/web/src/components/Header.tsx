@@ -102,7 +102,7 @@ export const Header = () => {
                     <DropdownMenuItem>
                       <Users className="mr-2 h-4 w-4" />
                       <span>Profile</span>
-                    </DropdownMenuItem>
+                    </DropdownMenuItem >
 
                     <DropdownMenuItem>
                       <ShoppingBag className="mr-2 h-4 w-4" />
@@ -126,7 +126,7 @@ export const Header = () => {
                       >
                         Your ticket
                       </span>
-                    </DropdownMenuItem>
+                    </DropdownMenuItem >
 
                     <DropdownMenuItem>
                       <MessageSquareDiff className="mr-2 h-4 w-4 " />
@@ -153,13 +153,13 @@ export const Header = () => {
                         Log out
                       </span>
                     </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  </DropdownMenuContent >
+                </DropdownMenu >
                 <div className="  ">
                   <p className="text-xl font-bold">{username}</p>
                   <p className="text-xs">customer</p>
                 </div>
-              </div>
+              </div >
             ) : (
               <div>
                 <div className="hidden md:block">
@@ -217,10 +217,10 @@ export const Header = () => {
                 </DropdownMenu>
               </div>
             )}
-          </div>
-        </div>
+          </div >
+        </div >
       )}
-    </CustRouter>
+    </CustRouter >
   );
 };
 

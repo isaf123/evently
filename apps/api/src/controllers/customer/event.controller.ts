@@ -41,6 +41,49 @@ export class EventController {
     }
   }
 
+  async getTopEvent(req: Request, res: Response) {
+    try {
+      const twoMonth = new Date();
+      twoMonth.setMonth(twoMonth.getMonth() - 2);
+
+      const topEvent = await prisma.masterEvent.findMany({
+        skip: 0,
+        take: 6,
+        select: {
+          title: true,
+          id: true,
+          flyer_event: true,
+          _count: {
+            select: {
+              transactions: true,
+            },
+          },
+        },
+        where: {
+          end_date: {
+            gte: new Date(),
+          },
+          transactions: {
+            some: {
+              date_transaction: {
+                gte: twoMonth,
+              },
+            },
+          },
+        },
+        orderBy: {
+          transactions: {
+            _count: 'desc',
+          },
+        },
+      });
+
+      return res.status(200).send(topEvent);
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  }
+
   async getMaxBuy(req: Request, res: Response) {
     try {
       const title = req.params.title.split('-').join(' ');

@@ -41,7 +41,7 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
   });
 
   // point:
-  const [activePoint, setActivePoint] = React.useState<Boolean>(true);
+  const [activePoint, setActivePoint] = React.useState<Boolean>(false);
   const [pointUser, setPointUser] = React.useState<{
     amount: number;
     expiredAt: Date;
@@ -125,12 +125,10 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
     }
   };
 
-  // console.log('ini voucher use :', voucherUser);
-
   const mapping = () => {
     return props.data.map((val: any, idx: number) => {
       return (
-        <CarouselItem className="" key={idx}>
+        <CarouselItem className="z-5" key={idx}>
           <div className="min-h-[84px] h-fit w-[240px]  border border-gray-200 shadow-sm rounded-md break-words px-3 py-3 text-sm">
             {val.name_voucher ? (
               <p className="font-bold">{trimText(val.name_voucher, 20)}</p>
@@ -277,6 +275,8 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
       </div>
     );
   };
+
+  console.log(activePoint);
 
   return (
     <Tabs defaultValue="voucher" className="w-full mb-6">
