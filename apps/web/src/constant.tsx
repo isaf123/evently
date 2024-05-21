@@ -9,11 +9,6 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
         icon: <Icon icon="lucide:home" width="24" height="24" />,
     },
     {
-        title: 'Profile',
-        path: '/event-organizer/profile',
-        icon: <Icon icon="iconamoon:profile-duotone" width="24" height="24" />,
-    },
-    {
         title: 'Settings',
         path: '/event-organizer/settings',
         icon: <Icon icon="lucide:settings" width="24" height="24" />,
