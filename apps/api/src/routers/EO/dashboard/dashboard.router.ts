@@ -1,4 +1,5 @@
 import { DashboardEOController } from '@/controllers/EO/dashboard/dashboard.controller';
+import { verifyToken } from '@/middleware/verifiedToken';
 import { Router } from 'express';
 
 
@@ -14,6 +15,8 @@ export class DashboardEORouter {
 
     private initializeRoutes(): void {
         this.router.get('/dashboard/upcoming-event', this.dashboardEOController.getUpcomingEvent)
+        this.router.get('/dashboard/pending-payment', this.dashboardEOController.getPendingPaymen)
+        this.router.get('/dashboard/ticket-sold', this.dashboardEOController.getTicketSold)
     }
 
     getRouter(): Router {
