@@ -14,15 +14,31 @@ export class TransactionEOController {
             const take = Number(pageSize);
             const searchQuery = q.toString();
 
-            // Fetch events with pending transactions
-            const findEvents = await findEvent(user_id)
+            // Fetch events with pending transactions for a specific user
+            const events = await prisma.masterEvent.findMany({
+                where: {
+                    usersId: Number(user_id),
+                },
+                include: {
+                    transactions: {
+                        where: {
+                            status_transaction: "pending"
+                        }
+                    }, // Include related transactions
+                    user_id: {
+                        select: {
+                            name: true,
+                        },
+                    },
+                },
+            });
 
-            if (!findEvents.length) {
+            if (!events.length) {
                 return res.status(404).send({ message: "No events found" });
             }
 
             // Combine transactions from all events
-            let allTransactions = findEvents.flatMap(event =>
+            let allTransactions = events.flatMap(event =>
                 event.transactions.map(transaction => ({
                     ...transaction,
                     event_title: event.title,

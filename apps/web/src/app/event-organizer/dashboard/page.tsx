@@ -1,5 +1,5 @@
 'use client'
-import { getUpcomingEventsEO } from '@/api/EO/eo';
+import { getPendingPaymentEO, getTicketSoldEO, getUpcomingEventsEO } from '@/api/EO/eo';
 import CardEO from '@/components/EO/DashboardEO/card';
 import Header from '@/components/EO/SidebarEO/header';
 import HeaderMobile from '@/components/EO/SidebarEO/header-mobile';
@@ -7,7 +7,7 @@ import SideNav from '@/components/EO/SidebarEO/side-nav';
 import { useAppSelector } from '@/lib/hooks';
 import React from 'react';
 import EORouter from '../../../components/Router/EORouter';
-import { redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { protectPageEO } from '@/utils/protectPage';
 
 const DashboardEOPage = () => {
@@ -19,6 +19,8 @@ const DashboardEOPage = () => {
 
   const profileName = capitalizeFirstLetter(username)
   const [numEvent, setNumEvent] = React.useState<number>(0)
+  const [numPendingTicket, setNumPendingTicket] = React.useState<number>(0)
+  const [numTicketSold, setTicketSold] = React.useState<number>(0)
   const getUpcomingEvents = async () => {
     try {
       const data = await getUpcomingEventsEO()
@@ -27,9 +29,27 @@ const DashboardEOPage = () => {
       console.log(error);
     }
   }
+  const getPendingPayment = async () => {
+    try {
+      const data = await getPendingPaymentEO()
+      setNumPendingTicket(data.count)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const getTicketSold = async () => {
+    try {
+      const data = await getTicketSoldEO()
+      setTicketSold(data.count)
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   React.useEffect(() => {
     getUpcomingEvents()
+    getPendingPayment()
+    getTicketSold()
 
     if (!protectPageEO()) {
       router.replace('/')
@@ -49,8 +69,8 @@ const DashboardEOPage = () => {
             {' '}
             {/* Menggunakan grid untuk tata letak kartu */}
             <CardEO title="Upcoming Event" number={numEvent} icon="events" link='events' />
-            <CardEO title="Pending Payment" number={0} icon="transaction" link='transactions' />
-            <CardEO title="Ticket Sold" number={0} icon="ticket" link='transactions' />
+            <CardEO title="Pending Payment" number={numPendingTicket} icon="transaction" link='transactions' />
+            <CardEO title="Ticket Sold" number={numTicketSold} icon="ticket" link='transactions' />
           </div>
         </div>
       </div>

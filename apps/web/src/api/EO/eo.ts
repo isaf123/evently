@@ -16,6 +16,35 @@ export const getUpcomingEventsEO = async () => {
     }
 
 }
+
+export const getPendingPaymentEO = async () => {
+    try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}EO/dashboard/pending-payment`);
+        return response.data;
+    } catch (error: any) {
+        if (error.response) {
+            showMessage(error.response.data, 'error');
+        } else {
+            showMessage(error.message, 'error');
+        }
+        throw error;
+    }
+}
+
+export const getTicketSoldEO = async () => {
+    try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}EO/dashboard/ticket-sold`);
+        return response.data;
+    } catch (error: any) {
+        if (error.response) {
+            showMessage(error.response.data, 'error');
+        } else {
+            showMessage(error.message, 'error');
+        }
+        throw error;
+    }
+}
+
 export const deleteEvent = async (eventId: number) => {
     try {
         const cookies = Cookies.get('Token EO');
