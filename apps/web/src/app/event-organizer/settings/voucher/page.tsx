@@ -69,26 +69,25 @@ const DashboardEOPage = () => {
     getPromo();
   }, [eventId]);
 
-  // console.log(eventId);
   const getData = async () => {
     try {
       const cookies = Cookies.get('Token EO');
 
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}event-organizer/event`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}event-eo/getpromo`,
         {
           headers: {
             Authorization: `Bearer ${cookies}`,
           },
         },
       );
+      console.log(response);
+
       setData(response.data);
     } catch (error) {
       console.log(error);
     }
   };
-
-  // console.log(data);
 
   const mapping = () => {
     return data?.map((val: any, idx: number) => {
@@ -212,13 +211,10 @@ const DashboardEOPage = () => {
       );
 
       setDataPromo(response.data[0].Vouchers);
-      console.log(response.data[0].Vouchers);
     } catch (error) {
       console.log(error);
     }
   };
-
-  console.log('ini data promo :', dataPromo);
 
   const promoMapping = () => {
     return dataPromo.map((val: any, idx: number) => {

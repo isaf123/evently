@@ -276,8 +276,6 @@ const PromoPoin: React.FunctionComponent<IPromoPoinProps> = (props) => {
     );
   };
 
-  console.log(activePoint);
-
   return (
     <Tabs defaultValue="voucher" className="w-full mb-6">
       <TabsList className="grid w-full grid-cols-2 bg-gray-100">

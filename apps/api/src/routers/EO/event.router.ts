@@ -18,6 +18,11 @@ export class EventEORouter {
 
   private initializeRoutes(): void {
     this.router.get('/event', verifyToken, this.eventController.getEvents);
+    this.router.get(
+      '/getpromo',
+      verifyToken,
+      this.eventController.getEventForPromo,
+    );
     this.router.post(
       '/',
       verifyToken,
