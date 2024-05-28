@@ -168,12 +168,12 @@ const MakeEvent: React.FunctionComponent<IMakeEventProps> = (props) => {
       formData.append('max_ticket', createEvent.max_ticket);
 
       const responseEvent = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}event-organizer`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}event-eo`,
         formData,
         { headers: { Authorization: `Bearer ${Cookies.get('Token EO')}` } },
       );
 
-      console.log(responseEvent);
+      console.log('ini respon event:', responseEvent);
 
       dispatch(
         setCreateEventAction({

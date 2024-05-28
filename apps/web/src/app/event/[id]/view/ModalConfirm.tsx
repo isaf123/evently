@@ -31,8 +31,11 @@ const ModalConfirm: React.FunctionComponent<IModalConfirmProps> = (props) => {
     return state.transactionEventSlice;
   });
 
+  console.log(transaction);
   const router = useRouter();
   const role = Cookies.get('Token Cust');
+
+  console.log('ghalooooo');
   const creteTransaction = async () => {
     try {
       const makeTransaction = await axios.post(

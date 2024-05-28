@@ -146,6 +146,7 @@ export class TransactionUserController {
         data: {
           status_transaction: 'pending',
           img_payment: files[0].filename,
+          date_transaction: new Date().toISOString(),
         },
       });
 

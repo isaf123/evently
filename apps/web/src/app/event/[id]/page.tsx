@@ -28,7 +28,7 @@ import Cookies from 'js-cookie';
 import { showMessage } from '@/components/Alert/Toast';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-interface IEventPageProps { }
+interface IEventPageProps {}
 
 const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
   const [bought, setbought] = React.useState<number>(0);
@@ -65,13 +65,10 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
     return state.transactionEventSlice;
   });
 
-  // console.log('ini transaction', transaction);
-
   const router = useRouter();
   const path = pathname.split('/')[2];
   const role = Cookies.get('Token Cust');
 
-  console.log('ini role:', role);
   React.useEffect(() => {
     getDataTicket();
     searchToken;
@@ -137,8 +134,6 @@ const EventPage: React.FunctionComponent<IEventPageProps> = (props) => {
       console.log(error);
     }
   };
-  console.log(data);
-  console.log(transaction);
 
   return (
     <div>

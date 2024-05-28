@@ -10,6 +10,7 @@ import Pagination from '@/components/Pagination';
 import { protectPageCust } from '@/utils/protectPage';
 import { useRouter } from 'next/navigation';
 import FilterSection from './view/filter';
+import Cookies from 'js-cookie';
 
 export default function Home() {
   const [newEvent, setNewEvent] = useState<any[]>();
@@ -18,20 +19,16 @@ export default function Home() {
   const [totalPage1, setTotalPage1] = useState<number>(1);
 
   const router = useRouter();
-
-  console.log('ini page :', page1);
+  const roleEO = Cookies.get('Token EO');
 
   useEffect(() => {
     newsEvent();
   }, [page1]);
 
   useEffect(() => {
-    if (!protectPageCust()) {
-      router.replace('/');
+    if (roleEO) {
+      router.replace('/event-organizer/dashboard');
     }
-  }, []);
-
-  useEffect(() => {
     getTop();
   }, []);
 

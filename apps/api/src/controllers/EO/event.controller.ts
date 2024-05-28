@@ -35,9 +35,8 @@ export class EventEOController {
       });
 
       if (!findEvents.length) {
-        return res.status(404).send({ message: "No events found" });
+        return res.status(404).send({ message: 'No events found' });
       }
-
 
       const totalEvents = await prisma.masterEvent.count({
         where: {
@@ -82,19 +81,33 @@ export class EventEOController {
     }
   }
 
+  async getEventForPromo(req: Request, res: Response, next: NextFunction) {
+    try {
+      const findEvent = await prisma.masterEvent.findMany({
+        where: {
+          usersId: res.locals.decript.id,
+          start_date: {
+            gte: new Date().toISOString(),
+          },
+        },
+      });
+      return res.status(200).send(findEvent);
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  }
+
   async deleteEvent(req: Request, res: Response, next: NextFunction) {
     try {
       const eventId = Number(req.params.id);
 
-      console.log('ini event id ke', eventId);
-
-      const userId = res.locals.decript.id
+      const userId = res.locals.decript.id;
 
       const event = await prisma.masterEvent.findUnique({
         where: {
-          id: eventId
-        }
-      })
+          id: eventId,
+        },
+      });
 
       if (!event) {
         return res.status(404).send({ message: 'Event not found' });
@@ -115,7 +128,6 @@ export class EventEOController {
       });
 
       return res.status(200).send({ message: 'Event deleted successfully!' });
-
     } catch (error) {
       return res.status(500).send({ error });
     }

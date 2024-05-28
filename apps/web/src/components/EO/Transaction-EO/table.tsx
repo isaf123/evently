@@ -41,8 +41,6 @@ const TableTransactionEOPage = () => {
           query,
         );
 
-        console.log('data transaction', transaction);
-
         if (Array.isArray(transaction.result)) {
           setDataTransaction(transaction.result);
           const totalItems = transaction.totalTransactions || 0;

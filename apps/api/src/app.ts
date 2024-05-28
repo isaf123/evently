@@ -67,7 +67,7 @@ export default class App {
     const dashboardEORouter = new DashboardEORouter();
 
     // Transaction EO
-    const transactionEORouter = new TransactionEORouter()
+    const transactionEORouter = new TransactionEORouter();
 
     this.app.get('/', (req: Request, res: Response) => {
       res.send(`Hello, Purwadhika Student !`);
@@ -75,7 +75,7 @@ export default class App {
 
     this.app.use('/auth', authRouter.getRouter());
 
-    this.app.use('/event-organizer', eventEORouter.getRouter());
+    this.app.use('/event-eo', eventEORouter.getRouter());
 
     this.app.use('/event', eventCustRouter.getRouter());
     this.app.use('/promo', promoEventRouter.getRouter());
@@ -86,7 +86,7 @@ export default class App {
     this.app.use('/EO', dashboardEORouter.getRouter());
 
     // Transaction EO
-    this.app.use('/event-organizer', transactionEORouter.getRouter())
+    this.app.use('/event-organizer', transactionEORouter.getRouter());
     this.app.use('/receipt', express.static('public/receipt'));
   }
 

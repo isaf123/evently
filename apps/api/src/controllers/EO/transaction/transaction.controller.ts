@@ -9,7 +9,7 @@ import { Request, Response } from 'express';
 export class TransactionEOController {
   async getTransactionEO(req: Request, res: Response) {
     try {
-      const { page = 1, pageSize = 5, q = '' } = req.query;
+      const { page, pageSize, q = '', find, order } = req.query;
       const user_id = res.locals.decript.id;
 
       const skip = (Number(page) - 1) * Number(pageSize);
@@ -23,20 +23,28 @@ export class TransactionEOController {
         },
         include: {
           transactions: {
-            where: {
-              status_transaction: 'pending',
-            },
             orderBy: {
               date_transaction: 'desc', // Order transactions by date_transaction
+            },
+            include: {
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                },
+              },
             },
           }, // Include related transactions
           user_id: {
             select: {
               name: true,
+              email: true,
             },
           },
         },
       });
+
+      console.log('ini event:', events.length);
 
       if (!events.length) {
         return res.status(404).send({ message: 'No events found' });
@@ -106,7 +114,13 @@ export class TransactionEOController {
         data: { status_transaction: 'paid' },
       });
 
-      return res.status(200).json({ success: true, data: updatedTransaction });
+      return res
+        .status(200)
+        .json({
+          success: true,
+          data: updatedTransaction,
+          message: 'Payment verified',
+        });
     } catch (error) {
       return res.status(500).send(error);
     }
