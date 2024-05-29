@@ -32,7 +32,17 @@ export const rupiah = (money: number) => {
   return money.toLocaleString('id-ID', {
     style: 'currency',
     currency: 'IDR',
+    minimumFractionDigits: 0,
   });
+};
+
+export const formatTabel = (money: number) => {
+  if (money >= 1000000) {
+    return (money / 1000000).toFixed(1).replace('.0', '') + ' jt';
+  } else if (money >= 1000) {
+    return (money / 1000).toFixed(0) + 'k';
+  }
+  return money.toString();
 };
 
 export const trimText = (text: string | number = 0, mount: number) => {

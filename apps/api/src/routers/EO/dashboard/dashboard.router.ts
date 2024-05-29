@@ -2,24 +2,37 @@ import { DashboardEOController } from '@/controllers/EO/dashboard/dashboard.cont
 import { verifyToken } from '@/middleware/verifiedToken';
 import { Router } from 'express';
 
-
 export class DashboardEORouter {
-    private router: Router;
-    private dashboardEOController: DashboardEOController;
+  private router: Router;
+  private dashboardEOController: DashboardEOController;
 
-    constructor() {
-        this.router = Router();
-        this.dashboardEOController = new DashboardEOController();
-        this.initializeRoutes();
-    }
+  constructor() {
+    this.router = Router();
+    this.dashboardEOController = new DashboardEOController();
+    this.initializeRoutes();
+  }
 
-    private initializeRoutes(): void {
-        this.router.get('/dashboard/upcoming-event', this.dashboardEOController.getUpcomingEvent)
-        this.router.get('/dashboard/pending-payment', this.dashboardEOController.getPendingPaymen)
-        this.router.get('/dashboard/ticket-sold', this.dashboardEOController.getTicketSold)
-    }
+  private initializeRoutes(): void {
+    this.router.get(
+      '/dashboard/upcoming-event',
+      this.dashboardEOController.getUpcomingEvent,
+    );
+    this.router.get(
+      '/dashboard/pending-payment',
+      this.dashboardEOController.getPendingPaymen,
+    );
+    this.router.get(
+      '/dashboard/ticket-sold',
+      this.dashboardEOController.getTicketSold,
+    );
+    this.router.get(
+      '/total-revenue',
+      verifyToken,
+      this.dashboardEOController.getTotalRevenue,
+    );
+  }
 
-    getRouter(): Router {
-        return this.router;
-    }
+  getRouter(): Router {
+    return this.router;
+  }
 }
