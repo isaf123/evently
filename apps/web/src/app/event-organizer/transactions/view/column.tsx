@@ -216,7 +216,7 @@ export const columns: ColumnDef<Payment>[] = [
         return (
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline">Share</Button>
+              <Button variant="outline">Check</Button>
             </DialogTrigger>
             <ModalTrans invoice={invo} image={img} id={id}></ModalTrans>
           </Dialog>

@@ -1,12 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { subDays } from 'date-fns';
 // slice untuk mengkonfigurasi pembuatan reducer dan action
 
 interface IData {
-  getDate: Object;
+  from?: string;
+  to?: string;
 }
 
 const data: IData | any = {
-  getDate: {},
+  from: subDays(new Date(), 30).toISOString(),
+  to: new Date().toISOString(),
 };
 
 const CalendarSlice = createSlice({
