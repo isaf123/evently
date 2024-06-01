@@ -3,6 +3,7 @@ import eventReducer from './features/eventQuerySLice';
 import userSlice from './features/userSlice';
 import transactionEventSlice from './features/transactionEventSlice';
 import calendarSlice from './features/calendarSlice';
+import orderSlice from './features/orderSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -11,6 +12,7 @@ export const makeStore = () => {
       userSlice,
       transactionEventSlice,
       calendarSlice,
+      orderSlice,
     },
   });
 };
