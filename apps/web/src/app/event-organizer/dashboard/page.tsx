@@ -70,6 +70,7 @@ const DashboardEOPage = () => {
       router.replace('/');
     }
   }, []);
+
   return (
     <div className="flex">
       <SideNav />

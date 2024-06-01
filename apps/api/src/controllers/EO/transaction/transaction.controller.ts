@@ -9,7 +9,7 @@ import { Request, Response } from 'express';
 export class TransactionEOController {
   async getTransactionEO(req: Request, res: Response) {
     try {
-      const { page, pageSize, q = '', find, order } = req.query;
+      const { page, pageSize, q = '', find, order, status, search } = req.query;
       const user_id = res.locals.decript.id;
 
       const skip = (Number(page) - 1) * Number(pageSize);
@@ -17,71 +17,74 @@ export class TransactionEOController {
       const searchQuery = q.toString();
 
       // Fetch events with pending transactions for a specific user
-      const events = await prisma.masterEvent.findMany({
+
+      const event = await prisma.masterEvent.findMany({
         where: {
-          usersId: Number(user_id),
+          usersId: user_id,
         },
+        select: {
+          id: true,
+        },
+      });
+
+      const newArr = event.map((val) => {
+        return val.id;
+      });
+
+      const where: any = {
+        event_id: {
+          in: newArr,
+        },
+      };
+      console.log('ini search :', search);
+      if (status) {
+        where.status_transaction = status;
+      }
+
+      if (search) {
+        where.OR = [
+          { event: { title: { contains: search } } },
+          { user: { name: { contains: search } } },
+        ];
+      }
+
+      const [key, value] = String(order).split('-');
+      const newOrder = { [key]: value };
+
+      const trans = await prisma.transaction.findMany({
+        skip,
+        take,
+        orderBy: [newOrder],
+        where,
         include: {
-          transactions: {
-            orderBy: {
-              date_transaction: 'desc', // Order transactions by date_transaction
-            },
-            include: {
-              user: {
-                select: {
-                  name: true,
-                  email: true,
-                },
-              },
-            },
-          }, // Include related transactions
-          user_id: {
+          user: {
             select: {
               name: true,
               email: true,
             },
           },
+          event: {
+            select: {
+              id: true,
+              title: true,
+            },
+          },
         },
       });
 
-      console.log('ini event:', events.length);
+      const maxpage = await prisma.transaction.count({
+        where: {
+          event_id: {
+            in: newArr,
+          },
+        },
+      });
 
-      if (!events.length) {
-        return res.status(404).send({ message: 'No events found' });
-      }
-
-      // Combine transactions from all events
-      let allTransactions = events.flatMap((event) =>
-        event.transactions.map((transaction) => ({
-          ...transaction,
-          event_title: event.title,
-          user_name: event.user_id.name,
-        })),
-      );
-
-      // Filter transactions based on the search query
-      if (searchQuery) {
-        allTransactions = allTransactions.filter(
-          (transaction) =>
-            transaction.invoice_code.includes(searchQuery) ||
-            transaction.event_title.includes(searchQuery) ||
-            transaction.user_name.includes(searchQuery),
-        );
-      }
-      allTransactions.sort(
-        (a, b) =>
-          new Date(b.date_transaction).getTime() -
-          new Date(a.date_transaction).getTime(),
-      );
-      // Apply pagination to the combined transactions
-      const totalTransactions = allTransactions.length;
-      const totalPages = Math.ceil(totalTransactions / Number(pageSize));
-      allTransactions = allTransactions.slice(skip, skip + take);
+      const totalPages = Math.ceil(maxpage / Number(pageSize));
 
       return res.status(200).send({
-        result: allTransactions,
+        result: trans,
         totalPages,
-        totalTransactions,
       });
     } catch (error) {
       return res.status(500).send(error);
@@ -99,7 +102,6 @@ export class TransactionEOController {
 
   async updateTransactionStatus(req: Request, res: Response) {
     try {
-      console.log('ini id ke:', req.params.id);
       const { status_transaction } = req.body;
 
       if (!status_transaction) {
@@ -114,13 +116,11 @@ export class TransactionEOController {
         data: { status_transaction: 'paid' },
       });
 
-      return res
-        .status(200)
-        .json({
-          success: true,
-          data: updatedTransaction,
-          message: 'Payment verified',
-        });
+      return res.status(200).json({
+        success: true,
+        data: updatedTransaction,
+        message: 'Payment verified',
+      });
     } catch (error) {
       return res.status(500).send(error);
     }

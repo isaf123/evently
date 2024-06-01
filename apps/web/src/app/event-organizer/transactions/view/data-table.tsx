@@ -11,6 +11,8 @@ import {
   getPaginationRowModel,
   useReactTable,
   ColumnVisibility,
+  ColumnMeta,
+  RowData,
 } from '@tanstack/react-table';
 
 import {
@@ -23,6 +25,13 @@ import {
 } from '@/components/ui/table';
 
 import Pagination from '@/components/Pagination';
+import { cn } from '@/lib/utils';
+
+declare module '@tanstack/react-table' {
+  interface ColumnMeta<TData extends RowData, TValue> {
+    className?: string;
+  }
+}
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -54,15 +63,21 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div>
-      <div className="rounded-md border  mt-6">
+    <div className="mx-2 sm:mx-0 ">
+      <div className="rounded-md border  mt-2 ">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="font-bold">
+                    <TableHead
+                      key={header.id}
+                      className={cn(
+                        'font-bold ',
+                        header.column.columnDef.meta?.className,
+                      )} /// responsive hide
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -83,7 +98,10 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      className={cn(cell.column.columnDef.meta?.className)}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),

@@ -32,45 +32,82 @@ export const columns: ColumnDef<Payment>[] = [
     accessorKey: 'event',
     header: ({ column }) => {
       return (
-        <div className="min-w-[250px] ">
-          <Button
-            variant="ghost"
-            className="text-ellipsis px-0 font-bold"
+        <div className="min-w-[250px] flex items-center h-full">
+          <button
+            className=" px-0 font-bold "
             onClick={() => {
               column.toggleSorting(column.getIsSorted() === 'asc');
             }}
           >
             Event
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+          </button>
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </div>
       );
     },
     cell: ({ row }) => {
       const event = row.getValue('event');
       return (
-        <div className="font-semibold text-black h-[41px]">{String(event)}</div>
+        <div className="font-semibold text-black h-[41px] text-ellipsis">
+          {String(event)}
+        </div>
+      );
+    },
+    meta: { className: 'hidden md:table-cell' },
+  },
+  {
+    accessorKey: 'name',
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center">
+          <button
+            type="button"
+            className="px-0 font-bold"
+            onClick={() => {
+              column.toggleSorting(column.getIsSorted() === 'asc');
+            }}
+          >
+            Customer
+          </button>
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </div>
+      );
+    },
+    cell: ({ row }) => {
+      const name: string = row.getValue('name');
+      const email: string = row.getValue('email');
+      return (
+        <div>
+          <div className="font-semibold">{name}</div>
+          <div className="text-xs">{email}</div>
+        </div>
       );
     },
   },
   {
     accessorKey: 'total',
     header: ({ column }) => {
-      return <div className="w-[46px] break-words">Total Ticket</div>;
+      return <div className=" flex items-center h-full">Total Ticket</div>;
     },
+    cell: ({ row }) => {
+      const total = Number(row.getValue('total'));
+      return <div>{total}</div>;
+    },
+    meta: { className: 'hidden md:table-cell' },
   },
   {
     accessorKey: 'price',
-    header: 'Original price',
+    header: 'Original Price',
     cell: ({ row }) => {
       const price = row.getValue('price');
       const rp = rupiah(Number(price));
       if (price) {
         return <div>{rp}</div>;
       } else {
-        return <div className="font-semibold text-green-700">free</div>;
+        return <div className="font-semibold  text-green-700">free</div>;
       }
     },
+    meta: { className: 'hidden md:table-cell' },
   },
   {
     accessorKey: 'discount',
@@ -84,6 +121,7 @@ export const columns: ColumnDef<Payment>[] = [
         return <div className="font-semibold ">-</div>;
       }
     },
+    meta: { className: 'hidden md:table-cell' },
   },
   {
     accessorKey: 'point',
@@ -94,13 +132,14 @@ export const columns: ColumnDef<Payment>[] = [
       if (price) {
         return <div>{rp}</div>;
       } else {
-        return <div className="font-semibold ">-</div>;
+        return <div className="font-semibold">-</div>;
       }
     },
+    meta: { className: 'hidden md:table-cell' },
   },
   {
     accessorKey: 'priceAfter',
-    header: 'After Discount',
+    header: 'Total Price',
     cell: ({ row }) => {
       const price = row.getValue('priceAfter');
       const rp = rupiah(Number(price));
@@ -110,22 +149,14 @@ export const columns: ColumnDef<Payment>[] = [
         return <div className="font-semibold ">-</div>;
       }
     },
+    meta: { className: 'hidden md:table-cell' },
   },
   {
     accessorKey: 'status',
     header: ({ column }) => {
       return (
-        <div className="w-full flex justify-center px-0">
-          <Button
-            variant="ghost"
-            className="px-0 font-bold"
-            onClick={() => {
-              column.toggleSorting(column.getIsSorted() === 'asc');
-            }}
-          >
-            Status
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+        <div className="w-full flex justify-center items-center h-full ">
+          <div>Status</div>
         </div>
       );
     },
@@ -148,39 +179,14 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: 'date',
-    header: 'Transaction date',
+    header: 'Transaction Date',
     cell: ({ row }) => {
       const date: Date = row.getValue('date');
       return <div>{convertDate(new Date(date))}</div>;
     },
+    meta: { className: 'hidden md:table-cell' },
   },
-  {
-    accessorKey: 'name',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          className="px-0 font-bold"
-          onClick={() => {
-            column.toggleSorting(column.getIsSorted() === 'asc');
-          }}
-        >
-          Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      const name: string = row.getValue('name');
-      const email: string = row.getValue('email');
-      return (
-        <div>
-          <div className="font-semibold">{name}</div>
-          <div className="text-xs">{email}</div>
-        </div>
-      );
-    },
-  },
+
   {
     accessorKey: 'email',
   },
@@ -192,21 +198,7 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: 'id',
-    header: ({ column }) => {
-      return (
-        <div className="w-full flex justify-center">
-          <Button
-            variant="ghost"
-            className="font-bold"
-            onClick={() => {
-              column.toggleSorting(column.getIsSorted() === 'asc');
-            }}
-          >
-            Proof
-          </Button>
-        </div>
-      );
-    },
+    header: 'Receipt',
     cell: ({ row }) => {
       const stat = String(row.getValue('status'));
       const invo = String(row.getValue('invoice'));
