@@ -1,23 +1,37 @@
 import { countUpcomingEvents } from '@/services/EO/dashboard/eventService';
-import { getPendingPayment } from '@/services/EO/dashboard/getPendingPayment';
+import { getTotalRevenue } from '@/services/EO/dashboard/totalRevenue';
 import { getTicketSold } from '@/services/EO/dashboard/ticketSold';
+import { getCustomer } from '@/services/EO/dashboard/getCustomer';
 import { NextFunction, Request, Response } from 'express';
 import prisma from '@/prisma';
 
 export class DashboardEOController {
-  async getUpcomingEvent(req: Request, res: Response, next: NextFunction) {
+  async getStatInfo(req: Request, res: Response) {
     try {
-      const countEvents = await countUpcomingEvents();
-      console.log('hasil count', countEvents);
-      return res.status(200).send({
-        count: countEvents,
+      const usersId = res.locals.decript.id;
+      const event = await prisma.masterEvent.findMany({
+        select: { id: true },
+        where: { usersId },
       });
+
+      const newArr = event.map((val) => {
+        return val.id;
+      });
+      const soldTicket = await getTicketSold(newArr);
+      const upcomingEvent = await countUpcomingEvents(usersId);
+      const totalRevenue = await getTotalRevenue(newArr);
+      const customer = await getCustomer(newArr);
+
+      return res
+        .status(200)
+        .send([totalRevenue, soldTicket, upcomingEvent, customer]);
     } catch (error) {
+      console.log(error);
       return res.status(500).send(error);
     }
   }
 
-  async getTotalRevenue(req: Request, res: Response) {
+  async RevenueChart(req: Request, res: Response) {
     try {
       const { from, to } = req.query;
       console.log('check:', from);
@@ -83,28 +97,6 @@ export class DashboardEOController {
       return res
         .status(200)
         .send({ total: totalTransaction, detail: arrTrans });
-    } catch (error) {
-      return res.status(500).send(error);
-    }
-  }
-
-  async getPendingPaymen(req: Request, res: Response) {
-    try {
-      const countPayment = await getPendingPayment();
-      return res.status(200).send({
-        count: countPayment,
-      });
-    } catch (error) {
-      return res.status(500).send(error);
-    }
-  }
-
-  async getTicketSold(req: Request, res: Response) {
-    try {
-      const countTicketSold = await getTicketSold();
-      return res.status(200).send({
-        count: countTicketSold,
-      });
     } catch (error) {
       return res.status(500).send(error);
     }
