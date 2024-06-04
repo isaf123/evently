@@ -14,22 +14,11 @@ export class DashboardEORouter {
 
   private initializeRoutes(): void {
     this.router.get(
-      '/dashboard/upcoming-event',
-      this.dashboardEOController.getUpcomingEvent,
-    );
-    this.router.get(
-      '/dashboard/pending-payment',
-      this.dashboardEOController.getPendingPaymen,
-    );
-    this.router.get(
-      '/dashboard/ticket-sold',
-      this.dashboardEOController.getTicketSold,
-    );
-    this.router.get(
       '/total-revenue',
       verifyToken,
-      this.dashboardEOController.getTotalRevenue,
+      this.dashboardEOController.RevenueChart,
     );
+    this.router.get('/', verifyToken, this.dashboardEOController.getStatInfo);
   }
 
   getRouter(): Router {
