@@ -2,10 +2,32 @@ import { countUpcomingEvents } from '@/services/EO/dashboard/eventService';
 import { getTotalRevenue } from '@/services/EO/dashboard/totalRevenue';
 import { getTicketSold } from '@/services/EO/dashboard/ticketSold';
 import { getCustomer } from '@/services/EO/dashboard/getCustomer';
-import { NextFunction, Request, Response } from 'express';
+import { getTicketChart } from '@/services/EO/dashboard/ticketChart';
+import { Request, Response } from 'express';
 import prisma from '@/prisma';
 
 export class DashboardEOController {
+  async ticketChart(req: Request, res: Response) {
+    try {
+      const usersId = res.locals.decript.id;
+      const eventId = await prisma.masterEvent.findMany({
+        select: { id: true },
+        where: { usersId },
+      });
+
+      const newArr = eventId.map((val) => {
+        return val.id;
+      });
+
+      const data = await getTicketChart(newArr);
+
+      return res.status(200).send(data);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(error);
+    }
+  }
+
   async getStatInfo(req: Request, res: Response) {
     try {
       const usersId = res.locals.decript.id;
