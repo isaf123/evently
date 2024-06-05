@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { protectPageEO } from '@/utils/protectPage';
 import { Overview } from './view/ChartTransaction';
-import StatBar from './view/stats';
+import StatBar from './view/Stats';
 import {
   Card,
   CardContent,
@@ -20,9 +20,6 @@ import { DatePickerTransaction } from './view/datePicker';
 
 const DashboardEOPage = () => {
   const router = useRouter();
-  const [detailTrans, setDetailTrans] = useState<
-    [{ price: number; date: string }]
-  >([{ price: 0, date: new Date().toISOString() }]);
 
   React.useEffect(() => {
     if (!protectPageEO()) {
@@ -36,10 +33,10 @@ const DashboardEOPage = () => {
       <div className="flex-1">
         <Header />
         <HeaderMobile />
-        <div className=" flex">
+        <div className=" py-10 flex">
           <div className="w-[280px] h-full hidden sm:block"></div>
-          <div className=" items-center w-full mt-10 mx-2 sm:mx-64">
-            <h1 className="font-extrabold text-4xl">Dashboard</h1>
+          <div className=" items-center w-full  mx-2 sm:mx-64">
+            <h1 className="font-extrabold text-4xl mb-4">Dashboard</h1>
             <StatBar />
 
             <div className="flex gap-4 mt-4 flex-wrap">

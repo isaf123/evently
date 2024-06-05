@@ -18,6 +18,11 @@ export class DashboardEORouter {
       verifyToken,
       this.dashboardEOController.RevenueChart,
     );
+    this.router.get(
+      '/ticket',
+      verifyToken,
+      this.dashboardEOController.ticketChart,
+    );
     this.router.get('/', verifyToken, this.dashboardEOController.getStatInfo);
   }
 

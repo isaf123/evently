@@ -35,9 +35,9 @@ const StatBar: React.FunctionComponent<IStatBarProps> = (props) => {
   };
 
   const mapping = () => {
-    return getData.map((val: any) => {
+    return getData.map((val: any, idx: number) => {
       return (
-        <Card className="flex-1 min-w-fit">
+        <Card className="flex-1 min-w-fit" key={idx}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-semibold">{val.title}</CardTitle>
             {val.title == 'Ticket Sold' ? (
