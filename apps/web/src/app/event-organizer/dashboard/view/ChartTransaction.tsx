@@ -68,13 +68,20 @@ export function Overview() {
             tickLine={false}
             axisLine={false}
           />
+
           <YAxis
             stroke="#888888"
             fontSize={12}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(value) => `Rp${formatTabel(value)}`}
+            tickFormatter={(value: any, idx: number) => {
+              if (!idx) {
+                return '';
+              }
+              return `Rp${formatTabel(value)}`;
+            }}
           />
+
           <Tooltip
             formatter={(value) => `Rp${formatTabel(Number(value))}`}
             wrapperStyle={{
@@ -83,6 +90,7 @@ export function Overview() {
               borderRadius: '20px',
             }}
           />
+
           <Bar
             dataKey="price"
             fill="#10B981"

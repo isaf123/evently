@@ -28,7 +28,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
 
-interface ICheckoutPageProps { }
+interface ICheckoutPageProps {}
 
 const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
   const [data, setData] = React.useState<[]>([]);
@@ -115,7 +115,7 @@ const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
                   {trimText(val.event.title, 15)}
                 </p>
                 <p className="font-medium text-sm md:text-md block md:hidden">
-                  {trimText('aaaaaaaaaaaaaaaaaaa', 11)}
+                  {trimText(val.event.title, 11)}
                 </p>
               </div>
               <p className="text-xs  text-green-500 w-fit h-[16px] font-bold ">
@@ -133,25 +133,20 @@ const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
               </p>
             </div>
 
-            {!val.event.reviews_event?.length ? (
-              <Button
-                className=" md:mb-2 mt-2 w-full bg-gray-900 border text-white"
-                onClick={() => {
-                  setActive(true);
+            <Button
+              className=" md:mb-2 mt-2 w-full bg-gray-100 border border-gray-300 text-black hover:text-white"
+              disabled={val.event.reviews_event?.length}
+              onClick={() => {
+                setActive(true);
 
-                  setSendData({
-                    title: val.event.title,
-                    eventId: val.event.id,
-                  });
-                }}
-              >
-                review
-              </Button>
-            ) : (
-              <Button className=" md:mb-2 mt-2 w-full bg-gray-900 border text-white opacity-40 cursor-default">
-                review
-              </Button>
-            )}
+                setSendData({
+                  title: val.event.title,
+                  eventId: val.event.id,
+                });
+              }}
+            >
+              review
+            </Button>
           </div>
         </div>
       );
@@ -189,7 +184,7 @@ const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
             </div>
 
             {active ? (
-              <div className="h-screen w-screen bg-black fixed opacity-40 z-10"></div>
+              <div className="h-screen w-screen bg-black fixed top-0 left-0 opacity-40 z-10"></div>
             ) : (
               <></>
             )}
