@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { getTotalRevenue } from '@/api/EO/eo';
+import { convertDate, rupiah } from '@/lib/text';
+import { Separator } from '@/components/ui/separator';
 import {
   Bar,
   BarChart,
@@ -12,13 +14,11 @@ import {
 } from 'recharts';
 import { formatTabel } from '@/lib/text';
 import { useAppSelector } from '@/lib/hooks';
-import { rupiah } from '@/lib/text';
 
 export function Overview() {
   const [detailTrans, setDetailTrans] = useState<
     { price: number; date: string }[]
   >([]);
-  const [totalTrans, setTotalTrans] = useState<number>(0);
 
   const getDate = useAppSelector((state) => {
     return state.calendarSlice;
@@ -37,9 +37,6 @@ export function Overview() {
           getDate.to,
         );
         setDetailTrans(response.detail);
-        setTotalTrans(response.total._sum.price_after_discount);
-        console.log('total :', response.total);
-        console.log(response.detail);
       }
     } catch (error) {
       console.log(error);
@@ -48,57 +45,73 @@ export function Overview() {
 
   if (!detailTrans.length) {
     return (
-      <div className="w-full h-[350px] bg-gray-200 flex justify-center items-center rounded-md ">
+      <div className="w-full h-[350px] bg-gray-100 flex justify-center items-center rounded-md ">
         <div className="text-sm text-gray-300">no transaction</div>
       </div>
     );
   }
 
   return (
-    <div>
-      <div className="w-full flex justify-end">
-        <div className="mb-2 font-semibold text-sm">{rupiah(totalTrans)}</div>
-      </div>
-      <ResponsiveContainer width="100%" height={350}>
-        <BarChart data={detailTrans}>
-          <XAxis
-            dataKey="date"
-            stroke="#888888"
-            fontSize={12}
-            tickLine={false}
-            axisLine={false}
-          />
+    <ResponsiveContainer width="100%" height={350}>
+      <BarChart data={detailTrans}>
+        <XAxis
+          dataKey="date"
+          stroke="#888888"
+          fontSize={12}
+          tickLine={false}
+          axisLine={false}
+        />
 
-          <YAxis
-            stroke="#888888"
-            fontSize={12}
-            tickLine={false}
-            axisLine={false}
-            tickFormatter={(value: any, idx: number) => {
-              if (!idx) {
-                return '';
-              }
-              return `Rp${formatTabel(value)}`;
-            }}
-          />
+        <YAxis
+          stroke="#888888"
+          fontSize={12}
+          tickLine={false}
+          axisLine={false}
+          tickFormatter={(value: any, idx: number) => {
+            if (!idx) {
+              return '';
+            }
+            return `Rp${formatTabel(value)}`;
+          }}
+        />
 
-          <Tooltip
-            formatter={(value) => `Rp${formatTabel(Number(value))}`}
-            wrapperStyle={{
-              fontSize: '16px',
-              fontWeight: '700',
-              borderRadius: '20px',
-            }}
-          />
-
-          <Bar
-            dataKey="price"
-            fill="#10B981"
-            radius={[4, 4, 0, 0]}
-            className="fill-primary"
-          />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+        {/* <Tooltip
+          formatter={(value) => `Rp${formatTabel(Number(value))}`}
+          wrapperStyle={{
+            fontSize: '16px',
+            fontWeight: '700',
+            borderRadius: '20px',
+          }}
+        /> */}
+        <Tooltip content={<CustomTooltip />} />
+        <Bar
+          dataKey="price"
+          fill="#10B981"
+          radius={[4, 4, 0, 0]}
+          className="fill-primary"
+        />
+      </BarChart>
+    </ResponsiveContainer>
   );
+}
+
+function CustomTooltip({ active, payload, label }: any) {
+  if (active) {
+    return (
+      <div className="px-2 py-1 bg-white rounded-md shadow-lg border border-gray-100">
+        <h2
+          className="text-sm text-center"
+          style={{ color: 'hsl(var(--primary))' }}
+        >
+          {convertDate(label)}
+        </h2>
+        <Separator className="my-1" />
+        {payload.length ? (
+          <div className="font-extrabold">{rupiah(payload[0].value)}</div>
+        ) : (
+          <></>
+        )}
+      </div>
+    );
+  }
 }

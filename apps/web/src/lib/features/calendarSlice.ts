@@ -8,8 +8,8 @@ interface IData {
 }
 
 const data: IData | any = {
-  from: subDays(new Date(), 30).toISOString(),
-  to: new Date().toISOString(),
+  from: '',
+  to: '',
 };
 
 const CalendarSlice = createSlice({
