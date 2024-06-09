@@ -1,13 +1,8 @@
 import * as React from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tag, HandCoins, UsersRound, Tent } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useAppSelector } from '@/lib/hooks';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -15,25 +10,29 @@ interface IStatBarProps {}
 
 const StatBar: React.FunctionComponent<IStatBarProps> = (props) => {
   const [getData, setGetData] = useState<any[]>([]);
+
+  const getDate = useAppSelector((state) => {
+    return state.calendarSlice;
+  });
+
   useEffect(() => {
     getStat();
-  }, []);
+  }, [getDate]);
 
   const getStat = async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}EO`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}EO?from=${getDate.from}&to=${getDate.to}`,
         {
           headers: { Authorization: `Bearer ${Cookies.get('Token EO')}` },
         },
       );
-      console.log(response.data);
+
       setGetData(response.data);
     } catch (error) {
       console.log(error);
     }
   };
-
   const mapping = () => {
     return getData.map((val: any, idx: number) => {
       return (
@@ -62,14 +61,17 @@ const StatBar: React.FunctionComponent<IStatBarProps> = (props) => {
             )}
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{val.data}</div>
+            {val.data == 'null' || !val.data ? (
+              <div className="text-2xl font-bold">0</div>
+            ) : (
+              <div className="text-2xl font-bold">{val.data}</div>
+            )}
             <p className="text-xs text-muted-foreground">{val.desc}</p>
           </CardContent>
         </Card>
       );
     });
   };
-
   return <div className="flex flex-wrap gap-4">{mapping()}</div>;
 };
 

@@ -1,11 +1,19 @@
 import prisma from '@/prisma';
+import { addDay } from '@/utils/convertDate';
 
-export const countUpcomingEvents = async (usersId: number) => {
+export const countUpcomingEvents = async (
+  usersId: number,
+  from?: string,
+  to?: string,
+) => {
   try {
     const today = new Date();
-    const totalEvent = await prisma.masterEvent.count({
-      where: { usersId },
-    });
+
+    const where: any = {
+      usersId,
+    };
+
+    const totalEvent = await prisma.masterEvent.count({ where });
 
     const upcomingEvents = await prisma.masterEvent.count({
       where: {
@@ -20,9 +28,6 @@ export const countUpcomingEvents = async (usersId: number) => {
         usersId,
       },
     });
-
-    console.log(upcomingEvents);
-    console.log(endEvent);
     return {
       title: 'Your Events',
       data: `${totalEvent}`,

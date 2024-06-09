@@ -8,6 +8,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { protectPageEO } from '@/utils/protectPage';
 import { Overview } from './view/ChartTransaction';
+import { DateRangePicker } from './view/dateRangePicker';
 import StatBar from './view/Stats';
 import {
   Card,
@@ -16,8 +17,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { DatePickerTransaction } from './view/datePicker';
-
 const DashboardEOPage = () => {
   const router = useRouter();
 
@@ -37,19 +36,18 @@ const DashboardEOPage = () => {
           <div className="w-[280px] h-full hidden sm:block"></div>
           <div className=" items-center w-full  mx-2 sm:mx-64">
             <h1 className="font-extrabold text-4xl mb-4">Dashboard</h1>
+            <DateRangePicker />
+
             <StatBar />
 
             <div className="flex gap-4 mt-4 flex-wrap">
               <Card className="flex-1 min-w-fit">
                 <CardHeader>
-                  <div className=" flex justify-between flex-wrap">
-                    <div>
-                      <CardTitle className="font-bold">Total Revenue</CardTitle>
-                      <CardDescription>
-                        Track your transaction and revenue
-                      </CardDescription>
-                    </div>
-                    <DatePickerTransaction></DatePickerTransaction>
+                  <div>
+                    <CardTitle className="font-bold">Total Revenue</CardTitle>
+                    <CardDescription>
+                      Track your transaction and revenue
+                    </CardDescription>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -59,13 +57,11 @@ const DashboardEOPage = () => {
 
               <Card className="flex-1 min-w-fit">
                 <CardHeader>
-                  <div className=" flex justify-between">
-                    <div>
-                      <CardTitle className="font-bold">Ticket Sold</CardTitle>
-                      <CardDescription>
-                        Track your transaction and revenue
-                      </CardDescription>
-                    </div>
+                  <div>
+                    <CardTitle className="font-bold">Ticket Sold</CardTitle>
+                    <CardDescription>
+                      Track your sold ticket here
+                    </CardDescription>
                   </div>
                 </CardHeader>
                 <CardContent>

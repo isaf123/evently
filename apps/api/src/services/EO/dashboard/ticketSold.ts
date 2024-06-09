@@ -1,13 +1,38 @@
 import prisma from '@/prisma';
+import { addDay } from '@/utils/convertDate';
 
-export const getTicketSold = async (eventId: number[]) => {
+export const getTicketSold = async (
+  eventId: number[],
+  from?: string,
+  to?: string,
+) => {
   try {
-    const ticketSold = await prisma.transaction.count({
-      where: { status_transaction: 'paid', event_id: { in: eventId } },
-    });
+    const where: any = {
+      status_transaction: 'paid',
+      event_id: { in: eventId },
+    };
 
+    if (to && from) {
+      where.date_transaction = {};
+      if (from) {
+        where.date_transaction.gte = new Date(from);
+      }
+      if (to) {
+        where.date_transaction.lte = new Date(addDay(to));
+      }
+    }
+    if (from && !to) {
+      where.date_transaction = {};
+      where.date_transaction.gte = new Date(String(from));
+      where.date_transaction.lte = new Date(addDay(String(from)));
+    }
+
+    const ticketSold = await prisma.transaction.aggregate({
+      where,
+      _sum: { ticket_count: true },
+    });
     const date = await prisma.transaction.findFirst({
-      orderBy: [{ date_transaction: 'desc' }],
+      orderBy: [{ date_transaction: 'asc' }],
       select: { date_transaction: true },
       where: { status_transaction: 'paid', event_id: { in: eventId } },
     });
@@ -22,7 +47,7 @@ export const getTicketSold = async (eventId: number[]) => {
 
     return {
       title: 'Ticket Sold',
-      data: `+${ticketSold}`,
+      data: `${ticketSold._sum.ticket_count}`,
       desc: `since : ${newDate}`,
     };
   } catch (error) {

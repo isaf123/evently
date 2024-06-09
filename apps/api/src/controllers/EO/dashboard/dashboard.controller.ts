@@ -4,11 +4,13 @@ import { getTicketSold } from '@/services/EO/dashboard/ticketSold';
 import { getCustomer } from '@/services/EO/dashboard/getCustomer';
 import { getTicketChart } from '@/services/EO/dashboard/ticketChart';
 import { Request, Response } from 'express';
+import { addDay } from '@/utils/convertDate';
 import prisma from '@/prisma';
 
 export class DashboardEOController {
   async ticketChart(req: Request, res: Response) {
     try {
+      const { from, to } = req.query;
       const usersId = res.locals.decript.id;
       const eventId = await prisma.masterEvent.findMany({
         select: { id: true },
@@ -19,7 +21,7 @@ export class DashboardEOController {
         return val.id;
       });
 
-      const data = await getTicketChart(newArr);
+      const data = await getTicketChart(newArr, String(from), String(to));
 
       return res.status(200).send(data);
     } catch (error) {
@@ -30,23 +32,27 @@ export class DashboardEOController {
 
   async getStatInfo(req: Request, res: Response) {
     try {
+      const { from, to } = req.query;
       const usersId = res.locals.decript.id;
       const event = await prisma.masterEvent.findMany({
         select: { id: true },
         where: { usersId },
       });
-
+      console.log('from', from);
       const newArr = event.map((val) => {
         return val.id;
       });
-      const soldTicket = await getTicketSold(newArr);
+      const soldTicket = await getTicketSold(newArr, String(from), String(to));
       const upcomingEvent = await countUpcomingEvents(usersId);
-      const totalRevenue = await getTotalRevenue(newArr);
-      const customer = await getCustomer(newArr);
-
+      const customer = await getCustomer(newArr, String(from), String(to));
+      const totalRevenue = await getTotalRevenue(
+        newArr,
+        String(from),
+        String(to),
+      );
       return res
         .status(200)
-        .send([totalRevenue, soldTicket, upcomingEvent, customer]);
+        .send([totalRevenue, soldTicket, customer, upcomingEvent]);
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);
@@ -56,7 +62,6 @@ export class DashboardEOController {
   async RevenueChart(req: Request, res: Response) {
     try {
       const { from, to } = req.query;
-      console.log('check:', from);
       const usersId = res.locals.decript.id;
       const getEvent = await prisma.masterEvent.findMany({
         select: { id: true },
@@ -67,19 +72,33 @@ export class DashboardEOController {
         return val.id;
       });
 
+      const where: any = {
+        event_id: {
+          in: newArr,
+        },
+        status_transaction: 'paid',
+      };
+
+      if (to && from) {
+        where.date_transaction = {};
+        if (from) {
+          where.date_transaction.gte = new Date(String(from));
+        }
+        if (to) {
+          where.date_transaction.lte = new Date(addDay(String(to)));
+        }
+      }
+
+      if (from && !to) {
+        where.date_transaction = {};
+        where.date_transaction.gte = new Date(String(from));
+        where.date_transaction.lte = new Date(addDay(String(from)));
+      }
+
       const getTransaction = await prisma.transaction.findMany({
         orderBy: [{ date_transaction: 'asc' }],
         select: { price_after_discount: true, date_transaction: true },
-        where: {
-          event_id: {
-            in: newArr,
-          },
-          date_transaction: {
-            lte: new Date(String(to)),
-            gte: new Date(String(from)),
-          },
-          status_transaction: 'paid',
-        },
+        where,
       });
 
       const newTrans = getTransaction.map((val) => {
@@ -104,16 +123,7 @@ export class DashboardEOController {
         _sum: {
           price_after_discount: true,
         },
-        where: {
-          event_id: {
-            in: newArr,
-          },
-          date_transaction: {
-            lte: new Date(String(to)),
-            gte: new Date(String(from)),
-          },
-          status_transaction: 'paid',
-        },
+        where,
       });
 
       return res

@@ -1,10 +1,36 @@
 import prisma from '@/prisma';
+import { addDay } from '@/utils/convertDate';
 
-export const getTicketChart = async (eventId: number[]) => {
+export const getTicketChart = async (
+  eventId: number[],
+  from?: string,
+  to?: string,
+) => {
   try {
+    const where: any = {
+      status_transaction: 'paid',
+      event_id: { in: eventId },
+    };
+
+    if (to && from) {
+      where.date_transaction = {};
+      if (from) {
+        where.date_transaction.gte = new Date(from);
+      }
+      if (to) {
+        where.date_transaction.lte = new Date(addDay(to));
+      }
+    }
+
+    if (from && !to) {
+      where.date_transaction = {};
+      where.date_transaction.gte = new Date(from);
+      where.date_transaction.lte = new Date(addDay(from));
+    }
+
     const trans = await prisma.transaction.findMany({
       orderBy: [{ date_transaction: 'asc' }],
-      where: { status_transaction: 'paid', event_id: { in: eventId } },
+      where,
       select: { ticket_count: true, date_transaction: true },
     });
 

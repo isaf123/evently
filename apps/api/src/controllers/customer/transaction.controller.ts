@@ -4,10 +4,6 @@ import { NextFunction, Request, Response } from 'express';
 export class TransactionUserController {
   async createTransaction(req: Request, res: Response) {
     try {
-      console.log('okeeeeeeee');
-      console.log(res.locals.decript.id);
-      console.log(req.body);
-
       const {
         date_transaction,
         invoice_code,
@@ -31,9 +27,6 @@ export class TransactionUserController {
           },
         });
 
-        console.log('body :', req.body);
-        console.log('event exist :', existsEvent);
-
         if (!existsEvent) {
           throw 'Event not exists';
         }
@@ -44,8 +37,6 @@ export class TransactionUserController {
           },
           where: { event_id: existsEvent.id },
         });
-
-        console.log('trans :', existTrans);
 
         if (existTrans._sum.ticket_count === existsEvent.available_seat) {
           throw 'ticket sold';
@@ -79,8 +70,6 @@ export class TransactionUserController {
             },
           });
 
-          console.log(existVoucher);
-
           if (existVoucher?.user_id) {
             const findVoucherById = await tx.voucher.findFirst({
               where: {
@@ -103,7 +92,6 @@ export class TransactionUserController {
             },
           });
 
-          console.log('dapat point :', findPoint?.usersId);
           if (findPoint) {
             const deletePoint = await tx.poin.update({
               where: { id: findPoint.id },
@@ -111,7 +99,6 @@ export class TransactionUserController {
             });
           }
         }
-        console.log('jlaaaaaaan');
 
         const trans = await tx.transaction.create({
           data: {
@@ -137,8 +124,6 @@ export class TransactionUserController {
 
   async uploadTransferPic(req: Request, res: Response) {
     try {
-      console.log(req.files);
-      console.log('dapeeeeeeeeeet :', req.body);
       const files = req.files as Express.Multer.File[];
 
       const update = await prisma.transaction.update({
@@ -150,7 +135,6 @@ export class TransactionUserController {
         },
       });
 
-      console.log('dapaeeeesssst :', files[0].filename);
       return res.status(200).send({ result: 'Payment success' });
     } catch (error) {
       console.log(error);
@@ -160,8 +144,6 @@ export class TransactionUserController {
   async transactionDetailsCust(req: Request, res: Response) {
     try {
       const { page, pageSize } = req.query;
-
-      console.log(page, pageSize);
 
       const skip = (Number(page) - 1) * Number(pageSize);
       const take = Number(pageSize);

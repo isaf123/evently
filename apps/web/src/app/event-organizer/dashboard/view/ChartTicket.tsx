@@ -12,28 +12,45 @@ import {
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { Separator } from '@/components/ui/separator';
-import axios from 'axios';
+import { getTicketSoldEO } from '@/api/EO/eo';
+import { useAppSelector } from '@/lib/hooks';
 
 export function TicketSold() {
   const [dataDetail, setDataDetail] = useState<
     { ticket: number; date: string }[]
   >([]);
+
+  const getDate = useAppSelector((state) => {
+    return state.calendarSlice;
+  });
+
+  console.log(getDate);
+
   useEffect(() => {
     getTicket();
-  }, []);
+  }, [getDate]);
 
   const getTicket = async () => {
     try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}EO/ticket`,
-        {
-          headers: { Authorization: `Bearer ${Cookies.get('Token EO')}` },
-        },
+      const response = await getTicketSoldEO(
+        String(Cookies.get('Token EO')),
+        getDate.from,
+        getDate.to,
       );
-      setDataDetail(response.data);
-      console.log(response.data);
-    } catch (error) {}
+
+      setDataDetail(response);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  if (!dataDetail.length) {
+    return (
+      <div className="w-full h-[350px] bg-gray-100 flex justify-center items-center rounded-md ">
+        <div className="text-sm text-gray-300">no tickets sold</div>
+      </div>
+    );
+  }
 
   return (
     <ResponsiveContainer width="100%" height={350}>
@@ -94,7 +111,11 @@ function CustomTooltip({ active, payload, label }: any) {
           {convertDate(label)}
         </h2>
         <Separator className="my-1" />
-        <div className="font-extrabold">{payload[0].value} TICKET</div>
+        {payload.length ? (
+          <div className="font-extrabold">{payload[0].value} TICKET</div>
+        ) : (
+          <></>
+        )}
       </div>
     );
   }
