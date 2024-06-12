@@ -3,11 +3,38 @@ import { getTotalRevenue } from '@/services/EO/dashboard/totalRevenue';
 import { getTicketSold } from '@/services/EO/dashboard/ticketSold';
 import { getCustomer } from '@/services/EO/dashboard/getCustomer';
 import { getTicketChart } from '@/services/EO/dashboard/ticketChart';
+import { getRecentTrans } from '@/services/EO/dashboard/recentTrans';
 import { Request, Response } from 'express';
 import { addDay } from '@/utils/convertDate';
 import prisma from '@/prisma';
 
 export class DashboardEOController {
+  async recentTransaction(req: Request, res: Response) {
+    try {
+      const usersId = res.locals.decript.id;
+      const data = await getRecentTrans(usersId);
+      return res.status(200).send(data);
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  }
+
+  async recentEvent(req: Request, res: Response) {
+    try {
+      const usersId = res.locals.decript.id;
+      const data = await prisma.masterEvent.findMany({
+        take: 6,
+        orderBy: [{ start_date: 'desc' }],
+        where: { usersId },
+        select: { price: true, title: true, start_date: true },
+      });
+
+      return res.status(200).send(data);
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  }
+
   async ticketChart(req: Request, res: Response) {
     try {
       const { from, to } = req.query;

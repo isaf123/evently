@@ -24,8 +24,6 @@ export function TicketSold() {
     return state.calendarSlice;
   });
 
-  console.log(getDate);
-
   useEffect(() => {
     getTicket();
   }, [getDate]);

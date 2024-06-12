@@ -9,6 +9,8 @@ import { useRouter } from 'next/navigation';
 import { protectPageEO } from '@/utils/protectPage';
 import { Overview } from './view/ChartTransaction';
 import { DateRangePicker } from './view/dateRangePicker';
+import RecentSales from './view/RecentSales';
+import RecentTrans from './view/RecentTransaction';
 import StatBar from './view/Stats';
 import {
   Card,
@@ -68,6 +70,11 @@ const DashboardEOPage = () => {
                   <TicketSold />
                 </CardContent>
               </Card>
+            </div>
+
+            <div className="flex gap-4 flex-wrap mt-4">
+              <RecentTrans />
+              <RecentSales />
             </div>
           </div>
         </div>
