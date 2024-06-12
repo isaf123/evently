@@ -24,6 +24,16 @@ export class DashboardEORouter {
       this.dashboardEOController.ticketChart,
     );
     this.router.get('/', verifyToken, this.dashboardEOController.getStatInfo);
+    this.router.get(
+      '/recent-transaction',
+      verifyToken,
+      this.dashboardEOController.recentTransaction,
+    );
+    this.router.get(
+      '/recent-event',
+      verifyToken,
+      this.dashboardEOController.recentEvent,
+    );
   }
 
   getRouter(): Router {
