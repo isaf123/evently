@@ -14,6 +14,10 @@ Evently is a platform used by users to buy and sell tickets. Users can register 
 
 ![Video_24-06-13_09-43-45](https://github.com/isaf123/evently/assets/137991239/84248efb-4244-4a76-974f-7ae1c8acb5c5)
 
+
+https://github.com/isaf123/evently/assets/137991239/32b9e82e-94d9-4df6-82a5-c5b8baa83c3c
+
+
 ## Available Scripts
 
 ### `npm run dev`
