@@ -28,8 +28,6 @@ export const validationEvent = async (
     if (findEvent) {
       throw 'event already exisst';
     }
-    console.log('seat:', available_seat);
-    console.log('CHEEEEEECKKKK:', Number.isInteger(available_seat));
 
     if (
       available_seat < 1 ||

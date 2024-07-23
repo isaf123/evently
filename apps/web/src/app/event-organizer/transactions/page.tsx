@@ -105,7 +105,7 @@ const TransactionEOPage = () => {
               totalPage={totalPage}
             />
           ) : (
-            <div className="bg-gray-200 w-[full] h-[710px] rounded-lg mt-2 flex items-center justify-center">
+            <div className="bg-gray-100 w-[full] h-[710px] rounded-lg mt-2 flex items-center justify-center">
               <div className="font-semibold text-gray-300 text-lg">
                 not found
               </div>

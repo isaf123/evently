@@ -10,20 +10,20 @@ import { useRouter } from 'next/navigation';
 import { protectPageCust, protectPageEO } from '@/utils/protectPage';
 import BarCustomerWeb from '@/components/BarCustomerWeb';
 import BarCustomerMobile from '@/components/BarCustomerMobile';
-interface ICheckoutPageProps { }
+interface ICheckoutPageProps {}
 
 const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
   const [data, setData] = React.useState<any[]>([]);
   const [page, SetPage] = React.useState<number>(1);
   const [totalPage, setTotalPage] = React.useState<number>(1);
 
-  const router = useRouter()
+  const router = useRouter();
 
   React.useEffect(() => {
     getDataTrans();
 
     if (protectPageEO()) {
-      router.replace('/event-organizer/dashboard')
+      router.replace('/event-organizer/dashboard');
     }
   }, [page]);
 
@@ -40,8 +40,6 @@ const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
       console.log(error);
     }
   };
-
-  console.log('dapet data:', page);
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">

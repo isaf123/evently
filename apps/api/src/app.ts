@@ -16,6 +16,7 @@ import { TransactionUserRouter } from './routers/customer/transaction.router';
 import { DashboardEORouter } from './routers/EO/dashboard/dashboard.router';
 import { TransactionEORouter } from './routers/EO/transaction/transaction.router';
 import { ReviewUserRouter } from './routers/customer/review.router';
+import { MidtransRouter } from './routers/customer/token.router';
 export default class App {
   readonly app: Express;
 
@@ -62,6 +63,7 @@ export default class App {
     const transactionUserRouter = new TransactionUserRouter();
     const promoEventRouter = new PromoEventRouter();
     const reviewUserRouter = new ReviewUserRouter();
+    const midtransRouter = new MidtransRouter();
 
     // Dashboard EO
     const dashboardEORouter = new DashboardEORouter();
@@ -73,6 +75,7 @@ export default class App {
       res.send(`Hello, Purwadhika Student !`);
     });
 
+    this.app.use('/midtrans',midtransRouter.getRouter())
     this.app.use('/auth', authRouter.getRouter());
     this.app.use('/event-eo', eventEORouter.getRouter());
     this.app.use('/event', eventCustRouter.getRouter());

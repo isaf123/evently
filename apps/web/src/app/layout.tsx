@@ -18,6 +18,13 @@ export default function RootLayout({
   return (
     <StoreProvider>
       <html lang="en">
+        <head>
+          <script
+            type="text/javascript"
+            src="https://app.sandbox.midtrans.com/snap/snap.js"
+            data-client-key="<CLIENT-KEY>"
+          ></script>
+        </head>
         <body className={inter.className}>
           <Header />
           <div className="min-w-[360px] md:max-w-[1920px] m-auto">

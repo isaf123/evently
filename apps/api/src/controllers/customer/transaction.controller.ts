@@ -19,7 +19,6 @@ export class TransactionUserController {
 
       const user_id = res.locals.decript.id;
 
-      console.log('voucher', req.body);
       await prisma.$transaction(async (tx) => {
         const existsEvent = await tx.masterEvent.findFirst({
           where: {
@@ -134,8 +133,21 @@ export class TransactionUserController {
           date_transaction: new Date().toISOString(),
         },
       });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-      return res.status(200).send({ result: 'Payment success' });
+  async updateStatusTrans(req: Request, res: Response) {
+    try {
+      const { idTrans } = req.body;
+      const update = await prisma.transaction.update({
+        where: { id: idTrans },
+        data: {
+          status_transaction: 'paid',
+        },
+      });
+      return res.status(200).send('Payment Success');
     } catch (error) {
       console.log(error);
     }

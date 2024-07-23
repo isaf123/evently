@@ -10,9 +10,7 @@ export const validationReceipt = async (
 ) => {
   try {
     const files = req.files as Express.Multer.File[];
-
     const pic = files[0].filename;
-
     if (pic) {
       const split = pic?.split('.');
       console.log(split[split.length - 1]);

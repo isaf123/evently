@@ -25,6 +25,12 @@ export class TransactionUserRouter {
       this.transactionUserController.uploadTransferPic,
     );
 
+    this.router.patch(
+      '/update',
+      verifyToken,
+      this.transactionUserController.updateStatusTrans,
+    );
+
     this.router.get(
       '/',
       verifyToken,

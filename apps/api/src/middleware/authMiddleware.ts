@@ -29,7 +29,6 @@ export const customerMiddleware = (
 ) => {
   try {
     const user: IUser | null = (req as any).user;
-    console.log('dapet role :', res.locals.decript.role);
 
     // Jika pengguna adalah  customer, lanjutkan
     if (res.locals.decript.role === UserRole.Customer) {

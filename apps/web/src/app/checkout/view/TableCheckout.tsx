@@ -4,26 +4,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Users2 } from 'lucide-react';
 import { trimText } from '@/lib/text';
-
 import { Badge } from '@/components/ui/badge';
 import Cookies from 'js-cookie';
 import { convertDate } from '@/lib/text';
 import { rupiah } from '@/lib/text';
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+import { v4 as uuidv4 } from 'uuid';
 import { trimFormat } from '@/lib/text';
 
 import {
@@ -40,6 +27,7 @@ import { showMessage } from '@/components/Alert/Toast';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
+import { update } from 'cypress/types/lodash';
 
 interface ITableCheckoutProps {
   dataTrans: any[];
@@ -51,9 +39,14 @@ const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
   const [transId, setTransId] = React.useState<number>(0);
   const [eventId, setEventId] = React.useState<number>(0);
   const [picName, setPicName] = React.useState<string>('');
+  const [status, setStatus] = React.useState<string>('');
+  const [idTrans, setIdTrans] = React.useState<number>();
+
   const router = useRouter();
 
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    updateStatusTrans();
+  }, [status]);
 
   const postData = async () => {
     try {
@@ -79,7 +72,6 @@ const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
       );
 
       showMessage(postPhoto.data.result, 'success');
-
       setTimeout(() => {
         window.location.reload();
       }, 1500);
@@ -92,7 +84,51 @@ const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
     }
   };
 
-  console.log(props.dataTrans);
+  const checkout = async (
+    name: String,
+    price: number,
+    quantity: number,
+    transId: number,
+  ) => {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}midtrans`,
+      { id: uuidv4(), productName: name, price, quantity, eventId },
+      { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
+    );
+
+    window.snap.pay(response.data, {
+      onSuccess: function (result: any) {
+        /* You may add your own implementation here */
+        setStatus(result.status_code);
+      },
+      onPending: function (result: any) {
+        console.log(result);
+      },
+      onClose: function (result: any) {
+        console.log('cancel payment');
+      },
+    });
+  };
+
+  const updateStatusTrans = async () => {
+    try {
+      const postStatus = await axios.patch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}transaction-user/update`,
+        { idTrans },
+        { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
+      );
+      console.log(postStatus);
+
+      showMessage(postStatus.data, 'success');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log(status);
 
   const mapping = () => {
     return props.dataTrans.map((val: any, idx: number) => {
@@ -170,49 +206,20 @@ const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
             {val.status_transaction !== 'submitted' || !val.total_price ? (
               <></>
             ) : (
-              <AlertDialog>
-                <AlertDialogTrigger
-                  className="px-4 py-3 bg-white border rounded-md shadow-sm text-xs font-medium"
-                  onClick={() => {
-                    setEventId(val.event_id);
-                    setTransId(val.id);
-                  }}
-                >
-                  Checkout
-                </AlertDialogTrigger>
-                <AlertDialogContent className="bg-white">
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Send your transaction receipt here.
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      File must be in .jpg or .png
-                    </AlertDialogDescription>
-                    <input
-                      type="file"
-                      className="cursor-pointer mt-4"
-                      onChange={(e) => {
-                        if (e.target.files?.length) {
-                          setFile(e.target.files[0]);
-                          setPicName(e.target.files[0].name);
-                          console.log('dapet foto :', e.target.files[0]);
-                        }
-                      }}
-                    />
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      className="bg-gray-900 text-white"
-                      onClick={() => {
-                        postData();
-                      }}
-                    >
-                      Continue
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+              <Button
+                onClick={() => {
+                  checkout(
+                    val.event.title,
+                    val.price_after_discount,
+                    val.ticket_count,
+                    val.id,
+                  );
+                  setIdTrans(val.id);
+                }}
+              >
+                Checkout
+              </Button>
+              ////////////////////////////////////////////////
             )}
           </TableCell>
         </TableRow>
