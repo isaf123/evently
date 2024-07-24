@@ -14,17 +14,23 @@ Monitor and manage your payment information and buyer data through our dashboard
 
 ![Video_24-06-13_09-43-45](https://github.com/isaf123/evently/assets/137991239/84248efb-4244-4a76-974f-7ae1c8acb5c5) 
 
+### Payment Gateway :
+Use payment gateway method from midtrans sandbox, allows to use various payment method 
 
-
+![Macbook-Air-localhost](https://github.com/user-attachments/assets/9bf5262a-8bd1-4cfb-a3e5-5012e6217bb2)
 
 
 ## Available Scripts
+
+### `npm install`
+
+Install all dependencies.
 
 ### `npm run dev`
 
 Runs the app in the development mode.
 
-Open [http://localhost:5173](http://localhost:5173) to view it in the browser. For API, you can access it in [http://localhost:8000/api](http://localhost:8000/api). The app will reload if you make edits.
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser. For API, you can access it in [http://localhost:3500/api](http://localhost:3500/api). The app will reload if you make edits.
 
 ### `npm run build`
 
