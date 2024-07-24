@@ -26,6 +26,12 @@ export class TransactionUserRouter {
     );
 
     this.router.patch(
+      '/pending',
+      verifyToken,
+      this.transactionUserController.pendingPayment,
+    );
+
+    this.router.patch(
       '/update',
       verifyToken,
       this.transactionUserController.updateStatusTrans,

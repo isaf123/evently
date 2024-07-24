@@ -138,16 +138,43 @@ export class TransactionUserController {
     }
   }
 
-  async updateStatusTrans(req: Request, res: Response) {
+  async pendingPayment(req: Request, res: Response) {
     try {
+      console.log('dapaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaat', req.body);
+
       const { idTrans } = req.body;
       const update = await prisma.transaction.update({
         where: { id: idTrans },
         data: {
-          status_transaction: 'paid',
+          status_transaction: 'pending',
         },
       });
-      return res.status(200).send('Payment Success');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async updateStatusTrans(req: Request, res: Response) {
+    try {
+      const { idTrans, status } = req.body;
+      if (status == 'paid') {
+        const update = await prisma.transaction.update({
+          where: { id: idTrans },
+          data: {
+            status_transaction: 'paid',
+          },
+        });
+        return res.status(200).send('Payment Success');
+      }
+      if (status == 'pending') {
+        const update = await prisma.transaction.update({
+          where: { id: idTrans },
+          data: {
+            status_transaction: 'pending',
+          },
+        });
+        return res.status(200).send('Payment Pending');
+      }
     } catch (error) {
       console.log(error);
     }

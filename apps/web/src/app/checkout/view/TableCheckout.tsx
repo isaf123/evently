@@ -1,8 +1,6 @@
 'use client';
 import * as React from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { Users2 } from 'lucide-react';
 import { trimText } from '@/lib/text';
 import { Badge } from '@/components/ui/badge';
 import Cookies from 'js-cookie';
@@ -11,7 +9,6 @@ import { rupiah } from '@/lib/text';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { v4 as uuidv4 } from 'uuid';
-import { trimFormat } from '@/lib/text';
 
 import {
   Table,
@@ -26,63 +23,27 @@ import axios from 'axios';
 import { showMessage } from '@/components/Alert/Toast';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useRouter } from 'next/navigation';
-import { update } from 'cypress/types/lodash';
 
 interface ITableCheckoutProps {
   dataTrans: any[];
 }
 
-const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
-  const [page, setPage] = React.useState<number>(1);
-  const [file, setFile] = React.useState<File | null>(null);
-  const [transId, setTransId] = React.useState<number>(0);
-  const [eventId, setEventId] = React.useState<number>(0);
-  const [picName, setPicName] = React.useState<string>('');
-  const [status, setStatus] = React.useState<string>('');
-  const [idTrans, setIdTrans] = React.useState<number>();
+enum PaymentStatus {
+  pending = 'pending',
+  paid = 'paid',
+  submit = 'submitted',
+}
 
-  const router = useRouter();
+const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
+  const [eventId, setEventId] = React.useState<number>(0);
+  const [status, setStatus] = React.useState<PaymentStatus>(
+    PaymentStatus.submit,
+  );
+  const [idTrans, setIdTrans] = React.useState<number>();
 
   React.useEffect(() => {
     updateStatusTrans();
   }, [status]);
-
-  const postData = async () => {
-    try {
-      const formData = new FormData();
-      if (!file) {
-        throw 'please input the image';
-      }
-
-      if (!(trimFormat(picName) == 'png' || trimFormat(picName) == 'jpg')) {
-        throw 'invalid file type';
-      }
-
-      if (file) {
-        formData.append('imgTransaction', file);
-      }
-
-      formData.append('trans_id', transId.toString());
-      formData.append('event_id', eventId.toString());
-      const postPhoto = await axios.patch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}transaction-user/upload`,
-        formData,
-        { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
-      );
-
-      showMessage(postPhoto.data.result, 'success');
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
-    } catch (error: any) {
-      console.log(error);
-      if (error.response) {
-        showMessage(error.response.data, 'error');
-      }
-      showMessage(error, 'error');
-    }
-  };
 
   const checkout = async (
     name: String,
@@ -99,22 +60,25 @@ const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
     window.snap.pay(response.data, {
       onSuccess: function (result: any) {
         /* You may add your own implementation here */
-        setStatus(result.status_code);
+        setStatus(PaymentStatus.paid);
       },
       onPending: function (result: any) {
         console.log(result);
+        setStatus(PaymentStatus.pending);
       },
-      onClose: function (result: any) {
+      onClose: function () {
         console.log('cancel payment');
       },
     });
   };
 
+  console.log(status);
+
   const updateStatusTrans = async () => {
     try {
       const postStatus = await axios.patch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}transaction-user/update`,
-        { idTrans },
+        { idTrans, status },
         { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
       );
       console.log(postStatus);
@@ -127,8 +91,6 @@ const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
       console.log(error);
     }
   };
-
-  console.log(status);
 
   const mapping = () => {
     return props.dataTrans.map((val: any, idx: number) => {
@@ -203,7 +165,7 @@ const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
             {convertDate(new Date(val.date_transaction))}
           </TableCell>
           <TableCell>
-            {val.status_transaction !== 'submitted' || !val.total_price ? (
+            {val.status_transaction == 'paid' || !val.total_price ? (
               <></>
             ) : (
               <Button
