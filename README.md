@@ -17,7 +17,7 @@ Monitor and manage your payment information and buyer data through our dashboard
 ### Payment Gateway :
 Use payment gateway method from midtrans sandbox, allows to use various payment method 
 
-![Macbook-Air-localhost](https://github.com/user-attachments/assets/9bf5262a-8bd1-4cfb-a3e5-5012e6217bb2)
+![mac-iphone](https://github.com/user-attachments/assets/da214245-4483-4415-bbdf-5666f889c13b)
 
 
 ## Available Scripts
