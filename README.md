@@ -9,8 +9,8 @@ This project uses React.js with NextJS for the frontend, Express.js for the back
 ### Back-end :
 ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB) ![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white) ![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)
 
-Evently is a platform used by users to buy and sell tickets. Users can register as either buyers or event organizers.
-
+### Dynamic Dashboard :
+Monitor and manage your payment information and buyer data through our dashboard to stay updated, allows you to track every payment transaction, monitor payment statuses, and obtain detailed information about buyers
 
 ![Video_24-06-13_09-43-45](https://github.com/isaf123/evently/assets/137991239/84248efb-4244-4a76-974f-7ae1c8acb5c5) 
 
