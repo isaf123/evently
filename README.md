@@ -12,7 +12,7 @@ This project uses React.js with NextJS for the frontend, Express.js for the back
 Evently is a platform used by users to buy and sell tickets. Users can register as either buyers or event organizers.
 
 
-![Video_24-06-13_09-43-45](https://github.com/isaf123/evently/assets/137991239/84248efb-4244-4a76-974f-7ae1c8acb5c5) ![moblie](https://github.com/isaf123/evently/assets/137991239/b24e1b59-7fcb-4ea8-8f2e-c98403ba5c69)
+![Video_24-06-13_09-43-45](https://github.com/isaf123/evently/assets/137991239/84248efb-4244-4a76-974f-7ae1c8acb5c5) 
 
 
 
