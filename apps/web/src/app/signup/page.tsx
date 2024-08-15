@@ -17,11 +17,11 @@ import { useRouter } from 'next/navigation';
 import { showMessage } from '@/components/Alert/Toast';
 
 import { toast, ToastContainer } from 'react-toastify';
-import "react-toastify/dist/ReactToastify.css";
+import 'react-toastify/dist/ReactToastify.css';
 import { RadioGroup } from '@radix-ui/react-radio-group';
 import { RadioGroupItem } from '@/components/ui/radio-group';
 
-interface ISignUpPageProps { }
+interface ISignUpPageProps {}
 
 const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
   const [dataUser, setDataUser] = useState({
@@ -30,38 +30,42 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
     password: '',
     confirm_pwd: '',
     role: '',
-    referral_code: ''
+    referral_code: '',
   });
 
-  const [role, setRole] = useState<string>("")
+  const [role, setRole] = useState<string>('');
 
   const [showReferralCode, setShowReferralCode] = useState(false);
   const clickRefCode = () => {
-    setShowReferralCode(!showReferralCode)
-  }
-  const router = useRouter()
-  console.log('data user', dataUser);
+    setShowReferralCode(!showReferralCode);
+  };
+  const router = useRouter();
 
   const handleRegister = async () => {
     try {
-      console.log('ini ENV', process.env.NEXT_PUBLIC_BASE_API_URL);
-      if (!dataUser.name || !dataUser.email || !dataUser.password || !dataUser.role || !dataUser.confirm_pwd) {
-        console.log("debug master")
-        showMessage("Please input all fields", "error")
+      if (
+        !dataUser.name ||
+        !dataUser.email ||
+        !dataUser.password ||
+        !dataUser.role ||
+        !dataUser.confirm_pwd
+      ) {
+        showMessage('Please input all fields', 'error');
       }
 
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}auth/register`, {
-        name: dataUser.name,
-        email: dataUser.email,
-        password: dataUser.password,
-        role: dataUser.role,
-        referral_code: generateReferralCode(6),
-        referral_code_other: dataUser.referral_code
-      })
-      console.log(dataUser);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}auth/register`,
+        {
+          name: dataUser.name,
+          email: dataUser.email,
+          password: dataUser.password,
+          role: dataUser.role,
+          referral_code: generateReferralCode(6),
+          referral_code_other: dataUser.referral_code,
+        },
+      );
 
-
-      router.push("/signin")
+      router.push('/signin');
     } catch (error: any) {
       if (error.response) {
         showMessage(error.response.data, 'error');
@@ -69,16 +73,19 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
         showMessage(error, 'error');
       }
     }
-  }
+  };
 
   const generateReferralCode = (length: number = 6): string => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let referralCode = '';
     for (let i = 0; i < length; i++) {
-      referralCode += characters.charAt(Math.floor(Math.random() * characters.length));
+      referralCode += characters.charAt(
+        Math.floor(Math.random() * characters.length),
+      );
     }
     return referralCode;
-  }
+  };
 
   return (
     <div>
@@ -99,7 +106,7 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
                 <Label htmlFor="first-name">Name</Label>
                 <Input
                   id="name"
-                  type='text'
+                  type="text"
                   placeholder="Max"
                   required
                   onChange={(e) => {
@@ -135,15 +142,21 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Confirm Password</Label>
-              <Input id="confirm_pwd" type="password" onChange={(e) => {
-                const newData = { ...dataUser, confirm_pwd: e.target.value };
-                setDataUser(newData);
-              }} />
+              <Input
+                id="confirm_pwd"
+                type="password"
+                onChange={(e) => {
+                  const newData = { ...dataUser, confirm_pwd: e.target.value };
+                  setDataUser(newData);
+                }}
+              />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="role" className='text-sm'>Role</Label>
+              <Label htmlFor="role" className="text-sm">
+                Role
+              </Label>
               <RadioGroup
-                className='flex justify-center gap-4'
+                className="flex justify-center gap-4"
                 onValueChange={(e) => {
                   setRole(e);
                   const newData = { ...dataUser, role: e };
@@ -160,23 +173,33 @@ const SignUpPage: React.FunctionComponent<ISignUpPageProps> = (props) => {
                   <Label htmlFor="r2">Customer</Label>
                 </div>
               </RadioGroup>
-
             </div>
-            {role == "customers" ?
+            {role == 'customers' ? (
               <div className="grid gap-2">
                 <Input
-                  type='text'
-                  className='block'
-                  placeholder='Register with Referral Code'
+                  type="text"
+                  className="block"
+                  placeholder="Register with Referral Code"
                   onChange={(e) => {
-                    const newData = { ...dataUser, referral_code: e.target.value };
+                    const newData = {
+                      ...dataUser,
+                      referral_code: e.target.value,
+                    };
                     setDataUser(newData);
                   }}
                 />
-              </div> : <></>
-            }
+              </div>
+            ) : (
+              <></>
+            )}
 
-            <Button type="button" className="w-full bg-color1 text-white" onClick={() => { handleRegister() }}>
+            <Button
+              type="button"
+              className="w-full bg-color1 text-white"
+              onClick={() => {
+                handleRegister();
+              }}
+            >
               Create an account
             </Button>
           </div>

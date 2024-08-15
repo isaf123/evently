@@ -36,7 +36,7 @@ export class AuthController {
         return res.status(409).json('Email Already Registered.');
       const hashedPassword = await hashPassword(password);
 
-      await prisma.$transaction(async (tx) => {
+      await prisma.$transaction(async (tx: any) => {
         console.log('referral code other', referral_code_other);
         const newUsers = await tx.users.create({
           data: {

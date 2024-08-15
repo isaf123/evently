@@ -34,7 +34,6 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
 
   const handleLogin = async () => {
     try {
-      console.log('ini ENV', process.env.NEXT_PUBLIC_BASE_API_URL);
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}auth/login`,
         {

@@ -37,7 +37,6 @@ export default function Home() {
       const response2 = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event/event-top`,
       );
-      console.log('ini cobaaaaaaaaaa :', response2.data);
       setTopEvent(response2.data);
     } catch (error) {
       console.log(error);
@@ -75,7 +74,6 @@ export default function Home() {
     });
   };
 
-  console.log('ini top event', topEvent);
   const mapTopEvent = () => {
     return (
       topEvent &&
