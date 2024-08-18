@@ -19,6 +19,10 @@ Use payment gateway method from midtrans sandbox, allows to use various payment 
 
 ![mac-iphone](https://github.com/user-attachments/assets/da214245-4483-4415-bbdf-5666f889c13b)
 
+### React Query :
+Optimize data management with React Query
+
+![image](https://github.com/user-attachments/assets/90317ccc-829f-448b-8b92-04ef34b2162a)
 
 ## Available Scripts
 
