@@ -22,7 +22,8 @@ Use payment gateway method from midtrans sandbox, allows to use various payment 
 ### React Query :
 Optimize data management with React Query
 
-![reactcode](https://github.com/user-attachments/assets/977e4b5f-59e9-4aa6-96a9-163c883ef3d6)
+<img src="https://github.com/user-attachments/assets/977e4b5f-59e9-4aa6-96a9-163c883ef3d6" alt="" width="540" />
+
 
 ## Available Scripts
 
