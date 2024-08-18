@@ -21,11 +21,15 @@ import {
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import axios from 'axios';
 import { showMessage } from '@/components/Alert/Toast';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { dataTable } from '@/api/customer/checkout';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { updateStatusTrans } from '@/api/customer/checkout';
 
 interface ITableCheckoutProps {
-  dataTrans: any[];
+  page: number;
 }
 
 enum PaymentStatus {
@@ -36,20 +40,14 @@ enum PaymentStatus {
 
 const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
   const [eventId, setEventId] = React.useState<number>(0);
-  const [status, setStatus] = React.useState<PaymentStatus>(
-    PaymentStatus.submit,
-  );
-  const [idTrans, setIdTrans] = React.useState<number>();
-
-  React.useEffect(() => {
-    updateStatusTrans();
-  }, [status]);
+  const router = useRouter();
+  const statusTrans = updateStatusTrans();
 
   const checkout = async (
     name: String,
     price: number,
     quantity: number,
-    transId: number,
+    idTrans: number,
   ) => {
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_BASE_API_URL}midtrans`,
@@ -58,42 +56,22 @@ const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
     );
 
     window.snap.pay(response.data, {
-      onSuccess: function (result: any) {
-        /* You may add your own implementation here */
-        setStatus(PaymentStatus.paid);
+      onSuccess: async function (result: any) {
+        statusTrans.mutate({ idTrans, status: 'paid' });
       },
       onPending: function (result: any) {
-        console.log(result);
-        setStatus(PaymentStatus.pending);
+        statusTrans.mutate({ idTrans, status: 'pending' });
       },
       onClose: function () {
-        console.log('cancel payment');
+        console.log('payment fail');
       },
     });
   };
 
-  console.log(status);
-
-  const updateStatusTrans = async () => {
-    try {
-      const postStatus = await axios.patch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}transaction-user/update`,
-        { idTrans, status },
-        { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
-      );
-      console.log(postStatus);
-
-      showMessage(postStatus.data, 'success');
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { result } = dataTable(props.page);
 
   const mapping = () => {
-    return props.dataTrans.map((val: any, idx: number) => {
+    return result?.map((val: any, idx: number) => {
       return (
         <TableRow key={idx}>
           <TableCell className="hidden sm:table-cell">
@@ -176,7 +154,6 @@ const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
                     val.ticket_count,
                     val.id,
                   );
-                  setIdTrans(val.id);
                 }}
               >
                 Checkout

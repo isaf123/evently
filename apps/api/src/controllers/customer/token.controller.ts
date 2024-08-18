@@ -15,9 +15,11 @@ export class MidtransController {
         transaction_details: {
           order_id: id,
           gross_amount: price * quantity,
+          productName,
         },
       };
       const token = await snap.createTransactionToken(parameter);
+      console.log(token);
 
       return res.status(200).send(token);
     } catch (error) {

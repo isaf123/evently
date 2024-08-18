@@ -157,6 +157,8 @@ export class TransactionUserController {
   async updateStatusTrans(req: Request, res: Response) {
     try {
       const { idTrans, status } = req.body;
+      console.log('iniiiiiiiiiiiiiiiiii :', req.body);
+
       if (status == 'paid') {
         const update = await prisma.transaction.update({
           where: { id: idTrans },

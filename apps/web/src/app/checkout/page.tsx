@@ -3,43 +3,27 @@ import * as React from 'react';
 import Link from 'next/link';
 import TableCheckout from './view/TableCheckout';
 import { Button } from '@/components/ui/button';
-import axios from 'axios';
-import Cookies from 'js-cookie';
 import Pagination from '@/components/Pagination';
 import { useRouter } from 'next/navigation';
 import { protectPageCust, protectPageEO } from '@/utils/protectPage';
 import BarCustomerWeb from '@/components/BarCustomerWeb';
 import BarCustomerMobile from '@/components/BarCustomerMobile';
+import { dataTable } from '@/api/customer/checkout';
+
 interface ICheckoutPageProps {}
 
 const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
-  const [data, setData] = React.useState<any[]>([]);
   const [page, SetPage] = React.useState<number>(1);
-  const [totalPage, setTotalPage] = React.useState<number>(1);
-
   const router = useRouter();
 
   React.useEffect(() => {
-    getDataTrans();
-
     if (protectPageEO()) {
       router.replace('/event-organizer/dashboard');
     }
   }, [page]);
 
-  const getDataTrans = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}transaction-user/details?page=${page}&pageSize=6`,
-        { headers: { Authorization: `Bearer ${Cookies.get('Token Cust')}` } },
-      );
-
-      setData(response.data.result);
-      setTotalPage(response.data.totalPage);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const data = dataTable(page)?.result;
+  const totalPage = dataTable(page)?.totalPage;
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -54,9 +38,9 @@ const CheckoutPage: React.FunctionComponent<ICheckoutPageProps> = (props) => {
           </div>
         </header>
         <main className="flex flex-1 flex-col px-2 md:px-6">
-          {data.length ? (
+          {data?.length ? (
             <div>
-              <TableCheckout dataTrans={data}></TableCheckout>
+              <TableCheckout page={page}></TableCheckout>
               <div className="flex w-full justify-end">
                 <Pagination
                   page={page}
