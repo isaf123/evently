@@ -20,12 +20,9 @@ import {
 } from '@/components/ui/table';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import axios from 'axios';
-import { showMessage } from '@/components/Alert/Toast';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { dataTable } from '@/api/customer/checkout';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 import { updateStatusTrans } from '@/api/customer/checkout';
 
 interface ITableCheckoutProps {
@@ -40,7 +37,6 @@ enum PaymentStatus {
 
 const TableCheckout: React.FunctionComponent<ITableCheckoutProps> = (props) => {
   const [eventId, setEventId] = React.useState<number>(0);
-  const router = useRouter();
   const statusTrans = updateStatusTrans();
 
   const checkout = async (

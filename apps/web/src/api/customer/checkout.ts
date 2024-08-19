@@ -2,8 +2,6 @@ import { showMessage } from '@/components/Alert/Toast';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { ReactReduxContext } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
 
 export const dataTable = (page: number) => {
   const transactionData = useQuery({
@@ -18,7 +16,6 @@ export const dataTable = (page: number) => {
 
   return transactionData.data?.data;
 };
-
 export const updateStatusTrans = () => {
   const queryClient = useQueryClient();
   return useMutation({
